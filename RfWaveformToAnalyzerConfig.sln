@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfWaveformToAnalyzerConfig", "RfGeneratorToAnalyzer\RfWaveformToAnalyzerConfig.csproj", "{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{40DCEDD7-596E-4BFB-B6D2-0AA60E1BB6C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NrPlugin", "Plugins\NrPlugin\NrPlugin.csproj", "{43E80067-E805-4DD7-AC69-25D2501A1D2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfwsParser", "Plugins\RfwsParser\RfwsParser.csproj", "{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43E80067-E805-4DD7-AC69-25D2501A1D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43E80067-E805-4DD7-AC69-25D2501A1D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43E80067-E805-4DD7-AC69-25D2501A1D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43E80067-E805-4DD7-AC69-25D2501A1D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{43E80067-E805-4DD7-AC69-25D2501A1D2B} = {40DCEDD7-596E-4BFB-B6D2-0AA60E1BB6C7}
+		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6} = {40DCEDD7-596E-4BFB-B6D2-0AA60E1BB6C7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A59CD970-85F4-4AA2-9721-5E045ED32480}
+	EndGlobalSection
+EndGlobal
