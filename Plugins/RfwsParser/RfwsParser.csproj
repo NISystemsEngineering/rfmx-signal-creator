@@ -48,7 +48,7 @@
     <Compile Include="RfwsAttributes.cs" />
     <Compile Include="RfwsParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RfwsRfmxPropertyMap.cs" />
+    <Compile Include="RfwsKey.cs" />
     <Compile Include="RfwsSection.cs" />
   </ItemGroup>
   <ItemGroup>

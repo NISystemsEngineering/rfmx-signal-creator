@@ -14,16 +14,20 @@ using static NationalInstruments.Utilities.WaveformParsing.Plugins.RfwsParserUti
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
+
+    public enum RfmxSelectorStringType
+    {
+        Default,
+        Subblock,
+        None
+    }
+
     public class NrRfwsParser : RfwsParser<RFmxNRMX>, IWaveformFilePlugin
     {
         const string XmlIdentifer = "NR Generation";
         const int XmlNrVersion = 3;
 
         const string SectionCarrierSet = "CarrierSet";
-        const string SectionCarrier = "Carrier";
-
-        public RFmxInstrMX Instr { get;  }
-        public RFmxNRMX[] Signals { get; }
 
         string filePath;
         XElement rootData;
@@ -49,98 +53,49 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         public void Parse(WaveformConfigFile file, RFmxInstrMX instr)
         {
             int carrierSetIndex = 0;
-            foreach(XElement carrierSet in FindSections(rootData, SectionCarrierSet))
+            foreach (XElement carrierSetSection in FindSections(rootData, SectionCarrierSet))
             {
                 RFmxNRMX signal = instr.GetNRSignalConfiguration($"CarrierSet{carrierSetIndex}");
+
+                signal.SelectMeasurements("", RFmxNRMXMeasurementTypes.Acp | RFmxNRMXMeasurementTypes.ModAcc, true);
 
                 Console.WriteLine("/******************************************/");
                 Console.WriteLine($"Configuring carrier set {carrierSetIndex}");
                 Console.WriteLine("/******************************************/");
 
-                foreach(XElement subblock in FindSections(carrierSet, SectionCarrier))
-                {
-                    try
-                    {
+                CarrierSet carrierSet = new CarrierSet(rootData, carrierSetSection, this, signal, "");
+                carrierSet.Parse();
 
-                        Subblock s = new Subblock(rootData, subblock, signal, "");
-                        ParseAndMapProperties(s);
-
-                        Carrier c = new Carrier(rootData, s.SectionRoot, s.Signal, s.SelectorString);
-                        ParseAndMapProperties(c);
-                        /*
-                        // Setup: Subblock
-                        string selectorString = "";
-                        
-                        // Build selector string for the current subblock and CC
-                        int subblockIndex = int.Parse(FetchValue(subblock, Subblock.KeySubblockNumber));
-
-                        signal.SetNumberOfSubblocks("", subblockIndex + 1);
-                        
-                        selectorString = RFmxNRMX.BuildSubblockString(selectorString, subblockIndex);
-                        
-                        // RFmx WC defines the subblocks only in relative frequency offsets
-                        signal.SetSubblockFrequencyDefinition(selectorString, RFmxNRMXSubblockFrequencyDefinition.Relative);
-
-                        int ccIndex = int.Parse(FetchValue(subblock, Subblock.KeyCarrierCCIndex));
-                        signal.ComponentCarrier.SetNumberOfComponentCarriers(selectorString, ccIndex + 1);
-                        
-                        selectorString = RFmxNRMX.BuildCarrierString(selectorString, ccIndex);
-
-
-                        Console.WriteLine($"Configuring subblock {subblockIndex}, component carrier {ccIndex}");
-
-                        ParseAndMapProperties(typeof(Subblock), subblock, signal, selectorString);
-
-                        // Setup carrier
-
-                        // Fetch the carrier definition number in order to reference the appropriate carrier in a moment
-                        string carrierDefinitionIndex = FetchValue(subblock, Subblock.KeyCarrierDefinition);
-
-                        // Fetch the carrier definition section
-                        XElement carrierDefinition = FindSections(rootData, "CarrierDefinitionManager").First();
-                        // Fetch the specific carrier
-                        XElement specificCarrier = FindSections(carrierDefinition, carrierDefinitionIndex).First();
-
-                        ParseAndMapProperties(typeof(Carrier), specificCarrier, signal, selectorString);
-                        */
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new FormatException($"Error parsing subblock.", ex);
-                    }
-                }
-
-                carrierSetIndex++;
                 Console.WriteLine("/******************************************/");
             }
         }
 
 
-        public override void ApplyConfiguration(RFmxNRMX signal, string selectorString, RfwsRfmxPropertyMap map, bool value)
+        public override void ApplyConfiguration(RFmxNRMX signal, string selectorString, RfwsKey key, bool value)
         {
-            selectorString = OverrideSelectorString(map, selectorString);
-            signal.SetAttributeBool(selectorString, map.RfmxPropertyId, value);
+            selectorString = OverrideSelectorString(key, selectorString);
+            signal.SetAttributeBool(selectorString, key.RfmxPropertyId, value);
         }
-        public override void ApplyConfiguration(RFmxNRMX signal, string selectorString, RfwsRfmxPropertyMap map, double value)
+        public override void ApplyConfiguration(RFmxNRMX signal, string selectorString, RfwsKey key, double value)
         {
-            selectorString = OverrideSelectorString(map, selectorString);
-            signal.SetAttributeDouble(selectorString, map.RfmxPropertyId, value);
+            selectorString = OverrideSelectorString(key, selectorString);
+            signal.SetAttributeDouble(selectorString, key.RfmxPropertyId, value);
         }
-        public override void ApplyConfiguration(RFmxNRMX signal, string selectorString, RfwsRfmxPropertyMap map, int value)
+        public override void ApplyConfiguration(RFmxNRMX signal, string selectorString, RfwsKey key, int value)
         {
-            selectorString = OverrideSelectorString(map, selectorString);
-            signal.SetAttributeInt(selectorString, map.RfmxPropertyId, value);
+            selectorString = OverrideSelectorString(key, selectorString);
+            signal.SetAttributeInt(selectorString, key.RfmxPropertyId, value);
         }
-        public override void ApplyConfiguration(RFmxNRMX signal, string selectorString, RfwsRfmxPropertyMap map, string value)
+        public override void ApplyConfiguration(RFmxNRMX signal, string selectorString, RfwsKey key, string value)
         {
-            selectorString = OverrideSelectorString(map, selectorString);
-            signal.SetAttributeString(selectorString, map.RfmxPropertyId, value);
+            selectorString = OverrideSelectorString(key, selectorString);
+            signal.SetAttributeString(selectorString, key.RfmxPropertyId, value);
         }
 
-        public static string OverrideSelectorString(RfwsRfmxPropertyMap map, string selectorString)
+        public static string OverrideSelectorString(RfwsKey key, string selectorString)
         {
-            NrRfwsRfmxPropertyMap nrMap = (NrRfwsRfmxPropertyMap)map;
-            switch (nrMap.SelectorStringType)
+            NrRfwsKey nrkey = (NrRfwsKey)key;
+            switch (nrkey.SelectorStringType)
             {
                 case RfmxSelectorStringType.Subblock:
                     Match result = Regex.Match(selectorString, @"subblock\d+");

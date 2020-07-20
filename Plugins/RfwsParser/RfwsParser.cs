@@ -12,13 +12,12 @@ using System.Text.RegularExpressions;
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 
 {
-    public delegate void PreParsingAction<T>(XElement section, T signal, string selectorString);
     public abstract class RfwsParser<T> where T : ISignalConfiguration
     {
         public bool SkipVersionCheck { get; set; } = false;
 
 
-        public void ParseAndMapProperties(RfwsSection<T> section)
+        /*public void ParseAndMapProperties(RfwsSection<T> section)
         {
             #region Parse Keys
             //IEnumerable<RfwsRfmxPropertyMap> propertyMaps;
@@ -31,13 +30,13 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                               where field.IsDefined(typeof(RfwsPropertyAttribute)) // Limit fields to those implementing appropriate property
                               let attribute = field.GetCustomAttribute<RfwsPropertyAttribute>() // Save the custom attribute object in "attribute"
                               where RfwsParserUtilities.CheckMatchedVersions(sectionVersion, attribute)
-                              let map = (RfwsRfmxPropertyMap)field.GetValue(null) // Save the value of the static field (aka the map defined at edit time) in "mapValue"
+                              let map = (RfwsRfmxPropertyMap)field.GetValue(section) // Save the value of the static field (aka the map defined at edit time) in "mapValue"
                               select (attribute, map); // Return the key map pair
 
             foreach ((RfwsPropertyAttribute attr, RfwsRfmxPropertyMap map) in keyMapPairs)
             {
                 string value = RfwsParserUtilities.FetchValue(element, attr.Key);
-                Console.WriteLine($"Parsed key \"{attr.Key}\" with value {value}");
+                Console.Write($"Parsed key \"{attr.Key}\" with value {value}.");
                 try
                 {
                     switch (map.RfmxType)
@@ -50,7 +49,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                             // Otherwise, invoke the delgate to manually map the value
                             else
                                 parsedBool = (bool)map.CustomMap(value);
-
+                            Console.WriteLine($" Setting RFmx value to {parsedBool}");
                             ApplyConfiguration(signal, selectorString, map, parsedBool);
                             break;
                         case RmfxPropertyTypes.Double:
@@ -61,7 +60,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                             // Otherwise, invoke the delgate to manually map the value
                             else
                                 parsedDouble = (double)map.CustomMap(value);
-
+                            Console.WriteLine($" Setting RFmx value to {parsedDouble}");
                             ApplyConfiguration(signal, selectorString, map, parsedDouble);
                             break;
                         case RmfxPropertyTypes.Int:
@@ -72,7 +71,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                             // Otherwise, invoke the delgate to manually map the value
                             else
                                 parsedInt = (int)map.CustomMap(value);
-
+                            Console.WriteLine($" Setting RFmx value to {parsedInt}");
                             ApplyConfiguration(signal, selectorString, map, parsedInt);
                             break;
                         case RmfxPropertyTypes.String:
@@ -83,7 +82,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                             // Otherwise, invoke the delgate to manually map the value
                             else
                                 parsedString = (string)map.CustomMap(value);
-
+                            Console.WriteLine($" Setting RFmx value to {parsedString}");
                             ApplyConfiguration(signal, selectorString, map, parsedString);
                             break;
                         default:
@@ -112,11 +111,11 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 }
             }
             #endregion
-        }
-        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsRfmxPropertyMap map, bool value);
-        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsRfmxPropertyMap map, double value);
-        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsRfmxPropertyMap map, int value);
-        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsRfmxPropertyMap map, string value);
+        }*/
+        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsKey key, bool value);
+        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsKey key, double value);
+        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsKey key, int value);
+        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsKey key, string value);
     }
     public static class RfwsParserUtilities
     {
@@ -142,19 +141,6 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             string result = (from child in element.Descendants()
                              where (string)child.Attribute("name") == keyName
                              select child.Value).FirstOrDefault();
-
-            /*result = element
-                    .Descendants("key")
-                    .Where(e => (string)e.Attribute("name") == keyName)
-                    .Where(e => versions.Contains((string)e.Parent.Attribute("version"))
-                    .Select(e => e.Value)
-                    .FirstOrDefault();*/
-
-
-            /*var result2 = from child in element.Descendants("key")
-                         where (string)child.Attribute("name") == keyName
-                         where (string)child.Parent.Attribute("version") == version
-                         select element.Value.ToArray();*/
 
             if (string.IsNullOrEmpty(result))
                 throw new KeyNotFoundException($"Property named \"{keyName}\" not found.");
@@ -215,6 +201,11 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             // Strip whitespace
             value = value.Replace(" ", string.Empty);
             return (T)Enum.Parse(typeof(T), value, true);
+        }
+        public static double ValueTodB(string value)
+        {
+            double scalingFactor = double.Parse(value);
+            return 20 * Math.Log(scalingFactor);
         }
     }
 

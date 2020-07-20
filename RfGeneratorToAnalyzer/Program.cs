@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Reflection;
 using NationalInstruments.RFmx.InstrMX;
+using System.IO;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Example
 {
@@ -21,6 +22,10 @@ namespace NationalInstruments.Utilities.WaveformParsing.Example
 
             RFmxInstrMX instr = new RFmxInstrMX("", "AnalysisOnly=1");
             nr.Parse(waveform, instr);
+
+            string savedPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_RFmx_Config.tdms");
+
+            instr.SaveAllConfigurations(savedPath);
 
             /*XElement root = XElement.Load(path);
 

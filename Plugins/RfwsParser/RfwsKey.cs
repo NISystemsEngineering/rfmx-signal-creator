@@ -17,7 +17,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         String,
         Sbyte
     }
-    public class RfwsRfmxPropertyMap
+    public abstract class RfwsKey
     {
         public int RfmxPropertyId;
         public RmfxPropertyTypes RfmxType;
@@ -27,5 +27,6 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         /// from the XML file will be parsed directly to the type specified by <see cref="RfmxType"/>.
         /// </summary>
         public Func<string, object> CustomMap;
+
     }
 }
