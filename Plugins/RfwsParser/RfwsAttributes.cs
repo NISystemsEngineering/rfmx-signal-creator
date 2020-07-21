@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public sealed class RfwsSectionAttribute : Attribute
     {
         public string sectionName;
@@ -30,7 +30,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         AllVersions
     }
 
-    [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
     public sealed class RfwsPropertyAttribute : Attribute
     {
         public string Key { get; } 
