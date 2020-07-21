@@ -6,27 +6,31 @@ using System.Threading.Tasks;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
-    /// <summary>
-    /// Defines the types of values that the RFmx Set Property functions accept
-    /// </summary>
-    public enum RmfxPropertyTypes
+    public abstract class RfwsKey<T>
     {
-        Bool,
-        Double,
-        Int,
-        String,
-        Sbyte
-    }
-    public abstract class RfwsKey
-    {
+        private T value;
+
         public int RfmxPropertyId;
-        public RmfxPropertyTypes RfmxType;
         /// <summary>
         /// Optional; use if the string value from the RFWS file cannot be directly mapped to the RFmx value. For example,
         /// a value that must be translated to a specific RFmx enum. If this delegate is not specified (i.e. null) the value
         /// from the XML file will be parsed directly to the type specified by <see cref="RfmxType"/>.
         /// </summary>
-        public Func<string, object> CustomMap;
+        public Func<string, T> CustomMap;
 
+        public bool HasValue { get; private set; } = false;
+        public T Value
+        {
+            get
+            {
+                if (!HasValue) throw new InvalidOperationException("Value has not been set");
+                else return value;
+            }
+            set
+            {
+                this.value = value;
+                HasValue = true;
+            }
+        }
     }
 }

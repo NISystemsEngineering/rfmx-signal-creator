@@ -42,7 +42,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NrRfwsParser.cs" />
+    <Compile Include="NrRFmxMapper.cs" />
+    <Compile Include="NrRfwsKey.cs" />
+    <Compile Include="NrRfwsPlugin.cs" />
     <Compile Include="NrSignalModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

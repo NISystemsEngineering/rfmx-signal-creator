@@ -12,17 +12,115 @@ using System.Text.RegularExpressions;
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 
 {
-    public abstract class RfwsParser<T> where T : ISignalConfiguration
+
+
+    public class RfwsParser
     {
         public bool SkipVersionCheck { get; set; } = false;
 
-        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsKey key, bool value);
-        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsKey key, double value);
-        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsKey key, int value);
-        public abstract void ApplyConfiguration(T signal, string selectorString, RfwsKey key, string value);
+        public List<RfwsSection<T>> ParseSectionAndKeys<T>(RfwsSection<T> rfwsSection)
+            where T : ISignalConfiguration
+        {
+            #region Parse Keys
+            IEnumerable<(RfwsPropertyAttribute attribute, object key)> keys = RfwsParserUtilities.FetchSectionKeys(rfwsSection);
+
+            foreach ((RfwsPropertyAttribute attr, object key) in keys)
+            {
+                try
+                {
+                    string value = RfwsParserUtilities.FetchValue(rfwsSection.SectionRoot, attr.Key);
+                    Console.WriteLine($"Parsed key \"{attr.Key}\" with value {value}.");
+
+                    try
+                    {
+                        switch (key)
+                        {
+                            case RfwsKey<bool> boolKey:
+                                // If delegate is not set, then just directly parse the value
+                                if (boolKey.CustomMap == null)
+                                    boolKey.Value = bool.Parse(value);
+                                // Otherwise, invoke the delgate to manually map the value
+                                else
+                                    boolKey.Value = boolKey.CustomMap(value);
+                                break;
+                            case RfwsKey<double> doubleKey:
+                                // If delegate is not set, then just directly parse the value
+                                if (doubleKey.CustomMap == null)
+                                    doubleKey.Value = RfwsParserUtilities.SiNotationToStandard(value);
+                                // Otherwise, invoke the delgate to manually map the value
+                                else
+                                    doubleKey.Value = doubleKey.CustomMap(value);
+                                break;
+                            case RfwsKey<int> intKey:
+                                // If delegate is not set, then just directly parse the value
+                                if (intKey.CustomMap == null)
+                                    intKey.Value = int.Parse(value);
+                                // Otherwise, invoke the delgate to manually map the value
+                                else
+                                    intKey.Value = intKey.CustomMap(value);
+                                break;
+                            case RfwsKey<string> stringKey:
+                                // If delegate is not set, then just directly pass the value
+                                if (stringKey.CustomMap == null)
+                                    stringKey.Value = value;
+                                // Otherwise, invoke the delgate to manually map the value
+                                else
+                                    stringKey.Value = stringKey.CustomMap(value);
+                                break;
+                            default:
+                                throw new NotImplementedException();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new FileLoadException($"Error parsing key {attr.Key}.", ex);
+                    }
+                }
+                catch (KeyNotFoundException k)
+                {
+                    Console.Write($"Failed to parse \"{attr.Key}\".");
+                }
+
+            }
+            #endregion
+
+            var parsedSections = new List<RfwsSection<T>>();
+            parsedSections.Add(rfwsSection);
+
+            #region Parse Sub-Sections
+            var subSections = from type in rfwsSection.GetType().GetNestedTypes()
+                              where type.IsDefined(typeof(RfwsSectionAttribute))
+                              let attribute = type.GetCustomAttribute<RfwsSectionAttribute>()
+                              select (attribute, type);
+            foreach ((RfwsSectionAttribute attr, Type sectionType) in subSections)
+            {
+                IEnumerable<XElement> subSection = RfwsParserUtilities.FindSections(rfwsSection.SectionRoot, attr.sectionName, attr.regExMatch);
+                foreach (XElement matchedSection in subSection)
+                {
+                    Console.WriteLine($"Starting section {attr.sectionName}");
+                    RfwsSection<T> newSection = (RfwsSection<T>)Activator.CreateInstance(sectionType, matchedSection, rfwsSection);
+                    var parsedSubSections = ParseSectionAndKeys(newSection);
+                    parsedSections.AddRange(parsedSubSections);
+                }
+            }
+            return parsedSections;
+            #endregion
+        }
+
+
     }
     public static class RfwsParserUtilities
     {
+        public static IEnumerable<(RfwsPropertyAttribute attribute, object key)> FetchSectionKeys<T>(RfwsSection<T> section) where T : ISignalConfiguration
+        {
+            var keys = from field in section.GetType().GetFields() // Get all configured fields for the ipnut type
+                       where field.IsDefined(typeof(RfwsPropertyAttribute)) // Limit fields to those implementing appropriate property
+                       let attribute = field.GetCustomAttribute<RfwsPropertyAttribute>() // Save the custom attribute object in "attribute"
+                       where CheckMatchedVersions(section.Version, attribute)
+                       let key = field.GetValue(section) // Save the value of the static field (aka the map defined at edit time) in "mapValue"
+                       select (attribute, key); // Return the key map pair
+            return keys;
+        }
         public static IEnumerable<XElement> FindSections(XElement root, string sectionName, bool regexMatch = false)
         {
             if (regexMatch)
@@ -35,6 +133,25 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             else
             {
                 return from element in root.Descendants("section")
+                       let name = (string)element.Attribute("name")
+                       where name == sectionName
+                       select element;
+            }
+        }
+        public static IEnumerable<XElement> FindSections(XElement parentSection, Type sectionType) 
+        {
+            (string sectionName, string version, bool regexMatch) = sectionType.GetCustomAttribute<RfwsSectionAttribute>();
+
+            if (regexMatch)
+            {
+                return from element in parentSection.Descendants("section")
+                       let name = (string)element.Attribute("name")
+                       where Regex.IsMatch(name, sectionName)
+                       select element;
+            }
+            else
+            {
+                return from element in parentSection.Descendants("section")
                        let name = (string)element.Attribute("name")
                        where name == sectionName
                        select element;
@@ -62,8 +179,8 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 case RfswVersionMode.SupportedVersionsAndLater:
                     return (from supportedVersion in attribute.Versions
                             select sectionVersion >= supportedVersion)
-                            .Aggregate( (current, next) => current |= next);
-                default: 
+                            .Aggregate((current, next) => current |= next);
+                default:
                     return false;
             }
         }

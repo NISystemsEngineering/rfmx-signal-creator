@@ -14,6 +14,13 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         public bool regExMatch = false;
 
         public RfwsSectionAttribute(string sectionName) => this.sectionName = sectionName;
+
+        public void Deconstruct(out string sectionName, out string version, out bool regexMatch)
+        {
+            sectionName = this.sectionName;
+            version = this.version;
+            regexMatch = this.regExMatch;
+        }
     }
 
     public enum RfswVersionMode

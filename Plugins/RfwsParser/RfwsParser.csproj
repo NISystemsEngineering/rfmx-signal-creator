@@ -37,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RFmxMapper.cs" />
     <Compile Include="RfwsAttributes.cs" />
     <Compile Include="RfwsParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
