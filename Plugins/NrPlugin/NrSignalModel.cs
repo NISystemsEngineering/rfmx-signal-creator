@@ -388,7 +388,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsnScid,
                         RfmxType = RmfxPropertyTypes.Int,
                     };
-                    [RfwsProperty("Dmrs Release Version", 4)]
+                    [RfwsProperty("Dmrs Release Version", 6)]
                     public static NrRfwsKey ReleaseVersion = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsReleaseVersion,
@@ -452,7 +452,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 }
 
                 // Section has number in title
-                [RfwsSection(@"PUSCH Slot Settings \d+", version = "1", regExMatch = true)]
+                [RfwsSection(@"PUSCH Slot Settings \d+", version = "6", regExMatch = true)]
                 public class PuschSlotSettings : RfwsSection<RFmxNRMX>
                 {
                     public const string KeyPuschSlotIndex = "Array Index";
@@ -464,117 +464,117 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                         Signal.ComponentCarrier.SetNumberOfPuschConfigurations(SelectorString, puschIndex + 1);
                         SelectorString = RFmxNRMX.BuildPuschString(SelectorString, puschIndex);
                     }
-                    [RfwsProperty("Slot Allocation", 1)]
+                    [RfwsProperty("Slot Allocation", 4)]
                     public static NrRfwsKey RbAllocation = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschSlotAllocation,
                         RfmxType = RmfxPropertyTypes.String
                     };
-                    [RfwsProperty("Symbol Allocation", 1)]
+                    [RfwsProperty("Symbol Allocation", 4)]
                     public static NrRfwsKey SymbolAllocation = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschSymbolAllocation,
                         RfmxType = RmfxPropertyTypes.String
                     };
-                    [RfwsProperty("Modulation Type", 1)]
+                    [RfwsProperty("Modulation Type", 4)]
                     public static NrRfwsKey ModulationType = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschModulationType,
                         RfmxType = RmfxPropertyTypes.Int,
                         CustomMap = (value) => StringToEnum<RFmxNRMXPuschModulationType>(value)
                     };
-                    [RfwsProperty("PUSCH Mapping Type", 1)]
+                    [RfwsProperty("PUSCH Mapping Type", 4)]
                     public static NrRfwsKey MappingType = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschMappingType,
                         RfmxType = RmfxPropertyTypes.Int,
                         CustomMap = (value) => StringToEnum<RFmxNRMXPuschMappingType>(value)
                     };
-                    [RfwsProperty("DMRS Duration", 1)]
+                    [RfwsProperty("DMRS Duration", 4)]
                     public static NrRfwsKey DmrsDuration = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsDuration,
                         RfmxType = RmfxPropertyTypes.Int,
                         CustomMap = (value) => StringToEnum<RFmxNRMXPuschDmrsDuration>(value)
                     };
-                    [RfwsProperty("DMRS Configuration Type", 1)]
+                    [RfwsProperty("DMRS Configuration Type", 4)]
                     public static NrRfwsKey DmrsConfiguration = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsConfigurationType,
                         RfmxType = RmfxPropertyTypes.Int,
                         CustomMap = (value) => StringToEnum<RFmxNRMXPuschDmrsConfigurationType>(value)
                     };
-                    [RfwsProperty("DMRS Power Mode", 1)]
+                    [RfwsProperty("DMRS Power Mode", 4)]
                     public static NrRfwsKey DmrsPowerMode = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsPowerMode,
                         RfmxType = RmfxPropertyTypes.Int,
                         CustomMap = (value) => StringToEnum<RFmxNRMXPuschDmrsPowerMode>(value)
                     };
-                    [RfwsProperty("DMRS Scaling Factor", 1)]
+                    [RfwsProperty("DMRS Scaling Factor", 4)]
                     public static NrRfwsKey DmrsPower = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsPower,
                         RfmxType = RmfxPropertyTypes.Double,
                         CustomMap = (value) => ValueTodB(value)
                     };
-                    [RfwsProperty("DMRS Additional Positions", 1)]
+                    [RfwsProperty("DMRS Additional Positions", 4)]
                     public static NrRfwsKey AdditionalPositions = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsAdditionalPositions,
                         RfmxType = RmfxPropertyTypes.Int,
                     };
-                    [RfwsProperty("DMRS Type A Position", 1)]
+                    [RfwsProperty("DMRS Type A Position", 4)]
                     public static NrRfwsKey TypeAPosition = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsTypeAPosition,
                         RfmxType = RmfxPropertyTypes.Int,
                     };
-                    [RfwsProperty("Transform Precoding Enabled", 1)]
+                    [RfwsProperty("Transform Precoding Enabled", 4)]
                     public static NrRfwsKey TransformPreCodingEnabled = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschTransformPrecodingEnabled,
                         RfmxType = RmfxPropertyTypes.Bool,
                     };
-                    [RfwsProperty("PTRS Time Density", 1)]
+                    [RfwsProperty("PTRS Time Density", 4)]
                     public static NrRfwsKey PtrsTimeDensity = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsTimeDensity,
                         RfmxType = RmfxPropertyTypes.Int,
                     };
-                    [RfwsProperty("PTRS Frequency Density", 1)]
+                    [RfwsProperty("PTRS Frequency Density", 4)]
                     public static NrRfwsKey PtrsFrequencyDensity = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsFrequencyDensity,
                         RfmxType = RmfxPropertyTypes.Int,
                     };
-                    [RfwsProperty("UL PTRS RE Offset", 1)]
+                    [RfwsProperty("UL PTRS RE Offset", 4)]
                     public static NrRfwsKey PtrsReOffset = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsREOffset,
                         RfmxType = RmfxPropertyTypes.Int,
                     };
-                    [RfwsProperty("PTRS Enabled", 1)]
+                    [RfwsProperty("PTRS Enabled", 4)]
                     public static NrRfwsKey PtrsEnabled = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsEnabled,
                         RfmxType = RmfxPropertyTypes.Bool,
                     };
 
-                    [RfwsProperty("DMRS Scrambling ID", 1)]
+                    [RfwsProperty("DMRS Scrambling ID", 4)]
                     public static NrRfwsKey ScramblingId = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsScramblingID,
                         RfmxType = RmfxPropertyTypes.Int,
                     };
-                    [RfwsProperty("DMRS Scrambling ID Mode", 1)]
+                    [RfwsProperty("DMRS Scrambling ID Mode", 4)]
                     public static NrRfwsKey ScramblingMode = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsScramblingIDMode,
                         RfmxType = RmfxPropertyTypes.Int,
                         CustomMap = (value) => StringToEnum<RFmxNRMXPuschDmrsScramblingIDMode>(value)
                     };
-                    [RfwsProperty("Dmrs Release Version", 1)]
+                    [RfwsProperty("Dmrs Release Version", 6)]
                     public static NrRfwsKey ReleaseVersion = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsReleaseVersion,
@@ -585,46 +585,46 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                             return StringToEnum<RFmxNRMXPuschDmrsReleaseVersion>(value);
                         }
                     };
-                    [RfwsProperty("PTRS Power Mode", 1)]
+                    [RfwsProperty("PTRS Power Mode", 4)]
                     public static NrRfwsKey PtrsPowerMode = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsPowerMode,
                         RfmxType = RmfxPropertyTypes.Int,
                         CustomMap = (value) => StringToEnum<RFmxNRMXPuschPtrsPowerMode>(value)
                     };
-                    [RfwsProperty("PTRS Scaling Factor", 1)]
+                    [RfwsProperty("PTRS Scaling Factor", 4)]
                     public static NrRfwsKey PtrsPower = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsPower,
                         RfmxType = RmfxPropertyTypes.Double,
                         CustomMap = (value) => ValueTodB(value)
                     };
-                    [RfwsProperty("PUSCH ID", 1)]
+                    [RfwsProperty("PUSCH ID", 4)]
                     public static NrRfwsKey DrmsPuschId = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsPuschID,
                         RfmxType = RmfxPropertyTypes.Int,
                     };
-                    [RfwsProperty("PUSCH ID Mode", 1)]
+                    [RfwsProperty("PUSCH ID Mode", 4)]
                     public static NrRfwsKey DrmsPuschIdMode = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsPuschIDMode,
                         RfmxType = RmfxPropertyTypes.Int,
                         CustomMap = (value) => StringToEnum<RFmxNRMXPuschDmrsPuschIDMode>(value)
                     };
-                    [RfwsProperty("Number of CDM Groups", 1)]
+                    [RfwsProperty("Number of CDM Groups", 4)]
                     public static NrRfwsKey CdmGroups = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsNumberOfCdmGroups,
                         RfmxType = RmfxPropertyTypes.Int,
                     };
-                    [RfwsProperty("DMRS Ports", 1)]
+                    [RfwsProperty("DMRS Ports", 4)]
                     public static NrRfwsKey DmrsPorts = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsAntennaPorts,
                         RfmxType = RmfxPropertyTypes.String
                     };
-                    [RfwsProperty("PTRS Ports", 1)]
+                    [RfwsProperty("PTRS Ports", 4)]
                     public static NrRfwsKey PtrsPorts = new NrRfwsKey
                     {
                         RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsAntennaPorts,
