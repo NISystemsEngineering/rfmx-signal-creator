@@ -21,7 +21,8 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         Subblock,
         None
     }
-
+    
+    [WaveformFilePlugIn]
     public class NrRfwsParser : RfwsParser<RFmxNRMX>, IWaveformFilePlugin
     {
         const string XmlIdentifer = "NR Generation";

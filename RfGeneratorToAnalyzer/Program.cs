@@ -1,92 +1,69 @@
 ﻿using System;
-using System.Xml;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using System.Reflection;
 using NationalInstruments.RFmx.InstrMX;
 using System.IO;
+using CommandLine;
+using System.Linq;
+using CommandLine.Text;
+using System.Collections.Generic;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Example
 {
     class Program
     {
+        public class Options
+        {
+            [Value(0, MetaName = "test", HelpText = "Specifies a single file to parse or a folder of waveform files to parse", Required = true)]
+            public string Path { get; set; }
+            [Option('o', "outputdir", HelpText = "Alternate directry to output configuration files to; default is in the same directory.")]
+            public string OutputDirectory { get; set; }
+        }
         static void Main(string[] args)
         {
-            string path = @"C:\Users\mwhitten\Desktop\20.0 File.rfws";
-
-            var waveform = WaveformConfigFile.Load(path);
-            Plugins.NrRfwsParser nr = new Plugins.NrRfwsParser();
-
-            Console.WriteLine(nr.CanParse(waveform));
-
-            RFmxInstrMX instr = new RFmxInstrMX("", "AnalysisOnly=1");
-            nr.Parse(waveform, instr);
-
-            string savedPath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_RFmx_Config.tdms");
-
-            instr.SaveAllConfigurations(savedPath);
-
-            /*XElement root = XElement.Load(path);
-
-            var carriers = root.Descendants("section").Where(e => (string)e.Attribute("name") == "CarrierSetManager");
-            foreach (var e in carriers)
-            {
-                Console.WriteLine(e);
-            }*/
+            Parser.Default.ParseArguments<Options>(args).WithParsed(o => Execute(o));
             Console.ReadKey();
-            instr.Dispose();
+        }
+        public static void Execute(Options o)
+        {
+            WaveformPluginFactory.LoadPlugins();
+            
+            IEnumerable<string> filesToParse = new List<string>();
+
+            if (File.Exists(o.Path))
+            {
+                filesToParse = new string[1] { o.Path };
+            }
+            else if (Directory.Exists(o.Path))
+            {
+                filesToParse = Directory.EnumerateFiles(o.Path, "*.tdms")
+                    .Union(Directory.EnumerateFiles(o.Path, "*.rfws"));
+            }
+
+            foreach (string file in filesToParse)
+            {
+                var waveform = WaveformConfigFile.Load(file);
+                string fileName = Path.GetFileName(file);
+                var matchedPlugin = WaveformPluginFactory.LoadedPlugins.Where(p => p.CanParse(waveform)).FirstOrDefault();
+
+                if (matchedPlugin != null)
+                {
+                    Console.WriteLine($"Processing file \"{fileName}\" with plugin {matchedPlugin.GetType()}");
+
+                    RFmxInstrMX instr = new RFmxInstrMX(fileName, "AnalysisOnly=1");
+
+                    matchedPlugin.Parse(waveform, instr);
+
+                    if (string.IsNullOrEmpty(o.OutputDirectory))
+                        waveform.SaveConfiguration(instr);
+                    else
+                        waveform.SaveConfiguration(instr, o.OutputDirectory);
+
+                    instr.Dispose();
+                }
+                else
+                {
+                    Console.WriteLine($"No suitable plugin found for parsing file \"{fileName}\"");
+                }
+            }
         }
     }
-    /*
-    class Configuration<T>
-    {
-        public string XmlTag;
-        public int PropertyId;
-        public T Value;
-        public Action ParsingObject;
-    }
-    public class Subblock
-    {
-        [MyAttribute]
-        public static Configuration<int> numCarriers;
-    }
-    public class ComponentCarrier
-    {
-        public Configuration<double> Bandwidth = new Configuration<double>
-        {
-            XmlTag = "x"
-        };
-    }
-
-    [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
-    public class XmlConfigurationAttribute : Attribute
-    {
-        //Class Members
-    }
-
-    public class CarrierSet
-    {
-        public ComponentCarrier[] carriers;
-
-        [MyAttribute]
-        public Configuration<int> numcarriersets;
-
-        [MyAttribute]
-        public Configuration<int> ReallySlow;
-
-        public void Configure()
-        {
-            Type t = typeof(ComponentCarrier);
-            t.GetCustomAttributes<XmlConfigurationAttribute>().Select( e => e.)
-
-            Configuration<int> result = ReadNode(Subblock.numCarriers);
-            ApplyConfiugration(result);
-            carrires = new ComponentCarrier[result.Value];
-
-
-        }
-
-    }
-*/
 }
