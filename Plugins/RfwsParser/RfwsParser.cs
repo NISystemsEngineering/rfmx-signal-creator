@@ -111,6 +111,12 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
     }
     public static class RfwsParserUtilities
     {
+        /// <summary>
+        /// Fetches all keys and their associated attributes from <paramref name="section"/> using reflection.
+        /// </summary>
+        /// <typeparam name="T">Specifies the RFmx signal type used by <paramref name="section"/>.</typeparam>
+        /// <param name="section">Specifies the section from which to retrieve keys and attributes.</param>
+        /// <returns></returns>
         public static IEnumerable<(RfwsPropertyAttribute attribute, object key)> FetchSectionKeys<T>(RfwsSection<T> section) where T : ISignalConfiguration
         {
             var keys = from field in section.GetType().GetFields() // Get all configured fields for the ipnut type
