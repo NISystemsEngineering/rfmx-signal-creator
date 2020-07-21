@@ -47,64 +47,72 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 
             foreach ((RfwsPropertyAttribute attr, RfwsKey key) in keys)
             {
-                string value = RfwsParserUtilities.FetchValue(SectionRoot, attr.Key);
-                Console.Write($"Parsed key \"{attr.Key}\" with value {value}.");
                 try
                 {
-                    switch (key.RfmxType)
+                    string value = RfwsParserUtilities.FetchValue(SectionRoot, attr.Key);
+                    Console.Write($"Parsed key \"{attr.Key}\" with value {value}.");
+                    try
                     {
-                        case RmfxPropertyTypes.Bool:
-                            bool parsedBool;
-                            // If delegate is not set, then just directly parse the value
-                            if (key.CustomMap == null)
-                                parsedBool = bool.Parse(value);
-                            // Otherwise, invoke the delgate to manually map the value
-                            else
-                                parsedBool = (bool)key.CustomMap(value);
-                            Console.WriteLine($" Setting RFmx value to {parsedBool}");
-                            RfwsParser.ApplyConfiguration(Signal, SelectorString, key, parsedBool);
-                            break;
-                        case RmfxPropertyTypes.Double:
-                            double parsedDouble;
-                            // If delegate is not set, then just directly parse the value
-                            if (key.CustomMap == null)
-                                parsedDouble = RfwsParserUtilities.SiNotationToStandard(value);
-                            // Otherwise, invoke the delgate to manually map the value
-                            else
-                                parsedDouble = (double)key.CustomMap(value);
-                            Console.WriteLine($" Setting RFmx value to {parsedDouble}");
-                            RfwsParser.ApplyConfiguration(Signal, SelectorString, key, parsedDouble);
-                            break;
-                        case RmfxPropertyTypes.Int:
-                            int parsedInt;
-                            // If delegate is not set, then just directly parse the value
-                            if (key.CustomMap == null)
-                                parsedInt = int.Parse(value);
-                            // Otherwise, invoke the delgate to manually map the value
-                            else
-                                parsedInt = (int)key.CustomMap(value);
-                            Console.WriteLine($" Setting RFmx value to {parsedInt}");
-                            RfwsParser.ApplyConfiguration(Signal, SelectorString, key, parsedInt);
-                            break;
-                        case RmfxPropertyTypes.String:
-                            string parsedString;
-                            // If delegate is not set, then just directly pass the value
-                            if (key.CustomMap == null)
-                                parsedString = value;
-                            // Otherwise, invoke the delgate to manually map the value
-                            else
-                                parsedString = (string)key.CustomMap(value);
-                            Console.WriteLine($" Setting RFmx value to {parsedString}");
-                            RfwsParser.ApplyConfiguration(Signal, SelectorString, key, parsedString);
-                            break;
-                        default:
-                            throw new NotImplementedException();
+                        switch (key.RfmxType)
+                        {
+                            case RmfxPropertyTypes.Bool:
+                                bool parsedBool;
+                                // If delegate is not set, then just directly parse the value
+                                if (key.CustomMap == null)
+                                    parsedBool = bool.Parse(value);
+                                // Otherwise, invoke the delgate to manually map the value
+                                else
+                                    parsedBool = (bool)key.CustomMap(value);
+                                Console.WriteLine($" Setting RFmx value to {parsedBool}");
+                                RfwsParser.ApplyConfiguration(Signal, SelectorString, key, parsedBool);
+                                break;
+                            case RmfxPropertyTypes.Double:
+                                double parsedDouble;
+                                // If delegate is not set, then just directly parse the value
+                                if (key.CustomMap == null)
+                                    parsedDouble = RfwsParserUtilities.SiNotationToStandard(value);
+                                // Otherwise, invoke the delgate to manually map the value
+                                else
+                                    parsedDouble = (double)key.CustomMap(value);
+                                Console.WriteLine($" Setting RFmx value to {parsedDouble}");
+                                RfwsParser.ApplyConfiguration(Signal, SelectorString, key, parsedDouble);
+                                break;
+                            case RmfxPropertyTypes.Int:
+                                int parsedInt;
+                                // If delegate is not set, then just directly parse the value
+                                if (key.CustomMap == null)
+                                    parsedInt = int.Parse(value);
+                                // Otherwise, invoke the delgate to manually map the value
+                                else
+                                    parsedInt = (int)key.CustomMap(value);
+                                Console.WriteLine($" Setting RFmx value to {parsedInt}");
+                                RfwsParser.ApplyConfiguration(Signal, SelectorString, key, parsedInt);
+                                break;
+                            case RmfxPropertyTypes.String:
+                                string parsedString;
+                                // If delegate is not set, then just directly pass the value
+                                if (key.CustomMap == null)
+                                    parsedString = value;
+                                // Otherwise, invoke the delgate to manually map the value
+                                else
+                                    parsedString = (string)key.CustomMap(value);
+                                Console.WriteLine($" Setting RFmx value to {parsedString}");
+                                RfwsParser.ApplyConfiguration(Signal, SelectorString, key, parsedString);
+                                break;
+                            default:
+                                throw new NotImplementedException();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new FileLoadException($"Error parsing key {attr.Key}.", ex);
                     }
                 }
-                catch (Exception ex)
+                catch (KeyNotFoundException k)
                 {
-                    throw new FileLoadException($"Error parsing key {attr.Key}.", ex);
+                    Console.Write($"Failed to parse \"{attr.Key}\".");
                 }
+
             }
             #endregion
             #region Parse Sub-Sections

@@ -144,8 +144,8 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 
             if (string.IsNullOrEmpty(result))
                 throw new KeyNotFoundException($"Property named \"{keyName}\" not found.");
-
-            return result;
+            else
+                return result;
         }
         public static bool CheckMatchedVersions(float sectionVersion, RfwsPropertyAttribute attribute)
         {
