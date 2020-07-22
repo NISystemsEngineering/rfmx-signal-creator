@@ -174,10 +174,69 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 CustomMap = (value) => (int)StringToEnum<RFmxNRMXDownlinkTestModelDuplexScheme>(value),
                 SelectorStringType = RfmxNrSelectorStringType.None
             };
-            // Not supporting for right now
-            #region SSB Settings
+        }
 
-            #endregion
+        [RfwsSection(@"Ssb Settings", version = "4")]
+        public class SsbSettings : RfwsSection<RFmxNRMX>
+        {
+            public SsbSettings(XElement childSection, RfwsSection<RFmxNRMX> parentSection)
+                : base(childSection, parentSection) { }
+            
+            [RfwsProperty("Configuration Set", 4)]
+            public NrRfwsKey<int> SsbPattern = new NrRfwsKey<int>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.SsbPattern,
+                CustomMap = (value) =>
+                {
+                    value = value.Replace("-", string.Empty);
+                    value = value.Replace("3up", "3GHz");
+                    return (int)StringToEnum<RFmxNRMXSsbPattern>(value);
+                }
+            };
+            [RfwsProperty("SSS Scaling Factor", 4)]
+            public NrRfwsKey<double> SssPower = new NrRfwsKey<double>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.SssPower,
+                CustomMap = (value) => ValueTodB(value),
+            };
+            [RfwsProperty("PSS Scaling Factor", 4)]
+            public NrRfwsKey<double> PssPower = new NrRfwsKey<double>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.PssPower,
+                CustomMap = (value) => ValueTodB(value),
+            };
+            [RfwsProperty("PBCH Scaling Factor", 4)]
+            public NrRfwsKey<double> PbchPower = new NrRfwsKey<double>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.PbchPower,
+                CustomMap = (value) => ValueTodB(value),
+            };
+            [RfwsProperty("PBCH DMRS Scaling Factor", 4)]
+            public NrRfwsKey<double> PbchDrmsPower = new NrRfwsKey<double>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.PbchDmrsPower,
+                CustomMap = (value) => ValueTodB(value),
+            };
+            [RfwsProperty("Subcarrier Spacing Common", 4)]
+            public NrRfwsKey<double> SubcarrierSpacingCommon = new NrRfwsKey<double>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.SubcarrierSpacingCommon,
+            };
+            [RfwsProperty("Subcarrier Offset", 4)]
+            public NrRfwsKey<int> SubcarrierOffset = new NrRfwsKey<int>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.SsbSubcarrierOffset,
+            };
+            [RfwsProperty("Periodicity", 4)]
+            public NrRfwsKey<double> SsbPeriodicity = new NrRfwsKey<double>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.SsbPeriodicity,
+            };
+            [RfwsProperty("SSB Active Blocks", 4)]
+            public NrRfwsKey<string> SsbActiveBlocks = new NrRfwsKey<string>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.SsbActiveBlocks,
+            };
         }
 
         // Bandwidth Part Section has number in title
@@ -226,11 +285,11 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             {
                 RfmxPropertyId = (int)RFmxNRMXPropertyId.NumberOfUsers,
             };
-            [RfwsProperty("Coreset Count", 3)]
+            /*[RfwsProperty("Coreset Count", 3)]
             public NrRfwsKey<int> NumberOfCoreset = new NrRfwsKey<int>
             {
                 RfmxPropertyId = (int)RFmxNRMXPropertyId.NumberOfCoresets,
-            };
+            };*/// Set in Coreset section
 
             // Section has number in title
             [RfwsSection(@"UE Settings \d+", version = "1", regExMatch = true)]
@@ -557,6 +616,31 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                     };
                 }
             }
+
+            /* TO BE COMPLETED AT A LATER DATE
+            [RfwsSection(@"CORESET Settings \d+", version = "1", regExMatch = true)]
+            public class CoresetSettings : RfwsSection<RFmxNRMX>
+            {
+                public const string KeyCoresetIndex = "Coreset Index";
+
+                public CoresetSettings(XElement childSection, RfwsSection<RFmxNRMX> parentSection)
+                    : base(childSection, parentSection)
+                {
+                    int coreSetIndex = int.Parse(FetchValue(SectionRoot, KeyCoresetIndex));
+                    Signal.ComponentCarrier.SetNumberOfCoresets(SelectorString, coreSetIndex + 1);
+                    SelectorString = RFmxNRMX.BuildCoresetString(SelectorString, coreSetIndex);
+                }
+                [RfwsProperty("Coreset Num Symbols", 1)]
+                public NrRfwsKey<int> NumberOfCoreset = new NrRfwsKey<int>
+                {
+                    RfmxPropertyId = (int)RFmxNRMXPropertyId.CoresetNumberOfSymbols,
+                };
+                [RfwsProperty("Coreset Num Symbols", 1)]
+                public NrRfwsKey<int> NumberOfCoreset = new NrRfwsKey<int>
+                {
+                    RfmxPropertyId = (int)RFmxNRMXPropertyId.Coreset,
+                };
+            }*/
         }
     }
 
