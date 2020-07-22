@@ -3,31 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
+using Serilog;
 
 namespace NationalInstruments.Utilities.WaveformParsing
 {
     // Adapted from https://www.c-sharpcorner.com/article/introduction-to-building-a-plug-in-architecture-using-C-Sharp/
     public static class WaveformPluginFactory
     {
-        private static List<IWaveformFilePlugin> plugins;
-        public static List<IWaveformFilePlugin> LoadedPlugins
-        {
-            get
-            {
-                if (plugins == null)
-                {
-                    LoadPlugins();
-                }
-                return plugins;
-            }
-        }
+        public static List<IWaveformFilePlugin> LoadedPlugins { get; private set; }
 
         private static List<Assembly> LoadPlugInAssemblies()
         {
-            DirectoryInfo dInfo = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "Plugins"));
+            string pluginPath = Path.Combine(Environment.CurrentDirectory, "Plugins");
+            Log.Verbose($"Loading plugins from path {pluginPath}");
+
+            DirectoryInfo dInfo = new DirectoryInfo(pluginPath);
             FileInfo[] files = dInfo.GetFiles("*.dll");
             List<Assembly> plugInAssemblyList = new List<Assembly>();
 
@@ -36,11 +26,11 @@ namespace NationalInstruments.Utilities.WaveformParsing
                 foreach (FileInfo file in files)
                 {
                     plugInAssemblyList.Add(Assembly.LoadFrom(file.FullName));
+                    Log.Verbose("Loaded file {file}", file.FullName);
                 }
             }
 
             return plugInAssemblyList;
-
         }
 
         private static List<IWaveformFilePlugin> GetPlugins(List<Assembly> assemblies)
@@ -59,41 +49,46 @@ namespace NationalInstruments.Utilities.WaveformParsing
                 }
                 catch (ReflectionTypeLoadException typeException)
                 {
-                    Console.WriteLine(typeException.Message);
+                    Log.Error("Error loading plugin {PluginName} with exceptions {LoaderExceptions}", currentAssembly.FullName,
+                        typeException.LoaderExceptions);
                 }
             }
-                
 
-            var result = from type in availableTypes
-                   where type.GetInterface(nameof(IWaveformFilePlugin)) != null
-                   //where type.IsDefined(typeof(WaveformFilePlugInAttribute))
-                   let plugin = (IWaveformFilePlugin) Activator.CreateInstance(type)
-                   select plugin;
+            // Filter the loaded assemblies by those implementing the plugin interface
+            var filteredTypes = from type in availableTypes
+                                where type.GetInterface(nameof(IWaveformFilePlugin)) != null
+                                //where type.IsDefined(typeof(WaveformFilePlugInAttribute))
+                                select type;
 
-            return result.ToList();
-            /*
-            // get a list of objects that implement the ICalculator interface AND 
-            // have the CalculationPlugInAttribute
+            List<IWaveformFilePlugin> loadedPlugins = new List<IWaveformFilePlugin>();
 
+            foreach (Type t in filteredTypes)
+            {
+                try
+                {
+                    IWaveformFilePlugin plugin = (IWaveformFilePlugin)Activator.CreateInstance(t);
+                    loadedPlugins.Add(plugin);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error creating plugin {PluginName}", t.Name);
+                }
 
-            List < Type > calculatorList = availableTypes.FindAll(delegate (Type t)
-               {
-                   List<Type> interfaceTypes = new List<Type>(t.GetInterfaces());
-                   object[] arr = t.GetCustomAttributes(typeof(CalculationPlugInAttribute), true);
-                   return !(arr == null || arr.Length == 0) && interfaceTypes.Contains(typeof(ICalculator));
-               });
+            }
 
-            // convert the list of Objects to an instantiated list of ICalculators
-            return calculatorList.ConvertAll<ICalculator>(delegate (Type t) { return Activator.CreateInstance(t) as ICalculator; });
-            */
+            return loadedPlugins;
         }
 
         public static void LoadPlugins()
         {
             List<Assembly> assemblies = LoadPlugInAssemblies();
-            plugins = GetPlugins(assemblies);
+            LoadedPlugins = GetPlugins(assemblies);
 
-            if (plugins.Count() <= 0) throw new DllNotFoundException("No matching waveform plugins were found.");
+            if (LoadedPlugins.Count <= 0) throw new DllNotFoundException("No matching waveform plugins were found.");
+            else
+            {
+                Log.Debug("Loaded plugins {plugins}", LoadedPlugins);
+            }
         }
     }
 }

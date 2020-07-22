@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using NationalInstruments.RFmx.InstrMX;
+using Serilog;
 
 namespace NationalInstruments.Utilities.WaveformParsing
 {
@@ -62,6 +63,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
             string newPath = Path.Combine(outputDirectory, newFileName);
 
             instr.SaveAllConfigurations(newPath);
+            Log.Information("Configuration saved to {path}", newPath);
         }
     }
 }

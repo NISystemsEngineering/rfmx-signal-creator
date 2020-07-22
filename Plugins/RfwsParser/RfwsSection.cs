@@ -20,7 +20,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         public XElement SectionRoot { get; protected set; }
         public XElement DocumentRoot { get; protected set; }
 
-        public float Version { get => float.Parse(SectionRoot.Attribute(KeyVersion).Value); }
+        public float Version { get; }
 
         public RfwsSection(XElement documentRoot, XElement section, T signal, string selectorString)
         {
@@ -28,6 +28,8 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             SelectorString = selectorString;
             SectionRoot = section;
             DocumentRoot = documentRoot;
+
+            Version = float.Parse(SectionRoot.Attribute(KeyVersion).Value);
         }
         public RfwsSection(XElement childSection, RfwsSection<T> parentSection)
         {
@@ -35,6 +37,8 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             SelectorString = parentSection.SelectorString;
             SectionRoot = childSection;
             DocumentRoot = parentSection.DocumentRoot;
+
+            Version = float.Parse(SectionRoot.Attribute(KeyVersion).Value);
         }
 
         public void Deconstruct(out T signal, out string selectorString)

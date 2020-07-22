@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
 using NationalInstruments.RFmx.InstrMX;
 using System.Text.RegularExpressions;
+using Serilog;
+using Serilog.Context;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 
@@ -26,59 +26,67 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 
             foreach ((RfwsPropertyAttribute attr, object key) in keys)
             {
-                try
+                if (RfwsParserUtilities.CheckMatchedVersions(rfwsSection.Version, attr))
                 {
-                    string value = RfwsParserUtilities.FetchValue(rfwsSection.SectionRoot, attr.Key);
-                    Console.WriteLine($"Parsed key \"{attr.Key}\" with value {value}.");
-
                     try
                     {
-                        switch (key)
+                        string value = RfwsParserUtilities.FetchValue(rfwsSection.SectionRoot, attr.Key);
+                        Log.Verbose("Parsed key {key} with value {value}", attr.Key, value);
+                        //Console.WriteLine($"Parsed key \"{attr.Key}\" with value {value}.");
+
+                        try
                         {
-                            case RfwsKey<bool> boolKey:
-                                // If delegate is not set, then just directly parse the value
-                                if (boolKey.CustomMap == null)
-                                    boolKey.Value = bool.Parse(value);
-                                // Otherwise, invoke the delgate to manually map the value
-                                else
-                                    boolKey.Value = boolKey.CustomMap(value);
-                                break;
-                            case RfwsKey<double> doubleKey:
-                                // If delegate is not set, then just directly parse the value
-                                if (doubleKey.CustomMap == null)
-                                    doubleKey.Value = RfwsParserUtilities.SiNotationToStandard(value);
-                                // Otherwise, invoke the delgate to manually map the value
-                                else
-                                    doubleKey.Value = doubleKey.CustomMap(value);
-                                break;
-                            case RfwsKey<int> intKey:
-                                // If delegate is not set, then just directly parse the value
-                                if (intKey.CustomMap == null)
-                                    intKey.Value = int.Parse(value);
-                                // Otherwise, invoke the delgate to manually map the value
-                                else
-                                    intKey.Value = intKey.CustomMap(value);
-                                break;
-                            case RfwsKey<string> stringKey:
-                                // If delegate is not set, then just directly pass the value
-                                if (stringKey.CustomMap == null)
-                                    stringKey.Value = value;
-                                // Otherwise, invoke the delgate to manually map the value
-                                else
-                                    stringKey.Value = stringKey.CustomMap(value);
-                                break;
-                            default:
-                                throw new NotImplementedException();
+                            switch (key)
+                            {
+                                case RfwsKey<bool> boolKey:
+                                    // If delegate is not set, then just directly parse the value
+                                    if (boolKey.CustomMap == null)
+                                        boolKey.Value = bool.Parse(value);
+                                    // Otherwise, invoke the delgate to manually map the value
+                                    else
+                                        boolKey.Value = boolKey.CustomMap(value);
+                                    break;
+                                case RfwsKey<double> doubleKey:
+                                    // If delegate is not set, then just directly parse the value
+                                    if (doubleKey.CustomMap == null)
+                                        doubleKey.Value = RfwsParserUtilities.SiNotationToStandard(value);
+                                    // Otherwise, invoke the delgate to manually map the value
+                                    else
+                                        doubleKey.Value = doubleKey.CustomMap(value);
+                                    break;
+                                case RfwsKey<int> intKey:
+                                    // If delegate is not set, then just directly parse the value
+                                    if (intKey.CustomMap == null)
+                                        intKey.Value = int.Parse(value);
+                                    // Otherwise, invoke the delgate to manually map the value
+                                    else
+                                        intKey.Value = intKey.CustomMap(value);
+                                    break;
+                                case RfwsKey<string> stringKey:
+                                    // If delegate is not set, then just directly pass the value
+                                    if (stringKey.CustomMap == null)
+                                        stringKey.Value = value;
+                                    // Otherwise, invoke the delgate to manually map the value
+                                    else
+                                        stringKey.Value = stringKey.CustomMap(value);
+                                    break;
+                                default:
+                                    throw new NotImplementedException();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Error parsing key {Key}.", attr.Key);
                         }
                     }
-                    catch (Exception ex)
+                    catch (KeyNotFoundException k)
                     {
-                        throw new FileLoadException($"Error parsing key {attr.Key}.", ex);
+                        Log.Warning("No match was found for key {KeyName} for version(s) {Versions}", attr.Key, attr.Versions);
                     }
                 }
-                catch (KeyNotFoundException k)
+                else
                 {
-                    Console.Write($"Failed to parse \"{attr.Key}\".");
+                    Log.Warning("No match was found for key {KeyName} for version(s) {Versions}", attr.Key, attr.Versions);
                 }
 
             }
@@ -97,10 +105,20 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 IEnumerable<XElement> subSection = RfwsParserUtilities.FindSections(rfwsSection.SectionRoot, attr.sectionName, attr.regExMatch);
                 foreach (XElement matchedSection in subSection)
                 {
-                    Console.WriteLine($"Starting section {attr.sectionName}");
-                    RfwsSection<T> newSection = (RfwsSection<T>)Activator.CreateInstance(sectionType, matchedSection, rfwsSection);
-                    var parsedSubSections = ParseSectionAndKeys(newSection);
-                    parsedSections.AddRange(parsedSubSections);
+                    using (LogContext.PushProperty("Section", attr.sectionName))
+                    {
+                        try
+                        {
+                            RfwsSection<T> newSection = (RfwsSection<T>)Activator.CreateInstance(sectionType, matchedSection, rfwsSection);
+                            var parsedSubSections = ParseSectionAndKeys(newSection);
+                            parsedSections.AddRange(parsedSubSections);
+                        }
+                        catch (MissingMethodException ex)
+                        {
+                            Log.Error("Unable to parse section {SectionName} due to plugin error; see log for details", attr.sectionName);
+                            Log.Debug(ex, "Section has invalid constructor; expected \"XElement childSection, RfwsSection<T> parentSection\"");
+                        }
+                    }
                 }
             }
             return parsedSections;
@@ -122,7 +140,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             var keys = from field in section.GetType().GetFields() // Get all configured fields for the ipnut type
                        where field.IsDefined(typeof(RfwsPropertyAttribute)) // Limit fields to those implementing appropriate property
                        let attribute = field.GetCustomAttribute<RfwsPropertyAttribute>() // Save the custom attribute object in "attribute"
-                       where CheckMatchedVersions(section.Version, attribute)
+                       //where CheckMatchedVersions(section.Version, attribute)
                        let key = field.GetValue(section) // Save the value of the static field (aka the map defined at edit time) in "mapValue"
                        select (attribute, key); // Return the key map pair
             return keys;
@@ -144,7 +162,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                        select element;
             }
         }
-        public static IEnumerable<XElement> FindSections(XElement parentSection, Type sectionType) 
+        public static IEnumerable<XElement> FindSections(XElement parentSection, Type sectionType)
         {
             (string sectionName, string version, bool regexMatch) = sectionType.GetCustomAttribute<RfwsSectionAttribute>();
 

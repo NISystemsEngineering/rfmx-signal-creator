@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NationalInstruments.RFmx.InstrMX;
 using NationalInstruments.RFmx.NRMX;
-using System.Xml;
 using System.Xml.Linq;
-using System.IO;
-using System.Reflection;
-using System.Text.RegularExpressions;
+using Serilog;
+using Serilog.Context;
+
 using static NationalInstruments.Utilities.WaveformParsing.Plugins.RfwsParserUtilities;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
@@ -23,6 +20,8 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 
         string filePath;
         XElement rootData;
+
+        public string[] SupportedRFmxVersions => new string[] { "19.1", "20.0" };
 
         public bool CanParse(WaveformConfigFile file)
         {
@@ -51,40 +50,40 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 
                 signal.SelectMeasurements("", RFmxNRMXMeasurementTypes.Acp | RFmxNRMXMeasurementTypes.ModAcc, true);
 
-                Console.WriteLine("/******************************************/");
-                Console.WriteLine($"Configuring carrier set {carrierSetIndex}");
-                Console.WriteLine("/******************************************/");
-
-                RfwsParser parser = new RfwsParser();
-                NrRFmxMapper nrMapper = new NrRFmxMapper();
-
-                CarrierSet carrierSet = new CarrierSet(rootData, carrierSetSection, signal, "");
-                var carrierSets = parser.ParseSectionAndKeys(carrierSet);
-
-                var carrierConfigurations = new List<RfwsSection<RFmxNRMX>>();
-
-                int i = 0;
-                foreach (XElement carrierDefinitionSetion in FindSections(rootData, typeof(Carrier)))
+                using (LogContext.PushProperty("CarrierSet", carrierSetIndex))
                 {
-                    var matchingSections = carrierSets.Where(p => p is CarrierSet.Subblock sub && sub.CarrierDefinitionIndex == i);
-                    foreach(var matchedSection in matchingSections)
+                    RfwsParser parser = new RfwsParser();
+                    NrRFmxMapper nrMapper = new NrRFmxMapper();
+
+                    CarrierSet carrierSet = new CarrierSet(rootData, carrierSetSection, signal, "");
+                    var carrierSets = parser.ParseSectionAndKeys(carrierSet);
+
+                    var carrierConfigurations = new List<RfwsSection<RFmxNRMX>>();
+
+                    int i = 0;
+                    foreach (XElement carrierDefinitionSetion in FindSections(rootData, typeof(Carrier)))
                     {
-                        Console.WriteLine($"Configuring {matchedSection.SelectorString}");
-                        Carrier c = new Carrier(carrierDefinitionSetion, matchedSection);
-                        carrierConfigurations.AddRange(parser.ParseSectionAndKeys(c));
+                        var matchingSections = carrierSets.Where(p => p is CarrierSet.Subblock sub && sub.CarrierDefinitionIndex == i);
+                        foreach (var matchedSection in matchingSections)
+                        {
+                            using (LogContext.PushProperty("Carrier", matchedSection.SelectorString))
+                            {
+                                //Console.WriteLine($"Configuring {matchedSection.SelectorString}");
+                                Carrier c = new Carrier(carrierDefinitionSetion, matchedSection);
+                                carrierConfigurations.AddRange(parser.ParseSectionAndKeys(c));
+                            }
+                        }
+                        i++;
                     }
-                    i++;
+
+                    var allParsedSections = new List<RfwsSection<RFmxNRMX>>(carrierSets.Union(carrierConfigurations));
+
+
+                    foreach (var section in allParsedSections)
+                    {
+                        nrMapper.MapSection(section);
+                    }
                 }
-
-                var allParsedSections = new List<RfwsSection<RFmxNRMX>>(carrierSets.Union(carrierConfigurations));
-
-
-                foreach (var section in allParsedSections)
-                {
-                    nrMapper.MapSection(section);
-                }
-
-                Console.WriteLine("/******************************************/");
             }
         }
     }

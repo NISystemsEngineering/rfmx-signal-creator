@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using NationalInstruments.RFmx.NRMX;
+using Serilog;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
@@ -10,7 +11,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         {
             (RFmxNRMX signal, string selectorString) = section;
             string overridenSelectorString = OverrideSelectorString(key, selectorString);
-            LogToConsole(key, overridenSelectorString);
+            LogKey(key, overridenSelectorString);
             signal.SetAttributeBool(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
@@ -18,7 +19,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         {
             (RFmxNRMX signal, string selectorString) = section;
             string overridenSelectorString = OverrideSelectorString(key, selectorString);
-            LogToConsole(key, overridenSelectorString);
+            LogKey(key, overridenSelectorString);
 
             signal.SetAttributeDouble(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
@@ -27,7 +28,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         {
             (RFmxNRMX signal, string selectorString) = section;
             string overridenSelectorString = OverrideSelectorString(key, selectorString);
-            LogToConsole(key, overridenSelectorString);
+            LogKey(key, overridenSelectorString);
             signal.SetAttributeInt(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
@@ -35,15 +36,16 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         {
             (RFmxNRMX signal, string selectorString) = section;
             string overridenSelectorString = OverrideSelectorString(key, selectorString);
-            LogToConsole(key, overridenSelectorString);
+            LogKey(key, overridenSelectorString);
             signal.SetAttributeString(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
-        static void LogToConsole<T>(RfwsKey<T> key, string selectorString)
+        static void LogKey<T>(RfwsKey<T> key, string selectorString)
         {
             RFmxNRMXPropertyId id = (RFmxNRMXPropertyId)key.RfmxPropertyId;
             if (string.IsNullOrEmpty(selectorString)) selectorString = "<signal>";
-            Console.WriteLine($"Setting attribute of type {typeof(T)} to ID {id} for {selectorString} with value of {key.Value}");
+            Log.Verbose("Set property {RfmxPropertyID} of type {PropretyType} for {SelectorString} with value {Value}",
+                id, typeof(T), selectorString, key.Value);
         }
 
         protected static string OverrideSelectorString<T>(RfwsKey<T> key, string selectorString)

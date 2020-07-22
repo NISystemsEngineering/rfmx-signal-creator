@@ -75,14 +75,14 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         }
 
         /// <param name="keyName">Specifies the value of the "name" attribute of the key element.</param>
-        /// <param name="version">Specifies a single version that this attribute supports.</param>
+        /// <param name="minimumVersion">Specifies a single version that this attribute supports.</param>
         /// <param name="versionMode">Optional; with a single version set, it is assumed that this version and later should be supported.<para></para>;
         /// Specifies how the version numbers specified in <see cref="Versions"/> should be interpreted when attempting to match
         /// a class with an RFWS key.</param>
-        public RfwsPropertyAttribute(string keyName, float version, RfswVersionMode versionMode = RfswVersionMode.SupportedVersionsAndLater)
+        public RfwsPropertyAttribute(string keyName, float minimumVersion, RfswVersionMode versionMode = RfswVersionMode.SupportedVersionsAndLater)
         {
             Key = keyName;
-            Versions = new float[1] { version };
+            Versions = new float[1] { minimumVersion };
             VersionMode = versionMode;
         }
         /// <param name="keyName">Specifies the value of the "name" attribute of the key element.</param>
