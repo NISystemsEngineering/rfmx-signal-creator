@@ -22,66 +22,81 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         XElement rootData;
 
         public string[] SupportedRFmxVersions => new string[] { "19.1", "20.0" };
-
         public bool CanParse(WaveformConfigFile file)
         {
-            filePath = file.FilePath;
+            using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
+            {
+                // No point in continuing if it is a TDMS file
+                if (file is TdmsFile)
+                {
+                    Log.Verbose("CanParse returning false because file is a TDMS file.");
+                    return false;
+                }
 
-            try
-            {
-                rootData = XElement.Load(filePath);
-                var result = rootData.Descendants("section")
-                    .Where(e => (string)e.Attribute("name") == XmlIdentifer && (int)e.Attribute("version") == XmlNrVersion)
-                    .First();
-                return result != null;
-            }
-            catch
-            {
-                return false;
+                filePath = file.FilePath;
+
+                try
+                {
+                    rootData = XElement.Load(filePath);
+                    var result = rootData.Descendants("section")
+                        .Where(e => (string)e.Attribute("name") == XmlIdentifer && (int)e.Attribute("version") == XmlNrVersion)
+                        .First();
+                    bool parseable = result != null;
+                    Log.Verbose("CanParse returning {Result} indicating that tag {XmlIdentifer} with version {Version} was or was not found",
+                                    parseable, XmlIdentifer, XmlNrVersion);
+                    return parseable;
+                }
+                catch (Exception ex)
+                {
+                    Log.Verbose(ex, "CanParse returning false because an exception occurred loading the file.");
+                    return false;
+                }
             }
         }
 
-        public void Parse(WaveformConfigFile file, RFmxInstrMX instr)
         {
-            int carrierSetIndex = 0;
-            foreach (XElement carrierSetSection in FindSections(rootData, typeof(CarrierSet)))
+            using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
             {
-                RFmxNRMX signal = instr.GetNRSignalConfiguration($"CarrierSet{carrierSetIndex}");
-
-                signal.SelectMeasurements("", RFmxNRMXMeasurementTypes.Acp | RFmxNRMXMeasurementTypes.ModAcc, true);
-
-                using (LogContext.PushProperty("CarrierSet", carrierSetIndex))
+                int carrierSetIndex = 0;
+                foreach (XElement carrierSetSection in FindSections(rootData, typeof(CarrierSet)))
                 {
-                    RfwsParser parser = new RfwsParser();
-                    NrRFmxMapper nrMapper = new NrRFmxMapper();
+                    RFmxNRMX signal = instr.GetNRSignalConfiguration($"CarrierSet{carrierSetIndex}");
 
-                    CarrierSet carrierSet = new CarrierSet(rootData, carrierSetSection, signal, "");
-                    var carrierSets = parser.ParseSectionAndKeys(carrierSet);
+                    signal.SelectMeasurements("", RFmxNRMXMeasurementTypes.Acp | RFmxNRMXMeasurementTypes.ModAcc, true);
 
-                    var carrierConfigurations = new List<RfwsSection<RFmxNRMX>>();
-
-                    int i = 0;
-                    foreach (XElement carrierDefinitionSetion in FindSections(rootData, typeof(Carrier)))
+                    using (LogContext.PushProperty("CarrierSet", carrierSetIndex))
                     {
-                        var matchingSections = carrierSets.Where(p => p is CarrierSet.Subblock sub && sub.CarrierDefinitionIndex == i);
-                        foreach (var matchedSection in matchingSections)
+                        RfwsParser parser = new RfwsParser();
+                        NrRFmxMapper nrMapper = new NrRFmxMapper();
+
+                        CarrierSet carrierSet = new CarrierSet(rootData, carrierSetSection, signal, "");
+                        var carrierSets = parser.ParseSectionAndKeys(carrierSet);
+
+                        var carrierConfigurations = new List<RfwsSection<RFmxNRMX>>();
+
+                        int i = 0;
+                        foreach (XElement carrierDefinitionSetion in FindSections(rootData, typeof(Carrier)))
                         {
-                            using (LogContext.PushProperty("Carrier", matchedSection.SelectorString))
+                            var matchingSections = carrierSets.Where(p => p is CarrierSet.Subblock sub && sub.CarrierDefinitionIndex == i);
+                            foreach (var matchedSection in matchingSections)
                             {
-                                //Console.WriteLine($"Configuring {matchedSection.SelectorString}");
-                                Carrier c = new Carrier(carrierDefinitionSetion, matchedSection);
-                                carrierConfigurations.AddRange(parser.ParseSectionAndKeys(c));
+                                using (LogContext.PushProperty("Carrier", matchedSection.SelectorString))
+                                {
+                                    //Console.WriteLine($"Configuring {matchedSection.SelectorString}");
+                                    Carrier c = new Carrier(carrierDefinitionSetion, matchedSection);
+                                    carrierConfigurations.AddRange(parser.ParseSectionAndKeys(c));
+                                }
                             }
+                            i++;
                         }
-                        i++;
-                    }
 
-                    var allParsedSections = new List<RfwsSection<RFmxNRMX>>(carrierSets.Union(carrierConfigurations));
+                        var allParsedSections = new List<RfwsSection<RFmxNRMX>>(carrierSets.Union(carrierConfigurations));
 
 
-                    foreach (var section in allParsedSections)
-                    {
-                        nrMapper.MapSection(section);
+                        foreach (var section in allParsedSections)
+                        {
+                            nrMapper.MapSection(section);
+                        }
                     }
                 }
             }
