@@ -81,12 +81,13 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                     }
                     catch (KeyNotFoundException k)
                     {
-                        Log.Warning("No match was found for key {KeyName} for version(s) {Versions}", attr.Key, attr.Versions);
+                        Log.Warning("Expected to find key {KeyName} but it was not found", attr.Key);
                     }
                 }
                 else
                 {
-                    Log.Warning("No match was found for key {KeyName} for version(s) {Versions}", attr.Key, attr.Versions);
+                    Log.Debug("{KeyName} supporting version(s) {Versions} did not match section version {SectionVersion}", 
+                        attr.Key, attr.Versions, rfwsSection.Version);
                 }
 
             }
