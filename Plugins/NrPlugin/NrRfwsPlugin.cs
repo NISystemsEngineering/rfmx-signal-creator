@@ -12,7 +12,7 @@ using static NationalInstruments.Utilities.WaveformParsing.Plugins.RfwsParserUti
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
 
-    [WaveformFilePlugIn]
+    [WaveformFilePlugIn("Plugin for parsing 5G NR .rfws files.", "19.1", "20")]
     public class NrRfwsPlugin : IWaveformFilePlugin
     {
         const string XmlIdentifer = "NR Generation";
@@ -21,8 +21,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         string filePath;
         XElement rootData;
 
-        public string[] SupportedRFmxVersions => new string[] { "19.1", "20.0" };
-        public bool CanParse(WaveformConfigFile file)
+        public bool CanParse(WaveformConfigFileType file)
         {
             using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
             {
@@ -54,6 +53,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             }
         }
 
+        public void Parse(WaveformConfigFileType file, RFmxInstrMX instr)
         {
             using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
             {

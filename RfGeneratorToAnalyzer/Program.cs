@@ -4,17 +4,16 @@ using System.IO;
 using CommandLine;
 using CommandLine.Text;
 using System.Linq;
-using CommandLine.Text;
 using System.Collections.Generic;
 using Serilog;
 using Serilog.Events;
-using Serilog.Context;
 using NationalInstruments.Utilities.WaveformParsing;
 
-namespace NationalzInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.WaveformParsing
 {
     class Program
     {
+        #region Command Line Options Configuraiton
         public class Options
         {
             [Value(0, MetaName = "<Path>", MetaValue = @"C:\pathToFile", HelpText = "Specifies a single file to parse or a folder of waveform files to parse", Required = true)]
@@ -33,31 +32,23 @@ namespace NationalzInstruments.Utilities.WaveformParsing
                     new Example("Process a single waveform configuration", new Options { Path = @"C:\waveform.rfws" }),
                     new Example("Process a directory containing multiple waveform configurations", 
                         new Options { Path = @"C:\waveform.rfws", OutputDirectory = @"C:\Exported Configurations" }),
+                            CenterFrequency = 28.0e9 }),
+                    new Example("Process a directory with verbose logging to the console",
+                        new UnParserSettings {PreferShortName = true, GroupSwitches = true },
+                        new Options {OutputDirectory = @"C:\Exported Configurations", LogToConsole = true, Verbose = true })
                 };
+        }
+        #endregion
             static void Main(string[] args)
             {
+            // Parse command line arguments and hand them over to Execute
                 Parser.Default.ParseArguments<Options>(args).WithParsed(o => Execute(o));
-                /*
-                var parser = new Parser(settings => settings.HelpWriter = null);
-                var parserResult = parser.ParseArguments<Options>(args);
-                var helpText = HelpText.AutoBuild(parserResult, h =>
-                {
-                    //configure HelpText
-                    h.AddPreOptionsLine("This is a test!!"); //remove newline between options
-                    h.Heading = "Myapp 2.0.0-beta"; //change header
-                    h.Copyright = "Copyright (c) 2019 Global.com"; //change copyright text
-                                                                   // more options ...
-                    return h;
-                }, e => e);
-
-                parserResult.WithParsed(o => Execute(o));
-                parserResult.WithNotParsed(errs => Console.WriteLine(helpText));*/
-            }
         }
         public static void Execute(Options o)
         {
             #region Logger Configuration
-            string logOutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{Properties:j}{NewLine}{Exception}";
+            string logOutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}" +
+                                       "                    {Properties:j}{NewLine}{Exception}";
 
             LogEventLevel fileLogLevel = LogEventLevel.Debug;
             if (o.Verbose)
@@ -77,24 +68,43 @@ namespace NationalzInstruments.Utilities.WaveformParsing
                 .WriteTo.File("Log.txt", outputTemplate: logOutputTemplate, restrictedToMinimumLevel: fileLogLevel)
                 .WriteTo.Logger(lc => lc
                     .WriteTo.Console(consoleLogLevel))
-                   //.Filter.ByIncludingOnly( e => e.Level == LogEventLevel.Information || e.Level == LogEventLevel.Fatal)
                 .CreateLogger();
 
-            Log.Verbose("--------------------------------------------------------");
-            Log.Verbose("Beginning new execution");
+            Log.Debug("--------------------------------------------------------");
+            Log.Debug("Beginning new execution");
             #endregion
+
+            #region Plugin Loading
+            // Load plugins first before loading any files
             try
             {
                 WaveformPluginFactory.LoadPlugins();
             }
-            catch (Exception ex)
+            catch (DllNotFoundException)
             {
-                Log.Fatal(ex, "Plugin load failed; see log for more details. Exiting...");
+                Log.Fatal("No assemblies were found in the local plugins directory. Ensure that one or more valid plugin are " +
+                    "located in the plugins directory ({FullPluginDirectory})", WaveformPluginFactory.FullPluginDirectoryPath);
                 return;
             }
+            catch (MissingMemberException)
+            {
+                Log.Fatal("No supported plugins were found in the local plugin directory, or none could be loaded successfully. " +
+                    "Ensure that one or more valid plugin are located in the plugins directory ({FullPluginDirectory})", 
+                    WaveformPluginFactory.FullPluginDirectoryPath);
+                return;
+            }
+            catch (Exception ex)
+            {
+                // Any other exception is still likely a fatal exception
+                Log.Fatal(ex, "Unhandled exception occured during plugin load; see log for more details. Exiting...");
+                return;
+            }
+            #endregion
 
+            #region File Parsing
             IEnumerable<string> filesToParse = new List<string>();
 
+            // Determine if we have a file or folder path specified from the command line
             if (File.Exists(o.Path))
             {
                 filesToParse = new string[1] { o.Path };
@@ -107,12 +117,14 @@ namespace NationalzInstruments.Utilities.WaveformParsing
 
             foreach (string file in filesToParse)
             {
-                var waveform = WaveformConfigFile.Load(file);
+                var waveform = WaveformConfigFileType.Load(file);
                 string fileName = Path.GetFileName(file);
 
+                // Check all loaded plugins to see if any can parse this file
                 IWaveformFilePlugin matchedPlugin;
                 try
                 {
+                    Log.Verbose("Checking for compatible plugins for {File}", fileName);
                     matchedPlugin = WaveformPluginFactory.LoadedPlugins.Where(p => p.CanParse(waveform)).FirstOrDefault();
                 }
                 catch (Exception ex)
@@ -123,26 +135,43 @@ namespace NationalzInstruments.Utilities.WaveformParsing
 
                 if (matchedPlugin != null)
                 {
-                    Log.Information("Processing file {File} using {Plugin} supporting RFmx version(s) {Versions}",
-                        fileName, matchedPlugin.GetType().Name, matchedPlugin.SupportedRFmxVersions);
+                    Log.Information("Processing file {File} using {Plugin}", fileName, matchedPlugin.GetType().Name);
 
                     RFmxInstrMX instr = new RFmxInstrMX(fileName, "AnalysisOnly=1");
-                    matchedPlugin.Parse(waveform, instr);
 
+                    try
+                    {
+                    matchedPlugin.Parse(waveform, instr);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Unhandled parsing exception plugin in {Plugin}", matchedPlugin.GetType().Name);
+                        break;
+                    }
+
+                    try
+                    {
                     if (string.IsNullOrEmpty(o.OutputDirectory))
                         waveform.SaveConfiguration(instr);
                     else
                         waveform.SaveConfiguration(instr, o.OutputDirectory);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error saving configuration file");
+                    }
 
                     instr.Dispose();
                 }
                 else
                 {
-                    Log.Debug("Skipping {file}; no installed plugin is compatible with this file.", fileName);
+                    Log.Warning("Skipping {file}; no installed plugin is compatible with this file.", fileName);
                 }
             }
+            Log.Debug("Execution complete");
+            Log.Debug("--------------------------------------------------------");
             Log.CloseAndFlush();
         }
-
+        #endregion
     }
 }

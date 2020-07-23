@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WaveformPluginFactory.cs" />
-    <Compile Include="WaveformConfigFile.cs" />
+    <Compile Include="WaveformConfigFileType.cs" />
     <Compile Include="IWaveformFilePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
