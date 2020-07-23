@@ -90,7 +90,15 @@ namespace NationalInstruments.Utilities.WaveformParsing
 
             string newFileName = RFmxFilePrefix + Path.GetFileNameWithoutExtension(FilePath) + ".tdms";
 
-            string newPath = Path.Combine(outputDirectory, newFileName);
+            string absoluteDirectoryPath = Path.GetFullPath(outputDirectory);
+            if (!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(absoluteDirectoryPath);
+                Log.Debug("Created directory {Path}", absoluteDirectoryPath);
+            }
+
+            string newPath = Path.Combine(absoluteDirectoryPath, newFileName);
+            Log.Debug("Output path {Path}", newPath);
 
             instr.SaveAllConfigurations(newPath);
             Log.Information("Configuration saved to {path}", newPath);
