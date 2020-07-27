@@ -15,6 +15,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 
         /// <summary>Specifies the RFmx selector string needed to configure this section of the file.</summary>
         public string SelectorString { get; protected set; }
+        public virtual string SelectorString2 { get; }
         /// <summary>Specifies the RFmx signal that will be configured for this section.</summary>
         public T Signal { get; protected set; }
         /// <summary>Specifies the root element represented by this section.</summary>
@@ -22,6 +23,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         /// <summary>Specifies the root of the entire XML document.</summary>
         public XElement DocumentRoot { get; protected set; }
 
+        public virtual void ConfigureRFmxSignal<T>(T signal) { }
         public float Version { get; }
 
         public RfwsSection(XElement documentRoot, XElement section, T signal, string selectorString)
