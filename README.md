@@ -6,11 +6,11 @@ This tool simplifies the process of creating NI-RFmx signal configurations by cr
 
 The NI-RFmx Signal Creator features plugin support to support the different standards implemented in NI-RFmx. The list below contains all currently available plugins:
 
-- 5G NR
+- [5G NR](/Source/Plugins/NrPlugin/README.md)
 
 # Usage
 
-1) Install the latest NI Package from the Releases section.
+1) Install the latest NI Package from the [Releases section](../../releases/latest).
 
 2) From the command prompt, launch the program from *C:\Program Files (x86)\National Instruments\Shared\RFmxSignalCreator.exe*. This will show the help screen with the list of arguments and examples.
 
@@ -22,27 +22,22 @@ The NI-RFmx Signal Creator features plugin support to support the different stan
 
 ### Arguments
 
-  `<Paths> (pos. 0)`     Required. Specifies one or more paths to load; paths can be a single waveform configuration file
-                                          or a directory of configuration files
-
-  `-o, --outputdir`        Alternate directory to output configuration files to; default is in the same directory.
-
-  `-v, --verbose`            Enable verbose logging in the log file and optionally the console if -c is set.
-
-  `c, --console`              Sends full file log to console in addition to the log file.
-
-  `--help`                          Display the help screen.
-
-  `--version`                    Display version information.
+| Argument | Description |
+| -------- | ----------- |
+| `<Paths> (pos. 0)`  | Required. Specifies one or more paths to load; paths can be a single waveform configuration file or a directory of configuration files
+| `-o or --outputdir` | Alternate directory to output configuration files to; default is in the same directory.
+| `-v or --verbose`   | Enable verbose logging in the log file and optionally the console if -c is set.
+| `c or --console`      | Sends full file log to console in addition to the log file.
+| `--help`            | Display the help screen.
+| `--version`         | Display version information.
 
 ### Examples
 
-**Process a single waveform configuration:**
-  `RFmxSignalCreator C:\waveform.rfws`
-**Process a directory containing multiple waveform configurations:**
-  `RFmxSignalCreator -o "C:\RFmx Configurations" "C:\Waveform Configurations"`
-**Process multiple files and diretories containing multiple waveform configurations:**
-  `RFmxSignalCreator -o "C:\RFmx Configurations" waveform1.rfws waveform2.rfws Waveforms\MoreFiles\`
-**Process a directory with verbose logging to the console:**
-  `RFmxSignalCreator -c -v "C:\Waveform Configurations"`
-
+#### Process a single waveform configuration
+`RFmxSignalCreator C:\waveform.rfws`
+#### Process a directory containing multiple waveform configurations with a custom output directory
+`RFmxSignalCreator -o "C:\RFmx Configurations" "C:\Waveform Configurations"`
+#### Process multiple files and diretories containing multiple waveform configurations
+`RFmxSignalCreator -o "C:\RFmx Configurations" waveform1.rfws waveform2.rfws Waveforms\MoreFiles`
+#### Process a directory with verbose logging to the console
+`RFmxSignalCreator -c -v "C:\Waveform Configurations"`
