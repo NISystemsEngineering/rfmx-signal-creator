@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NationalInstruments.RFmx.NRMX;
+﻿using System.Collections.Generic;
 using System.Xml.Linq;
-using static NationalInstruments.Utilities.WaveformParsing.Plugins.RfwsParserUtilities;
+using NationalInstruments.RFmx.NRMX;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
+    using static RfwsParserUtilities;
 
     //[RfwsSection]
     [RfwsSection("CarrierSet", version = "3")]

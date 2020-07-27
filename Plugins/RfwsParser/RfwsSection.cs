@@ -1,23 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NationalInstruments.RFmx.InstrMX;
 using System.Xml.Linq;
-using System.Reflection;
-using System.IO;
+using NationalInstruments.RFmx.InstrMX;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
-
+    /// <summary>
+    /// Represents a section (tag "section") contained within an RFWS file and the RFmx signal and selector string
+    /// required to configure it.
+    /// </summary>
+    /// <typeparam name="T">Specifies the RFmx signal type that this section will configure.</typeparam>
     public abstract class RfwsSection<T> where T : ISignalConfiguration
     {
         public const string KeyVersion = "version";
 
+        /// <summary>Specifies the RFmx selector string needed to configure this section of the file.</summary>
         public string SelectorString { get; protected set; }
+        /// <summary>Specifies the RFmx signal that will be configured for this section.</summary>
         public T Signal { get; protected set; }
+        /// <summary>Specifies the root element represented by this section.</summary>
         public XElement SectionRoot { get; protected set; }
+        /// <summary>Specifies the root of the entire XML document.</summary>
         public XElement DocumentRoot { get; protected set; }
 
         public float Version { get; }
