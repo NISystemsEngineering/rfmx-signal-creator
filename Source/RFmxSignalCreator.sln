@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfWaveformToAnalyzerConfig", "RfGeneratorToAnalyzer\RfWaveformToAnalyzerConfig.csproj", "{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RFmxSignalCreator", "RFmxSignalCreator\RFmxSignalCreator.csproj", "{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{40DCEDD7-596E-4BFB-B6D2-0AA60E1BB6C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NrPlugin", "Plugins\NrPlugin\NrPlugin.csproj", "{43E80067-E805-4DD7-AC69-25D2501A1D2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Components\Common\Common.csproj", "{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfwsParser", "Plugins\RfwsParser\RfwsParser.csproj", "{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfwsParser", "Components\RfwsParser\RfwsParser.csproj", "{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{F30B836E-4026-4930-9A0C-F5520F768041}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,7 +43,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{43E80067-E805-4DD7-AC69-25D2501A1D2B} = {40DCEDD7-596E-4BFB-B6D2-0AA60E1BB6C7}
-		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6} = {40DCEDD7-596E-4BFB-B6D2-0AA60E1BB6C7}
+		{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1} = {F30B836E-4026-4930-9A0C-F5520F768041}
+		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6} = {F30B836E-4026-4930-9A0C-F5520F768041}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A59CD970-85F4-4AA2-9721-5E045ED32480}
