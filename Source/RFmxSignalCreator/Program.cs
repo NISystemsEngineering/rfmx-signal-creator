@@ -152,8 +152,8 @@ namespace NationalInstruments.Utilities.WaveformParsing
                 {
                     Log.Information("Processing file {File} using {Plugin}", fileName, matchedPlugin.GetType().Name);
 
-                    RFmxInstrMX instr = new RFmxInstrMX(fileName, "AnalysisOnly=1");
-
+                    using (RFmxInstrMX instr = new RFmxInstrMX(fileName, "AnalysisOnly=1"))
+                    {
                     try
                     {
                     matchedPlugin.Parse(waveform, instr);
@@ -175,8 +175,8 @@ namespace NationalInstruments.Utilities.WaveformParsing
                     {
                         Log.Error(ex, "Error saving configuration file");
                     }
+                    }
 
-                    instr.Dispose();
                 }
                 else
                 {
