@@ -6,7 +6,7 @@ This tool simplifies the process of creating NI-RFmx signal configurations by cr
 
 The NI-RFmx Signal Creator features plugin support to support the different standards implemented in NI-RFmx. The list below contains all currently available plugins:
 
-- [5G NR](/Source/Plugins/NrPlugin/README.md)
+- [5G NR](/Source/Plugins/NrPlugin)
 
 # Usage
 
