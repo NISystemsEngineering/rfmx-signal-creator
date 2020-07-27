@@ -33,11 +33,11 @@ The NI-RFmx Signal Creator features plugin support to support the different stan
 
 ### Examples
 
-#### Process a single waveform configuration
+##### Process a single waveform configuration
 `RFmxSignalCreator C:\waveform.rfws`
-#### Process a directory containing multiple waveform configurations with a custom output directory
+##### Process a directory containing multiple waveform configurations with a custom output directory
 `RFmxSignalCreator -o "C:\RFmx Configurations" "C:\Waveform Configurations"`
-#### Process multiple files and diretories containing multiple waveform configurations
+##### Process multiple files and diretories containing multiple waveform configurations
 `RFmxSignalCreator -o "C:\RFmx Configurations" waveform1.rfws waveform2.rfws Waveforms\MoreFiles`
-#### Process a directory with verbose logging to the console
+##### Process a directory with verbose logging to the console
 `RFmxSignalCreator -c -v "C:\Waveform Configurations"`
