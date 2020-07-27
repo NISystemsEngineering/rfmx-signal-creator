@@ -16,8 +16,9 @@ namespace NationalInstruments.Utilities.WaveformParsing
         #region Command Line Options Configuraiton
         public class Options
         {
-            [Value(0, MetaName = "<Path>", MetaValue = @"C:\pathToFile", HelpText = "Specifies a single file to parse or a folder of waveform files to parse", Required = true)]
-            public string Path { get; set; }
+            [Value(0, MetaName = "<Paths>", HelpText = "Specifies one or more paths to load; paths can be a single waveform configuration " +
+                "file or a directory of configuration files", Required = true)]
+            public IEnumerable<string> Path { get; set; }
             [Option('o', "outputdir", HelpText = "Alternate directry to output configuration files to; default is in the same directory.")]
             public string OutputDirectory { get; set; }
             [Option('v', "verbose", HelpText = "Enable verbose logging in the log file and optionally the console if -c is set.")]
@@ -25,17 +26,21 @@ namespace NationalInstruments.Utilities.WaveformParsing
             [Option('c', "console", HelpText = "Sends full file log to console in addition to the log file.")]
             public bool LogToConsole { get; set; }
 
-            [Usage(ApplicationAlias = "app")]
+            [Usage(ApplicationAlias = "RFmxSignalCreator")]
             public static IEnumerable<Example> Examples =>
                 new List<Example>()
                 {
-                    new Example("Process a single waveform configuration", new Options { Path = @"C:\waveform.rfws" }),
-                    new Example("Process a directory containing multiple waveform configurations", 
-                        new Options { Path = @"C:\waveform.rfws", OutputDirectory = @"C:\Exported Configurations" }),
-                            CenterFrequency = 28.0e9 }),
+                    new Example("Process a single waveform configuration", new Options { Path = new string[] { @"C:\waveform.rfws" } }),
+                    new Example("Process a directory containing multiple waveform configurations",
+                        new UnParserSettings {PreferShortName = true },
+                        new Options { Path = new string[] { @"C:\Waveform Configurations" }, OutputDirectory = @"C:\RFmx Configurations" }),
+                    new Example("Process multiple files and diretories containing multiple waveform configurations",
+                        new UnParserSettings {PreferShortName = true },
+                        new Options { Path = new string[] { "waveform1.rfws", "waveform2.rfws", @"Waveforms\MoreFiles\" }, 
+                            OutputDirectory = @"C:\RFmx Configurations" }),
                     new Example("Process a directory with verbose logging to the console",
-                        new UnParserSettings {PreferShortName = true, GroupSwitches = true },
-                        new Options {OutputDirectory = @"C:\Exported Configurations", LogToConsole = true, Verbose = true })
+                        new UnParserSettings {PreferShortName = true },
+                        new Options { Path = new string[] { @"C:\Waveform Configurations" }, LogToConsole = true, Verbose = true })
                 };
         }
         #endregion
@@ -102,18 +107,28 @@ namespace NationalInstruments.Utilities.WaveformParsing
             #endregion
 
             #region File Parsing
-            IEnumerable<string> filesToParse = new List<string>();
+            IEnumerable<string> filesToParse = Enumerable.Empty<string>();
+            List<string> individualFiles = new List<string>();
 
-            // Determine if we have a file or folder path specified from the command line
-            if (File.Exists(o.Path))
+            foreach (string path in o.Path)
             {
-                filesToParse = new string[1] { o.Path };
+                // Determine if we have a file or folder path specified from the command line
+                if (File.Exists(path))
+                {
+                    individualFiles.Add(path);
+                }
+                else if (Directory.Exists(path))
+                {
+                    Log.Verbose("Loading files from directory {Path}", path);
+                    filesToParse = filesToParse.Concat(Directory.EnumerateFiles(path, "*.tdms"))
+                        .Concat(Directory.EnumerateFiles(path, "*.rfws"));
+                }
+                else
+                {
+                    Log.Error("File or directory \"{Path}\" does not exist", path);
+                }
             }
-            else if (Directory.Exists(o.Path))
-            {
-                filesToParse = Directory.EnumerateFiles(o.Path, "*.tdms")
-                    .Concat(Directory.EnumerateFiles(o.Path, "*.rfws"));
-            }
+            filesToParse = individualFiles.Concat(filesToParse);
 
             foreach (string file in filesToParse)
             {
