@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using NationalInstruments.RFmx.NRMX;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
@@ -57,7 +56,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             }
 
             [RfwsProperty("CarrierSubblockOffset", 3)]
-            public NrRfwsKey<Double> CarrierSubblockOffset = new NrRfwsKey<double>
+            public NrRfwsKey<double> CarrierSubblockOffset = new NrRfwsKey<double>
             {
                 RfmxPropertyId = (int)RFmxNRMXPropertyId.CenterFrequency,
                 SelectorStringType = RfmxNrSelectorStringType.Subblock,
