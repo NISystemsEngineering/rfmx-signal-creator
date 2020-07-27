@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>RfGeneratorToAnalyzer</RootNamespace>
-    <AssemblyName>RfGeneratorToAnalyzer</AssemblyName>
+    <RootNamespace>RFmxSignalCreator</RootNamespace>
+    <AssemblyName>RFmxSignalCreator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug\</OutputPath>
+    <OutputPath>..\..\Build\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,7 +26,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Build\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -43,16 +43,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="TestFiles\19.1 File.rfws">
+    <None Include="TestFiles\19.1 File.rfws" Condition=" '$(Configuration)' == 'Debug' ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestFiles\20.0 File.rfws">
+    <None Include="TestFiles\20.0 File.rfws" Condition=" '$(Configuration)' == 'Debug' ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestFiles\LTE.rfws">
+    <None Include="TestFiles\LTE.rfws" Condition=" '$(Configuration)' == 'Debug' ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestFiles\NR_FR1_DL_FDD_SISO_BW-100MHz_CC-1_SCS-30kHz_Mod-256QAM-OFDM-NoSSB.rfws">
+    <None Include="TestFiles\NR_FR1_DL_FDD_SISO_BW-100MHz_CC-1_SCS-30kHz_Mod-256QAM-OFDM-NoSSB.rfws" Condition=" '$(Configuration)' == 'Debug' ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
