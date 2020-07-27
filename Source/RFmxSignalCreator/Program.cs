@@ -19,7 +19,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
             [Value(0, MetaName = "<Paths>", HelpText = "Specifies one or more paths to load; paths can be a single waveform configuration " +
                 "file or a directory of configuration files", Required = true)]
             public IEnumerable<string> Path { get; set; }
-            [Option('o', "outputdir", HelpText = "Alternate directry to output configuration files to; default is in the same directory.")]
+            [Option('o', "outputdir", HelpText = "Alternate directory to output configuration files to; default is in the same directory.")]
             public string OutputDirectory { get; set; }
             [Option('v', "verbose", HelpText = "Enable verbose logging in the log file and optionally the console if -c is set.")]
             public bool Verbose { get; set; }
@@ -36,7 +36,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                         new Options { Path = new string[] { @"C:\Waveform Configurations" }, OutputDirectory = @"C:\RFmx Configurations" }),
                     new Example("Process multiple files and diretories containing multiple waveform configurations",
                         new UnParserSettings {PreferShortName = true },
-                        new Options { Path = new string[] { "waveform1.rfws", "waveform2.rfws", @"Waveforms\MoreFiles\" }, 
+                        new Options { Path = new string[] { "waveform1.rfws", "waveform2.rfws", @"Waveforms\MoreFiles\" },
                             OutputDirectory = @"C:\RFmx Configurations" }),
                     new Example("Process a directory with verbose logging to the console",
                         new UnParserSettings {PreferShortName = true },
@@ -44,10 +44,10 @@ namespace NationalInstruments.Utilities.WaveformParsing
                 };
         }
         #endregion
-            static void Main(string[] args)
-            {
+        static void Main(string[] args)
+        {
             // Parse command line arguments and hand them over to Execute
-                Parser.Default.ParseArguments<Options>(args).WithParsed(o => Execute(o));
+            Parser.Default.ParseArguments<Options>(args).WithParsed(o => Execute(o));
         }
         public static void Execute(Options o)
         {
@@ -94,7 +94,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
             catch (MissingMemberException)
             {
                 Log.Fatal("No supported plugins were found in the local plugin directory, or none could be loaded successfully. " +
-                    "Ensure that one or more valid plugin are located in the plugins directory ({FullPluginDirectory})", 
+                    "Ensure that one or more valid plugin are located in the plugins directory ({FullPluginDirectory})",
                     WaveformPluginFactory.FullPluginDirectoryPath);
                 return;
             }
@@ -154,27 +154,27 @@ namespace NationalInstruments.Utilities.WaveformParsing
 
                     using (RFmxInstrMX instr = new RFmxInstrMX(fileName, "AnalysisOnly=1"))
                     {
-                    try
-                    {
-                    matchedPlugin.Parse(waveform, instr);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex, "Unhandled parsing exception plugin in {Plugin}", matchedPlugin.GetType().Name);
-                        break;
-                    }
+                        try
+                        {
+                            matchedPlugin.Parse(waveform, instr);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Unhandled parsing exception plugin in {Plugin}", matchedPlugin.GetType().Name);
+                            break;
+                        }
 
-                    try
-                    {
-                    if (string.IsNullOrEmpty(o.OutputDirectory))
-                        waveform.SaveConfiguration(instr);
-                    else
-                        waveform.SaveConfiguration(instr, o.OutputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex, "Error saving configuration file");
-                    }
+                        try
+                        {
+                            if (string.IsNullOrEmpty(o.OutputDirectory))
+                                waveform.SaveConfiguration(instr);
+                            else
+                                waveform.SaveConfiguration(instr, o.OutputDirectory);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, "Error saving configuration file");
+                        }
                     }
 
                 }
