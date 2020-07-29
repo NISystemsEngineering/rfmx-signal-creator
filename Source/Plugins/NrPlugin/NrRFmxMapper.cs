@@ -7,37 +7,36 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
     class NrRFmxMapper : RfmxMapper<RFmxNRMX>
     {
-        protected override void ApplyConfiguration(RfwsSection<RFmxNRMX> section, RfwsKey<bool> key)
+        public NrRFmxMapper(RFmxNRMX signal)
+            : base(signal) { }
+
+        protected override void ApplyConfiguration(RfwsSection section, RfwsKey<bool> key)
         {
-            (RFmxNRMX signal, string selectorString) = section;
-            string overridenSelectorString = OverrideSelectorString(key, selectorString);
+            string overridenSelectorString = OverrideSelectorString(key, section.SelectorString);
             LogKey(key, overridenSelectorString);
-            signal.SetAttributeBool(overridenSelectorString, key.RfmxPropertyId, key.Value);
+            Signal.SetAttributeBool(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
-        protected override void ApplyConfiguration(RfwsSection<RFmxNRMX> section, RfwsKey<double> key)
+        protected override void ApplyConfiguration(RfwsSection section, RfwsKey<double> key)
         {
-            (RFmxNRMX signal, string selectorString) = section;
-            string overridenSelectorString = OverrideSelectorString(key, selectorString);
+            string overridenSelectorString = OverrideSelectorString(key, section.SelectorString);
             LogKey(key, overridenSelectorString);
 
-            signal.SetAttributeDouble(overridenSelectorString, key.RfmxPropertyId, key.Value);
+            Signal.SetAttributeDouble(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
-        protected override void ApplyConfiguration(RfwsSection<RFmxNRMX> section, RfwsKey<int> key)
+        protected override void ApplyConfiguration(RfwsSection section, RfwsKey<int> key)
         {
-            (RFmxNRMX signal, string selectorString) = section;
-            string overridenSelectorString = OverrideSelectorString(key, selectorString);
+            string overridenSelectorString = OverrideSelectorString(key, section.SelectorString);
             LogKey(key, overridenSelectorString);
-            signal.SetAttributeInt(overridenSelectorString, key.RfmxPropertyId, key.Value);
+            Signal.SetAttributeInt(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
-        protected override void ApplyConfiguration(RfwsSection<RFmxNRMX> section, RfwsKey<string> key)
+        protected override void ApplyConfiguration(RfwsSection section, RfwsKey<string> key)
         {
-            (RFmxNRMX signal, string selectorString) = section;
-            string overridenSelectorString = OverrideSelectorString(key, selectorString);
+            string overridenSelectorString = OverrideSelectorString(key, section.SelectorString);
             LogKey(key, overridenSelectorString);
-            signal.SetAttributeString(overridenSelectorString, key.RfmxPropertyId, key.Value);
+            Signal.SetAttributeString(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
         static void LogKey<T>(RfwsKey<T> key, string selectorString)
