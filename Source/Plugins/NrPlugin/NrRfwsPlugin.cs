@@ -63,6 +63,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                     RFmxNRMX signal = instr.GetNRSignalConfiguration($"CarrierSet{carrierSetIndex}");
 
                     signal.SelectMeasurements("", RFmxNRMXMeasurementTypes.Acp | RFmxNRMXMeasurementTypes.ModAcc, true);
+                    signal.SetAutoResourceBlockDetectionEnabled("", RFmxNRMXAutoResourceBlockDetectionEnabled.False);
 
                     using (LogContext.PushProperty("CarrierSet", carrierSetIndex))
                     {
