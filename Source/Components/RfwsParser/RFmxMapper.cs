@@ -11,13 +11,24 @@ namespace NationalInstruments.Utilities.WaveformParsing
     /// <typeparam name="T">Specifies the RFmx signal type to be configured</typeparam>
     public abstract class RfmxMapper<T> where T : ISignalConfiguration
     {
+        public T Signal { get; }
+
+        public RfmxMapper(T signal)
+        {
+            Signal = signal;
+        }
+
         /// <summary>
         /// Represents a mapping operation to translate from an <see cref="RfwsSection{T}"/> object to the appropriate RFmx
         /// settings as defined by <see cref="RfwsKey{T}"/>. 
         /// </summary>
-        public void MapSection(RfwsSection<T> section)
+        public void MapSection(RfwsSection section)
         {
             var keys = RfwsParserUtilities.FetchSectionKeys(section);
+
+            // If the section has any specific configuration that needs to be applied to the RFmx session that is not a simple
+            // mapping, this will be invoked here.
+            section.ConfigureRFmxSignal(Signal);
 
             // Discard the attribute; we only need the keys and associated values
             foreach ((_, object key) in keys)
@@ -58,7 +69,11 @@ namespace NationalInstruments.Utilities.WaveformParsing
                 }
                 catch (RFmxException rfEx)
                 {
-                    Log.Error(rfEx, "Error applying property using key {Key}", key);
+                    Log.Error(rfEx, "RFmx threw an exception applying property using key {Key}", key);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Unknown exception applying property using key {Key}", key);
                 }
             }
         }
@@ -68,27 +83,27 @@ namespace NationalInstruments.Utilities.WaveformParsing
         /// </summary>
         /// <param name="section">Specifies the section, containing the RFmx signal and selector string, to apply the setting to.</param>
         /// <param name="key">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(RfwsSection<T> section, RfwsKey<bool> key);
+        protected abstract void ApplyConfiguration(RfwsSection section, RfwsKey<bool> key);
         /// <summary>
         /// Applies a setting defined by <paramref name="key"/> to the RFmx signal and selector string 
         /// defined in <paramref name="section"/>.
         /// </summary>
         /// <param name="section">Specifies the section, containing the RFmx signal and selector string, to apply the setting to.</param>
         /// <param name="key">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(RfwsSection<T> section, RfwsKey<double> key);
+        protected abstract void ApplyConfiguration(RfwsSection section, RfwsKey<double> key);
         /// <summary>
         /// Applies a setting defined by <paramref name="key"/> to the RFmx signal and selector string 
         /// defined in <paramref name="section"/>.
         /// </summary>
         /// <param name="section">Specifies the section, containing the RFmx signal and selector string, to apply the setting to.</param>
         /// <param name="key">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(RfwsSection<T> section, RfwsKey<int> key);
+        protected abstract void ApplyConfiguration(RfwsSection section, RfwsKey<int> key);
         /// <summary>
         /// Applies a setting defined by <paramref name="key"/> to the RFmx signal and selector string 
         /// defined in <paramref name="section"/>.
         /// </summary>
         /// <param name="section">Specifies the section, containing the RFmx signal and selector string, to apply the setting to.</param>
         /// <param name="key">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(RfwsSection<T> section, RfwsKey<string> key);
+        protected abstract void ApplyConfiguration(RfwsSection section, RfwsKey<string> key);
     }
 }
