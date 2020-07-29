@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using NationalInstruments.RFmx.InstrMX;
 
 namespace NationalInstruments.Utilities.WaveformParsing
@@ -9,46 +8,43 @@ namespace NationalInstruments.Utilities.WaveformParsing
     /// required to configure it.
     /// </summary>
     /// <typeparam name="T">Specifies the RFmx signal type that this section will configure.</typeparam>
-    public abstract class RfwsSection<T> where T : ISignalConfiguration
+    public abstract class RfwsSection
     {
         public const string KeyVersion = "version";
+        protected string parentSelectorString = "";
 
         /// <summary>Specifies the RFmx selector string needed to configure this section of the file.</summary>
-        public string SelectorString { get; protected set; }
-        public virtual string SelectorString2 { get; }
-        /// <summary>Specifies the RFmx signal that will be configured for this section.</summary>
-        public T Signal { get; protected set; }
+        public virtual string SelectorString
+        {
+            get => parentSelectorString;
+        }
         /// <summary>Specifies the root element represented by this section.</summary>
         public XElement SectionRoot { get; protected set; }
         /// <summary>Specifies the root of the entire XML document.</summary>
         public XElement DocumentRoot { get; protected set; }
+        /// <summary>Specifies the version of the section loaded at runtime from the "version" attribute of the section.</summary>
+        public float Version { get => float.Parse(SectionRoot.Attribute(KeyVersion).Value); }
 
-        public virtual void ConfigureRFmxSignal<T>(T signal) { }
-        public float Version { get; }
+        /// <summary>
+        /// An optional override when a section needs to specifically configure the RFmx session with information included in that section
+        /// that does not directly map to an RFmx property. The <see cref="RfmxMapper{T}"/> object will call this method <b>prior to appying
+        /// any keys to the signal.</b>
+        /// </summary>
+        /// <param name="signal">Specifies the RFmx signal that will be configured.</param>
+        public virtual void ConfigureRFmxSignal(ISignalConfiguration signal) { }
 
-        public RfwsSection(XElement documentRoot, XElement section, T signal, string selectorString)
+        protected RfwsSection(XElement documentRoot, XElement section, string selectorString)
         {
-            Signal = signal;
-            SelectorString = selectorString;
+            parentSelectorString = selectorString;
             SectionRoot = section;
             DocumentRoot = documentRoot;
-
-            Version = float.Parse(SectionRoot.Attribute(KeyVersion).Value);
         }
-        public RfwsSection(XElement childSection, RfwsSection<T> parentSection)
+
+        protected RfwsSection(XElement childSection, RfwsSection parentSection)
         {
-            Signal = parentSection.Signal;
-            SelectorString = parentSection.SelectorString;
+            parentSelectorString = parentSection.SelectorString;
             SectionRoot = childSection;
             DocumentRoot = parentSection.DocumentRoot;
-
-            Version = float.Parse(SectionRoot.Attribute(KeyVersion).Value);
-        }
-
-        public void Deconstruct(out T signal, out string selectorString)
-        {
-            signal = Signal;
-            selectorString = SelectorString;
         }
     }
 }
