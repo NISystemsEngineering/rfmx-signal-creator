@@ -52,6 +52,9 @@
     <None Include="TestFiles\LTE.rfws" Condition=" '$(Configuration)' == 'Debug' ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="TestFiles\Many.rfws" Condition=" '$(Configuration)' == 'Debug' ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestFiles\NR_FR1_DL_FDD_SISO_BW-100MHz_CC-1_SCS-30kHz_Mod-256QAM-OFDM-NoSSB.rfws" Condition=" '$(Configuration)' == 'Debug' ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
