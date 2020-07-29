@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using NationalInstruments.RFmx.InstrMX;
 
-namespace NationalInstruments.Utilities.WaveformParsing.Plugins
+namespace NationalInstruments.Utilities.WaveformParsing
 {
     /// <summary>
     /// Represents a section (tag "section") contained within an RFWS file and the RFmx signal and selector string

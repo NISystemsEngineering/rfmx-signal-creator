@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NationalInstruments.Utilities.WaveformParsing.Plugins
+namespace NationalInstruments.Utilities.WaveformParsing
 {
     /// <summary>
     /// Maps a class to a specific section and version contained within an RFWS file. 

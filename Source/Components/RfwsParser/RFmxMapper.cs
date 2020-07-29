@@ -2,7 +2,7 @@
 using System;
 using Serilog;
 
-namespace NationalInstruments.Utilities.WaveformParsing.Plugins
+namespace NationalInstruments.Utilities.WaveformParsing
 {
 
     /// <summary>

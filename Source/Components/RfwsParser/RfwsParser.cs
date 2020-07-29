@@ -9,8 +9,7 @@ using System.Text.RegularExpressions;
 using Serilog;
 using Serilog.Context;
 
-namespace NationalInstruments.Utilities.WaveformParsing.Plugins
-
+namespace NationalInstruments.Utilities.WaveformParsing
 {
 
 

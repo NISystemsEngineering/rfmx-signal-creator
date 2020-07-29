@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NationalInstruments.Utilities.WaveformParsing.Plugins
+namespace NationalInstruments.Utilities.WaveformParsing
 {
     /// <summary>
     /// Represents a single key contained in an RFWS file and the information needed to translate it to an RFWS 
