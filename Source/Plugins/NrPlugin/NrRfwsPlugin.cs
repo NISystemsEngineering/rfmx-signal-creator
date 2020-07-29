@@ -7,10 +7,10 @@ using System.Xml.Linq;
 using Serilog;
 using Serilog.Context;
 
-using static NationalInstruments.Utilities.WaveformParsing.Plugins.RfwsParserUtilities;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
+    using static RfwsParserUtilities;
 
     [WaveformFilePlugIn("Plugin for parsing 5G NR .rfws files.", "19.1", "20")]
     public class NrRfwsPlugin : IWaveformFilePlugin
@@ -67,13 +67,12 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                     using (LogContext.PushProperty("CarrierSet", carrierSetIndex))
                     {
                         RfwsParser parser = new RfwsParser();
-                        NrRFmxMapper nrMapper = new NrRFmxMapper();
+                        NrRFmxMapper nrMapper = new NrRFmxMapper(signal);
 
-                        CarrierSet carrierSet = new CarrierSet(rootData, carrierSetSection, signal, "");
+                        CarrierSet carrierSet = new CarrierSet(rootData, carrierSetSection, "");
                         var carrierSets = parser.ParseSectionAndKeys(carrierSet);
 
-                        var carrierConfigurations = new List<RfwsSection<RFmxNRMX>>();
-
+                        List<RfwsSection> carrierConfigurations = new List<RfwsSection>();
                         int i = 0;
                         foreach (XElement carrierDefinitionSetion in FindSections(rootData, typeof(Carrier)))
                         {
@@ -90,7 +89,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                             i++;
                         }
 
-                        var allParsedSections = new List<RfwsSection<RFmxNRMX>>(carrierSets.Union(carrierConfigurations));
+                        var allParsedSections = new List<RfwsSection>(carrierSets.Union(carrierConfigurations));
 
 
                         foreach (var section in allParsedSections)
