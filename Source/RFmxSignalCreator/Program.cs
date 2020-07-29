@@ -36,7 +36,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                         new Options { Path = new string[] { @"C:\Waveform Configurations" }, OutputDirectory = @"C:\RFmx Configurations" }),
                     new Example("Process multiple files and diretories containing multiple waveform configurations",
                         new UnParserSettings {PreferShortName = true },
-                        new Options { Path = new string[] { "waveform1.rfws", "waveform2.rfws", @"Waveforms\MoreFiles\" },
+                        new Options { Path = new string[] { "waveform1.rfws", "waveform2.rfws", @"Waveforms\MoreFiles" },
                             OutputDirectory = @"C:\RFmx Configurations" }),
                     new Example("Process a directory with verbose logging to the console",
                         new UnParserSettings {PreferShortName = true },
