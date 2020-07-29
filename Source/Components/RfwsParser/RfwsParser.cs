@@ -15,10 +15,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
 
     public class RfwsParser
     {
-        public bool SkipVersionCheck { get; set; } = false;
-
-        public List<RfwsSection<T>> ParseSectionAndKeys<T>(RfwsSection<T> rfwsSection)
-            where T : ISignalConfiguration
+        public List<RfwsSection> ParseSectionAndKeys(RfwsSection rfwsSection)
         {
             #region Parse Keys
             IEnumerable<(RfwsPropertyAttribute attribute, object key)> keys = RfwsParserUtilities.FetchSectionKeys(rfwsSection);
@@ -91,10 +88,8 @@ namespace NationalInstruments.Utilities.WaveformParsing
 
             }
             #endregion
-
-            var parsedSections = new List<RfwsSection<T>>();
+            List<RfwsSection> parsedSections = new List<RfwsSection>();
             parsedSections.Add(rfwsSection);
-
             #region Parse Sub-Sections
             var subSections = from type in rfwsSection.GetType().GetNestedTypes()
                               where type.IsDefined(typeof(RfwsSectionAttribute))
@@ -109,7 +104,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                     {
                         try
                         {
-                            RfwsSection<T> newSection = (RfwsSection<T>)Activator.CreateInstance(sectionType, matchedSection, rfwsSection);
+                            RfwsSection newSection = (RfwsSection)Activator.CreateInstance(sectionType, matchedSection, rfwsSection);
                             var parsedSubSections = ParseSectionAndKeys(newSection);
                             parsedSections.AddRange(parsedSubSections);
                         }
@@ -132,10 +127,9 @@ namespace NationalInstruments.Utilities.WaveformParsing
         /// <summary>
         /// Fetches all keys and their associated attributes from <paramref name="section"/> using reflection.
         /// </summary>
-        /// <typeparam name="T">Specifies the RFmx signal type used by <paramref name="section"/>.</typeparam>
         /// <param name="section">Specifies the section from which to retrieve keys and attributes.</param>
         /// <returns></returns>
-        public static IEnumerable<(RfwsPropertyAttribute attribute, object key)> FetchSectionKeys<T>(RfwsSection<T> section) where T : ISignalConfiguration
+        public static IEnumerable<(RfwsPropertyAttribute attribute, object key)> FetchSectionKeys(RfwsSection section)
         {
             var keys = from field in section.GetType().GetFields() // Get all configured fields for the ipnut type
                        where field.IsDefined(typeof(RfwsPropertyAttribute)) // Limit fields to those implementing appropriate property
