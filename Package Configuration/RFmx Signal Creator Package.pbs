@@ -33,75 +33,81 @@
         </SourceItem>
         <SourceItem z:Id="i7">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RFmxSignalCreator.exe</RelativePath>
+            <RelativePath>..\Build\Release\Plugins\Placeholder.txt</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i8">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RFmxSignalCreator.exe.config</RelativePath>
+            <RelativePath>..\Build\Release\RFmxSignalCreator.exe</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i9">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RFmxSignalCreator.pdb</RelativePath>
+            <RelativePath>..\Build\Release\RFmxSignalCreator.exe.config</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i10">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RfwsParser.dll</RelativePath>
+            <RelativePath>..\Build\Release\RFmxSignalCreator.pdb</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i11">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RfwsParser.pdb</RelativePath>
+            <RelativePath>..\Build\Release\RfwsParser.dll</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i12">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\Serilog.dll</RelativePath>
+            <RelativePath>..\Build\Release\RfwsParser.pdb</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i13">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\Serilog.Sinks.Console.dll</RelativePath>
+            <RelativePath>..\Build\Release\Serilog.dll</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i14">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\Serilog.Sinks.File.dll</RelativePath>
+            <RelativePath>..\Build\Release\Serilog.Sinks.Console.dll</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i15">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\Serilog.Sinks.File.pdb</RelativePath>
+            <RelativePath>..\Build\Release\Serilog.Sinks.File.dll</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i16">
             <PluginConfigurationOptions />
+            <RelativePath>..\Build\Release\Serilog.Sinks.File.pdb</RelativePath>
+            <DependentItems />
+            <IsDiscoverable>true</IsDiscoverable>
+        </SourceItem>
+        <SourceItem z:Id="i17">
+            <PluginConfigurationOptions />
             <RelativePath>..\Build\Release\Plugins</RelativePath>
             <DependentItems>
                 <SourceItem z:Ref="i5" />
                 <SourceItem z:Ref="i6" />
+                <SourceItem z:Ref="i7" />
             </DependentItems>
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
-        <SourceItem z:Id="i17">
+        <SourceItem z:Id="i18">
             <PluginConfigurationOptions />
             <RelativePath>..\Build\Release</RelativePath>
             <DependentItems>
                 <SourceItem z:Ref="i2" />
                 <SourceItem z:Ref="i3" />
                 <SourceItem z:Ref="i4" />
-                <SourceItem z:Ref="i7" />
                 <SourceItem z:Ref="i8" />
                 <SourceItem z:Ref="i9" />
                 <SourceItem z:Ref="i10" />
@@ -111,121 +117,115 @@
                 <SourceItem z:Ref="i14" />
                 <SourceItem z:Ref="i15" />
                 <SourceItem z:Ref="i16" />
+                <SourceItem z:Ref="i17" />
             </DependentItems>
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
     </SourceItems>
     <InputSourceItems>
-        <SourceItem z:Ref="i17" />
+        <SourceItem z:Ref="i18" />
     </InputSourceItems>
     <Distributions>
-        <Distribution z:Id="i18" i:type="Package">
+        <Distribution z:Id="i19" i:type="Package">
             <DistributionItems>
-                <DistributionItem z:Id="i19" i:type="DistributionDirectoryItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator</DestinationRelativePath>
-                    <Name>RFmx Signal Creator</Name>
-                    <SourceItem i:nil="true" />
-                </DistributionItem>
                 <DistributionItem z:Id="i20" i:type="DistributionDirectoryItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\Plugins</DestinationRelativePath>
-                    <Name>Plugins</Name>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator</DestinationRelativePath>
+                    <Name>NI-RFmx Signal Creator</Name>
                     <SourceItem i:nil="true" />
                 </DistributionItem>
                 <DistributionItem z:Id="i21" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\Plugins\NrPlugin.dll</DestinationRelativePath>
-                    <Name>NrPlugin.dll</Name>
-                    <SourceItem z:Ref="i5" />
-                    <PluginConfigurationOptions />
-                    <ProcessDuringStaging>true</ProcessDuringStaging>
-                </DistributionItem>
-                <DistributionItem z:Id="i22" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\Plugins\NrPlugin.pdb</DestinationRelativePath>
-                    <Name>NrPlugin.pdb</Name>
-                    <SourceItem z:Ref="i6" />
-                    <PluginConfigurationOptions />
-                    <ProcessDuringStaging>true</ProcessDuringStaging>
-                </DistributionItem>
-                <DistributionItem z:Id="i23" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\Common.dll</DestinationRelativePath>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Common.dll</DestinationRelativePath>
                     <Name>Common.dll</Name>
                     <SourceItem z:Ref="i3" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i24" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\Common.pdb</DestinationRelativePath>
+                <DistributionItem z:Id="i22" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Common.pdb</DestinationRelativePath>
                     <Name>Common.pdb</Name>
                     <SourceItem z:Ref="i4" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i25" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\RFmxSignalCreator.exe</DestinationRelativePath>
+                <DistributionItem z:Id="i23" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RFmxSignalCreator.exe</DestinationRelativePath>
                     <Name>RFmxSignalCreator.exe</Name>
-                    <SourceItem z:Ref="i7" />
-                    <PluginConfigurationOptions />
-                    <ProcessDuringStaging>true</ProcessDuringStaging>
-                </DistributionItem>
-                <DistributionItem z:Id="i26" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\RFmxSignalCreator.exe.config</DestinationRelativePath>
-                    <Name>RFmxSignalCreator.exe.config</Name>
                     <SourceItem z:Ref="i8" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i27" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\RFmxSignalCreator.pdb</DestinationRelativePath>
-                    <Name>RFmxSignalCreator.pdb</Name>
+                <DistributionItem z:Id="i24" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RFmxSignalCreator.exe.config</DestinationRelativePath>
+                    <Name>RFmxSignalCreator.exe.config</Name>
                     <SourceItem z:Ref="i9" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i28" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\RfwsParser.dll</DestinationRelativePath>
-                    <Name>RfwsParser.dll</Name>
+                <DistributionItem z:Id="i25" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RFmxSignalCreator.pdb</DestinationRelativePath>
+                    <Name>RFmxSignalCreator.pdb</Name>
                     <SourceItem z:Ref="i10" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i29" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\RfwsParser.pdb</DestinationRelativePath>
-                    <Name>RfwsParser.pdb</Name>
+                <DistributionItem z:Id="i26" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RfwsParser.dll</DestinationRelativePath>
+                    <Name>RfwsParser.dll</Name>
                     <SourceItem z:Ref="i11" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i30" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\Serilog.dll</DestinationRelativePath>
-                    <Name>Serilog.dll</Name>
+                <DistributionItem z:Id="i27" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RfwsParser.pdb</DestinationRelativePath>
+                    <Name>RfwsParser.pdb</Name>
                     <SourceItem z:Ref="i12" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i31" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\Serilog.Sinks.Console.dll</DestinationRelativePath>
-                    <Name>Serilog.Sinks.Console.dll</Name>
+                <DistributionItem z:Id="i28" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Serilog.dll</DestinationRelativePath>
+                    <Name>Serilog.dll</Name>
                     <SourceItem z:Ref="i13" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i32" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\Serilog.Sinks.File.dll</DestinationRelativePath>
-                    <Name>Serilog.Sinks.File.dll</Name>
+                <DistributionItem z:Id="i29" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Serilog.Sinks.Console.dll</DestinationRelativePath>
+                    <Name>Serilog.Sinks.Console.dll</Name>
                     <SourceItem z:Ref="i14" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i33" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\Serilog.Sinks.File.pdb</DestinationRelativePath>
-                    <Name>Serilog.Sinks.File.pdb</Name>
+                <DistributionItem z:Id="i30" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Serilog.Sinks.File.dll</DestinationRelativePath>
+                    <Name>Serilog.Sinks.File.dll</Name>
                     <SourceItem z:Ref="i15" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i34" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\RFmx Signal Creator\CommandLine.dll</DestinationRelativePath>
+                <DistributionItem z:Id="i31" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Serilog.Sinks.File.pdb</DestinationRelativePath>
+                    <Name>Serilog.Sinks.File.pdb</Name>
+                    <SourceItem z:Ref="i16" />
+                    <PluginConfigurationOptions />
+                    <ProcessDuringStaging>true</ProcessDuringStaging>
+                </DistributionItem>
+                <DistributionItem z:Id="i32" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\CommandLine.dll</DestinationRelativePath>
                     <Name>CommandLine.dll</Name>
                     <SourceItem z:Ref="i2" />
+                    <PluginConfigurationOptions />
+                    <ProcessDuringStaging>true</ProcessDuringStaging>
+                </DistributionItem>
+                <DistributionItem z:Id="i33" i:type="DistributionDirectoryItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins</DestinationRelativePath>
+                    <Name>Plugins</Name>
+                    <SourceItem i:nil="true" />
+                </DistributionItem>
+                <DistributionItem z:Id="i34" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins\Placeholder.txt</DestinationRelativePath>
+                    <Name>Placeholder.txt</Name>
+                    <SourceItem z:Ref="i7" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
@@ -251,35 +251,163 @@
                 </ConfigurationOption>
             </PluginConfigurationOptions>
             <PrebuildAnalysisEnabled>true</PrebuildAnalysisEnabled>
-            <Architecture>windows_x64</Architecture>
+            <Architecture>windows_all</Architecture>
             <AutoIncrementVersion>Build</AutoIncrementVersion>
             <BuildStatus z:Id="i40">
-                <FileName />
-                <Version>none</Version>
+                <BuildEverSuccessful>true</BuildEverSuccessful>
+                <FileName>ni-rfmx-signal-creator_1.0.0.6_windows_all.nipkg</FileName>
+                <Version>1.0.0.6</Version>
             </BuildStatus>
             <CompanyName>MyCompany</CompanyName>
-            <CustomExecutes />
+            <CustomExecutes>
+                <CustomExecute z:Id="i41">
+                    <Arguments>-Command "$WScriptShell = New-Object -ComObject 'WScript.Shell'; $Shortcut = $WScriptShell.CreateShortcut('%ProgramData%\Microsoft\Windows\Start Menu\Programs\National Instruments\NI-RFmx Signal Creator.lnk'); $Shortcut.Arguments = '/K ""C:\Program Files (x86)\National Instruments\Shared\NI-RFmx Signal Creator\RFmxSignalCreator.exe""" --help'; $Shortcut.TargetPath = 'cmd.exe'; $Shortcut.WorkingDirectory = 'C:\Program Files (x86)\National Instruments\Shared\NI-RFmx Signal Creator\'; $Shortcut.Save()"</Arguments>
+                    <ExeName>WindowsPowerShell\v1.0\powershell.exe</ExeName>
+                    <HideConsoleWindow>true</HideConsoleWindow>
+                    <IgnoreErrors>true</IgnoreErrors>
+                    <RootLogicalName>[System (32-bit)]</RootLogicalName>
+                    <Schedule>Post</Schedule>
+                    <Step>Install</Step>
+                    <Wait>false</Wait>
+                </CustomExecute>
+                <CustomExecute z:Id="i42">
+                    <Arguments>/c del "%ProgramData%\Microsoft\Windows\Start Menu\Programs\National Instruments\NI-RFmx Signal Creator.lnk"</Arguments>
+                    <ExeName>cmd.exe</ExeName>
+                    <HideConsoleWindow>true</HideConsoleWindow>
+                    <IgnoreErrors>true</IgnoreErrors>
+                    <RootLogicalName>[System (32-bit)]</RootLogicalName>
+                    <Schedule>Post</Schedule>
+                    <Step>Uninstall</Step>
+                    <Wait>false</Wait>
+                </CustomExecute>
+            </CustomExecutes>
             <Description>This tool simplifies the process of creating NI-RFmx signal configurations by creating them automatically from NI-RFmx Waveform Creator configuration files. For supported waveform configuration files, a NI-RFmx signal will be created that maps all available properties from the configuration file to the appropriate NI-RFmx settings.</Description>
             <DisplayName>NI-RFmx Signal Creator</DisplayName>
-            <FileName>national-instruments-rfmx-signal-creator_1.0.0.0_windows_x64.nipkg</FileName>
+            <FileName>ni-rfmx-signal-creator_1.0.0.7_windows_all.nipkg</FileName>
             <Homepage>https://github.com/NISystemsEngineering/ni-rfmx-signal-creator</Homepage>
             <MaintainerEmail>michael.whitten@ni.com</MaintainerEmail>
             <MaintainerName>National Instruments</MaintainerName>
             <Messages xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-            <PackageName>national-instruments-rfmx-signal-creator</PackageName>
+            <PackageName>ni-rfmx-signal-creator</PackageName>
             <PackageRelationships />
             <ProductName>MyProduct</ProductName>
-            <ReleaseNotes>Initial release supporting most features of the 5G NR standard.</ReleaseNotes>
-            <Section>Application Software</Section>
-            <Synopsis>national-instruments-rfmx-signal-creator</Synopsis>
-            <Version>1.0.0.0</Version>
+            <ReleaseNotes>Initial release of tool.</ReleaseNotes>
+            <Section>Utilities</Section>
+            <Synopsis>ni-rfmx-signal-creator</Synopsis>
+            <Version>1.0.0.7</Version>
+        </Distribution>
+        <Distribution z:Id="i43" i:type="Package">
+            <DistributionItems>
+                <DistributionItem z:Id="i44" i:type="DistributionDirectoryItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator</DestinationRelativePath>
+                    <Name>NI-RFmx Signal Creator</Name>
+                    <SourceItem i:nil="true" />
+                </DistributionItem>
+                <DistributionItem z:Id="i45" i:type="DistributionDirectoryItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins</DestinationRelativePath>
+                    <Name>Plugins</Name>
+                    <SourceItem i:nil="true" />
+                </DistributionItem>
+                <DistributionItem z:Id="i46" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins\NrPlugin.dll</DestinationRelativePath>
+                    <Name>NrPlugin.dll</Name>
+                    <SourceItem z:Ref="i5" />
+                    <PluginConfigurationOptions />
+                    <ProcessDuringStaging>true</ProcessDuringStaging>
+                </DistributionItem>
+                <DistributionItem z:Id="i47" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins\NrPlugin.pdb</DestinationRelativePath>
+                    <Name>NrPlugin.pdb</Name>
+                    <SourceItem z:Ref="i6" />
+                    <PluginConfigurationOptions />
+                    <ProcessDuringStaging>true</ProcessDuringStaging>
+                </DistributionItem>
+            </DistributionItems>
+            <Name>NR Plugin for NI-RFmx Signal Creator</Name>
+            <OutputDirectory>..\Build\Package</OutputDirectory>
+            <PluginConfigurationOptions>
+                <ConfigurationOption z:Id="i48">
+                    <Definition z:Ref="i36" />
+                    <HasDefaultValues>true</HasDefaultValues>
+                    <Value z:Id="i49" i:type="DialogConfigurationOptionValue">
+                        <Values>
+                            <ConfigurationOptionValue z:Id="i50" xmlns:d8p1="http://schemas.datacontract.org/2004/07/NationalInstruments.PackageBuilder.Plugins.LabVIEWNXG" i:type="d8p1:LauncherContentConfigurationOptionValue">
+                                <d8p1:Value z:Id="i51" i:type="d8p1:LauncherRoot">
+                                    <d8p1:Children />
+                                </d8p1:Value>
+                            </ConfigurationOptionValue>
+                        </Values>
+                    </Value>
+                </ConfigurationOption>
+            </PluginConfigurationOptions>
+            <PrebuildAnalysisEnabled>true</PrebuildAnalysisEnabled>
+            <Architecture>windows_all</Architecture>
+            <AutoIncrementVersion>Build</AutoIncrementVersion>
+            <BuildStatus z:Id="i52">
+                <BuildEverSuccessful>true</BuildEverSuccessful>
+                <FileName>ni-rfmx-signal-creator-plugin-nr_1.0.0.6_windows_all.nipkg</FileName>
+                <Version>1.0.0.6</Version>
+            </BuildStatus>
+            <CompanyName>MyCompany</CompanyName>
+            <CustomExecutes />
+            <Description>A plugin that enables the NI-RFmx Signal Creator to parse RFmx Waveform Creator files (.rfws) containing 5G New Radio waveform configurations. </Description>
+            <DisplayName>NR Plugin for NI-RFmx Signal Creator</DisplayName>
+            <FileName>ni-rfmx-signal-creator-plugin-nr_1.0.0.7_windows_all.nipkg</FileName>
+            <Homepage>https://github.com/NISystemsEngineering/ni-rfmx-signal-creator</Homepage>
+            <MaintainerEmail>michael.whitten@ni.com</MaintainerEmail>
+            <MaintainerName>National Instruments</MaintainerName>
+            <Messages xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+            <PackageName>ni-rfmx-signal-creator-plugin-nr</PackageName>
+            <PackageRelationships>
+                <PackageRelationship z:Id="i53">
+                    <Constraint>LaterOrEqual</Constraint>
+                    <DisplayName>NI-RFmx Signal Creator</DisplayName>
+                    <PackageName>ni-rfmx-signal-creator</PackageName>
+                    <Relation>Depends</Relation>
+                    <Version>1.0.0.0</Version>
+                    <VersionType>Custom</VersionType>
+                </PackageRelationship>
+                <PackageRelationship z:Id="i54">
+                    <Constraint>LaterOrEqual</Constraint>
+                    <DisplayName>RFmx NR Runtime Support (32-bit)</DisplayName>
+                    <PackageName>ni-rfmx-nr-c-runtime-x86</PackageName>
+                    <Relation>Depends</Relation>
+                    <Version>19.1</Version>
+                    <VersionType>Custom</VersionType>
+                </PackageRelationship>
+            </PackageRelationships>
+            <ProductName>MyProduct-1</ProductName>
+            <ReleaseNotes>Initial release of plugin supporting most features of the 5G NR standard.</ReleaseNotes>
+            <Section>Utilities</Section>
+            <Synopsis>ni-rfmx-signal-creator-plugin-nr</Synopsis>
+            <Version>1.0.0.7</Version>
         </Distribution>
     </Distributions>
-    <Feeds />
+    <Feeds>
+        <Feed z:Id="i55" i:type="PackageInstaller">
+            <Configurable>false</Configurable>
+            <Enabled>false</Enabled>
+            <Name>NI-RFmx Signal Creator Installer</Name>
+            <Products>
+                <Product z:Id="i56" i:type="PackageInstallerPackageProduct">
+                    <Package z:Ref="i19" />
+                    <CheckBoxDisabled>true</CheckBoxDisabled>
+                    <Preselect>true</Preselect>
+                </Product>
+                <Product z:Id="i57" i:type="PackageInstallerPackageProduct">
+                    <Package z:Ref="i43" />
+                    <Preselect>true</Preselect>
+                </Product>
+            </Products>
+            <Uri>..\Build\PackageInstaller</Uri>
+            <Description>Installs the NI-RFmx Signal Creator and all available plugins.</Description>
+        </Feed>
+    </Feeds>
     <DistributionGroups>
-        <DistributionGroup z:Id="i41">
+        <DistributionGroup z:Id="i58">
             <Distributions>
-                <Distribution z:Ref="i18" />
+                <Distribution z:Ref="i19" />
+                <Distribution z:Ref="i43" />
             </Distributions>
             <Name>Distribution Group</Name>
             <PrebuildAnalysisEnabled>true</PrebuildAnalysisEnabled>
@@ -288,59 +416,59 @@
     </DistributionGroups>
     <TestStandMode>true</TestStandMode>
     <PluginConfigurationOptions>
-        <ConfigurationOption z:Id="i42">
-            <Definition z:Id="i43">
+        <ConfigurationOption z:Id="i59">
+            <Definition z:Id="i60">
                 <Description i:nil="true" />
                 <Name>TestStand Options</Name>
             </Definition>
             <HasDefaultValues>true</HasDefaultValues>
-            <Value z:Id="i44" i:type="DialogConfigurationOptionValue">
+            <Value z:Id="i61" i:type="DialogConfigurationOptionValue">
                 <Values>
-                    <ConfigurationOptionValue z:Id="i45" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i46" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i47" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i48" i:type="StringConfigurationOptionValue">
-                        <Value />
-                    </ConfigurationOptionValue>
-                    <ConfigurationOptionValue z:Id="i49" i:type="StringConfigurationOptionValue">
-                        <Value>SupportVIs</Value>
-                    </ConfigurationOptionValue>
-                    <ConfigurationOptionValue z:Id="i50" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i51" i:type="StringConfigurationOptionValue">
-                        <Value />
-                    </ConfigurationOptionValue>
-                    <ConfigurationOptionValue z:Id="i52" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i53" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i54" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i55" i:type="BooleanConfigurationOptionValue">
-                        <Value>true</Value>
-                    </ConfigurationOptionValue>
-                    <ConfigurationOptionValue z:Id="i56" i:type="BooleanConfigurationOptionValue">
-                        <Value>true</Value>
-                    </ConfigurationOptionValue>
-                    <ConfigurationOptionValue z:Id="i57" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i58" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i59" i:type="PathConfigurationOptionValue">
-                        <RelativePath />
-                    </ConfigurationOptionValue>
-                    <ConfigurationOptionValue z:Id="i60" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i61" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i62" i:type="StringConfigurationOptionValue">
-                        <Value>[BootVolume]</Value>
-                    </ConfigurationOptionValue>
-                    <ConfigurationOptionValue z:Id="i63" i:type="StringConfigurationOptionValue">
-                        <Value />
-                    </ConfigurationOptionValue>
-                    <ConfigurationOptionValue z:Id="i64" i:type="StringConfigurationOptionValue">
-                        <Value />
-                    </ConfigurationOptionValue>
+                    <ConfigurationOptionValue z:Id="i62" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i63" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i64" i:type="BooleanConfigurationOptionValue" />
                     <ConfigurationOptionValue z:Id="i65" i:type="StringConfigurationOptionValue">
                         <Value />
                     </ConfigurationOptionValue>
-                    <ConfigurationOptionValue z:Id="i66" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i66" i:type="StringConfigurationOptionValue">
+                        <Value>SupportVIs</Value>
+                    </ConfigurationOptionValue>
                     <ConfigurationOptionValue z:Id="i67" i:type="BooleanConfigurationOptionValue" />
-                    <ConfigurationOptionValue z:Id="i68" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i68" i:type="StringConfigurationOptionValue">
+                        <Value />
+                    </ConfigurationOptionValue>
                     <ConfigurationOptionValue z:Id="i69" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i70" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i71" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i72" i:type="BooleanConfigurationOptionValue">
+                        <Value>true</Value>
+                    </ConfigurationOptionValue>
+                    <ConfigurationOptionValue z:Id="i73" i:type="BooleanConfigurationOptionValue">
+                        <Value>true</Value>
+                    </ConfigurationOptionValue>
+                    <ConfigurationOptionValue z:Id="i74" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i75" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i76" i:type="PathConfigurationOptionValue">
+                        <RelativePath />
+                    </ConfigurationOptionValue>
+                    <ConfigurationOptionValue z:Id="i77" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i78" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i79" i:type="StringConfigurationOptionValue">
+                        <Value>[BootVolume]</Value>
+                    </ConfigurationOptionValue>
+                    <ConfigurationOptionValue z:Id="i80" i:type="StringConfigurationOptionValue">
+                        <Value />
+                    </ConfigurationOptionValue>
+                    <ConfigurationOptionValue z:Id="i81" i:type="StringConfigurationOptionValue">
+                        <Value />
+                    </ConfigurationOptionValue>
+                    <ConfigurationOptionValue z:Id="i82" i:type="StringConfigurationOptionValue">
+                        <Value />
+                    </ConfigurationOptionValue>
+                    <ConfigurationOptionValue z:Id="i83" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i84" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i85" i:type="BooleanConfigurationOptionValue" />
+                    <ConfigurationOptionValue z:Id="i86" i:type="BooleanConfigurationOptionValue" />
                 </Values>
             </Value>
         </ConfigurationOption>
