@@ -12,7 +12,9 @@ The NI-RFmx Signal Creator features plugin support to support the different stan
 
 1) Install the latest NI Package from the [Releases section](../../releases/latest).
 
-2) From the command prompt, launch the program from *C:\Program Files (x86)\National Instruments\Shared\RFmxSignalCreator.exe*. This will show the help screen with the list of arguments and examples.
+2) Do one of the following to launch the program and show the help screen with the list of arguments and examples. 
+    - Search for "NI-RFmx Signal Creator" from the Windows Start Menu, or select it from National Instruments >> NI-RFmx Signal Creator
+    - From the command prompt, launch the program from *C:\Program Files (x86)\National Instruments\Shared\NI-RFmx Signal Creator\RFmxSignalCreator.exe*. 
 
 3) Pass the utility one or more supported waveform configuration files. For each file that can be parsed by a plugin, a TDMS file containing the NI-RFmx signal configuration will be created.
 
