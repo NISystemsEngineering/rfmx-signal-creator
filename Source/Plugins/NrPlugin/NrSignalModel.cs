@@ -192,6 +192,14 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             public SsbSettings(XElement childSection, RfwsSection parentSection)
                 : base(childSection, parentSection) { }
 
+            // Using this key as a proxy for SSB enabled. RFmx WC doesn't seem to have a specific property for
+            // enabling SSB; instead, this, "SSS Channel Mode", "PBCH DMRS Channel Mode", and 
+            // "PBCH Channel Mode" are all set to True when the SSB enabled checkbox is set in the WC UI.
+            [RfwsProperty("PSS Channel Mode", 4)]
+            public NrRfwsKey<bool> SsbEnabled = new NrRfwsKey<bool>
+            {
+                RfmxPropertyId = (int)RFmxNRMXPropertyId.SsbEnabled
+            };
             [RfwsProperty("Configuration Set", 4)]
             public NrRfwsKey<int> SsbPattern = new NrRfwsKey<int>
             {
