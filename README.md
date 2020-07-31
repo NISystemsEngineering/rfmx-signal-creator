@@ -2,6 +2,10 @@
 
 This tool simplifies the process of creating NI-RFmx signal configurations by creating them automatically from NI-RFmx Waveform Creator configuration files. For supported waveform configuration files, a NI-RFmx signal will be created that maps all available properties from the configuration file to the appropriate NI-RFmx settings.
 
+<img src="_img\transfer.png" style="zoom:48%;" />
+
+
+
 ## Currently Supported Standards
 
 The NI-RFmx Signal Creator features plugin support to support the different standards implemented in NI-RFmx. The list below contains all currently available plugins:
@@ -22,14 +26,14 @@ The NI-RFmx Signal Creator features plugin support to support the different stan
 
 ### Arguments
 
-| Argument | Description |
-| -------- | ----------- |
-| `<Paths> (pos. 0)`  | Required. Specifies one or more paths to load; paths can be a single waveform configuration file or a directory of configuration files
-| `-o or --outputdir` | Alternate directory to output configuration files to; default is in the same directory.
-| `-v or --verbose`   | Enable verbose logging in the log file and optionally the console if -c is set.
-| `c or --console`      | Sends full file log to console in addition to the log file.
-| `--help`            | Display the help screen.
-| `--version`         | Display version information.
+| Argument            | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| `<Paths> (pos. 0)`  | Required. Specifies one or more paths to load; paths can be a single waveform configuration file or a directory of configuration |
+| `-o or --outputdir` | Alternate directory to output configuration files to; default is in the same directory. |
+| `-v or --verbose`   | Enable verbose logging in the log file and optionally the console if -c is set. |
+| `-c or --console`   | Sends full file log to console in addition to the log file.  |
+| `--help`            | Display the help screen.                                     |
+| `--version`         | Display version information.                                 |
 
 ### Examples
 
