@@ -2,7 +2,7 @@
 
 This tool simplifies the process of creating NI-RFmx signal configurations by creating them automatically from NI-RFmx Waveform Creator configuration files. For supported waveform configuration files, a NI-RFmx signal will be created that maps all available properties from the configuration file to the appropriate NI-RFmx settings.
 
-<img src="_img\transfer.png" style="zoom:48%;" />
+![](\_img\transfer.png)
 
 
 
