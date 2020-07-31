@@ -8,17 +8,19 @@ The NI-RFmx Signal Creator features plugin support to support the different stan
 
 - [5G NR](/Source/Plugins/NrPlugin)
 
+# Installation
+
+The best way to install is by adding the release feed to NI Package Manager. This way, NI Package Manager will automatically notify you when updates are available. Alternatively, you can manually download the latest packages. In both cases, you can find up-to-date installation instructions and the latest verision from the [Releases section](../../releases/latest).
+
 # Usage
 
-1) Install the latest NI Package from the [Releases section](../../releases/latest).
-
-2) Do one of the following to launch the program and show the help screen with the list of arguments and examples. 
+1) Do one of the following to launch the program and show the help screen with the list of arguments and examples. 
     - Search for "NI-RFmx Signal Creator" from the Windows Start Menu, or select it from National Instruments >> NI-RFmx Signal Creator
     - From the command prompt, launch the program from *C:\Program Files (x86)\National Instruments\Shared\NI-RFmx Signal Creator\RFmxSignalCreator.exe*. 
 
-3) Pass the utility one or more supported waveform configuration files. For each file that can be parsed by a plugin, a TDMS file containing the NI-RFmx signal configuration will be created.
+2) Pass the utility one or more supported waveform configuration files. For each file that can be parsed by a plugin, a TDMS file containing the NI-RFmx signal configuration will be created.
 
-4) Using either the NI-RFmx Soft Front Panel or RFmx Instr API, load the signal configuration TDMS file and begin analyzing your waveform.
+3) Using either the NI-RFmx Soft Front Panel or RFmx Instr API, load the signal configuration TDMS file and begin analyzing your waveform.
 
 
 
