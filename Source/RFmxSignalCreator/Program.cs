@@ -145,7 +145,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Error in plugin(s) evaluating whether file \"{File}\" can be parsed; skiping", fileName);
-                    break;
+                    continue;
                 }
 
                 if (matchedPlugin != null)
@@ -161,7 +161,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                         catch (Exception ex)
                         {
                             Log.Error(ex, "Unhandled parsing exception plugin in {Plugin}", matchedPlugin.GetType().Name);
-                            break;
+                            continue;
                         }
 
                         try

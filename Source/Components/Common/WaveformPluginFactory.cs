@@ -55,7 +55,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                     catch (Exception ex)
                     {
                         Log.Debug(ex, "Error loading assembly {File}", file);
-                        break;
+                        continue;
                     }
                     plugInAssemblyList.Add(assembly);
                     Log.Debug("Loaded assembly {file}", file);
