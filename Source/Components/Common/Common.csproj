@@ -39,9 +39,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WaveformPluginFactory.cs" />
+    <Compile Include="Plugins\WaveformPluginFactory.cs" />
     <Compile Include="WaveformConfigFileType.cs" />
-    <Compile Include="IWaveformFilePlugin.cs" />
+    <Compile Include="Plugins\IWaveformFilePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
