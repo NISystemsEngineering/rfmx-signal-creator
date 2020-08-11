@@ -22,14 +22,14 @@ namespace NationalInstruments.Utilities.WaveformParsing
             {
                 if (_mappedFields == null)
                 {
-                    var fields = from field in GetType().GetFields() // Get all configured fields for the ipnut type
+                    var fields = from field in GetType().GetFields() // Get all configured fields for the input type
                                  let type = field.FieldType
                                  where type.IsSubclassOfRawGeneric(typeof(RFmxPropertyMap<>))
                                  let fieldPair = new FieldValuePair(field, this) // Save the value of the field (aka the map defined at edit time)
                                  select fieldPair; // Return the key map pair
                     _mappedFields = fields.ToList();
                 }
-                return _mappedFields;
+                return _mappedFields.AsReadOnly();
             }
         }
         public virtual string SelectorString { get; }

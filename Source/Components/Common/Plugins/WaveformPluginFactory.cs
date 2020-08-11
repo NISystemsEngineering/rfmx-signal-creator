@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Serilog;
+using System.Collections.ObjectModel;
 
 namespace NationalInstruments.Utilities.WaveformParsing
 {
@@ -22,7 +23,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
         /// Returns the cached plugins loaded from the plugins directory. If no plugins have been loaded, <see cref="LoadPlugins"/>,
         /// will be invoked before returning any loaded plugins.
         /// </summary>
-        public static List<IWaveformFilePlugin> LoadedPlugins
+        public static ReadOnlyCollection<IWaveformFilePlugin> LoadedPlugins
         {
             get
             {
@@ -30,7 +31,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                 {
                     LoadPlugins();
                 }
-                return _loadedPlugins;
+                return _loadedPlugins.AsReadOnly();
             }
         }
         /// <summary>
@@ -128,7 +129,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
             List<Assembly> assemblies = LoadPlugInAssemblies();
             _loadedPlugins = GetPlugins(assemblies);
 
-            if (LoadedPlugins.Count <= 0)
+            if (_loadedPlugins.Count <= 0)
                 throw new MissingMemberException("No matching waveform plugins were found.");
         }
     }
