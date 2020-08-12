@@ -68,7 +68,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
             {
                 int carrierSetIndex = 0;
-                foreach (XElement carrierSetSection in FindSections(rootData, typeof(CarrierSet)))
+                foreach (XElement carrierSetSection in rootData.FindSections(typeof(CarrierSet)))
                 {
                     RFmxNRMX signal = instr.GetNRSignalConfiguration($"CarrierSet{carrierSetIndex}");
 
@@ -91,7 +91,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                         // the carrier.
                         int i = 0;
                         List<Carrier> carriers = new List<Carrier>();
-                        foreach (XElement carrierDefinitionSetion in FindSections(rootData, typeof(Carrier)))
+                        foreach (XElement carrierDefinitionSetion in rootData.FindSections(typeof(Carrier)))
                         {
                             var matchingSections = from Subblock s in carrierSet.Subblocks
                                                    where s.CarrierDefinitionIndex == i

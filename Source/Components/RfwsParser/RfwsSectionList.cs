@@ -41,7 +41,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
             _containedSections = new List<T>();
 
             // Find all of the items contained within this list section and intialize their values in the list
-            foreach (var section in RfwsParserUtilities.FindSections(SectionRoot, typeof(T)))
+            foreach (var section in SectionRoot.FindSections(typeof(T)))
             {
                 T newInstance = (T)Activator.CreateInstance(typeof(T), section, this);
                 _containedSections.Add(newInstance);
@@ -57,7 +57,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
         public sealed override IEnumerable<RfwsSection> SubSections
             => base.SubSections.Union(_containedSections); 
 
-        #region IReadOnlyList Impelementations
+        #region IReadOnlyList Implementations
         public T this[int index] => ((IReadOnlyList<T>)_containedSections)[index];
 
         public int Count => ((IReadOnlyList<T>)_containedSections).Count;

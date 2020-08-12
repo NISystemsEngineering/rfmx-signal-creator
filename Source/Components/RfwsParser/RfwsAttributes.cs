@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace NationalInstruments.Utilities.WaveformParsing
 {
@@ -62,7 +63,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
     /// <summary>
     /// Specifies how version information should be handled when matching a section or key in the RFWS file.
     /// </summary>
-    public enum RfswVersionMode
+    public enum RfwsVersionMode
     {
         /// <summary>Indicates that versions equal to or greater than specified may be considered valid.</summary>
         SupportedVersionsAndLater,
@@ -92,14 +93,14 @@ namespace NationalInstruments.Utilities.WaveformParsing
         /// Specifies how the version numbers specified in <see cref="Versions"/> should be interpreted when attempting to match
         /// a class with an RFWS key.
         /// </summary>
-        public RfswVersionMode VersionMode { get; } = RfswVersionMode.SpecificVersions;
+        public RfwsVersionMode VersionMode { get; } = RfwsVersionMode.SpecificVersions;
 
         /// <param name="keyName">Specifies the value of the "name" attribute of the key element.</param>
         public RfwsPropertyAttribute(string keyName)
         {
             Key = keyName;
             // No version is specfied, so ensure that all versions are supported
-            VersionMode = RfswVersionMode.AllVersions;
+            VersionMode = RfwsVersionMode.AllVersions;
         }
 
         /// <param name="keyName">Specifies the value of the "name" attribute of the key element.</param>
@@ -107,7 +108,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
         /// <param name="versionMode">Optional; with a single version set, it is assumed that this version and later should be supported.<para></para>;
         /// Specifies how the version numbers specified in <see cref="Versions"/> should be interpreted when attempting to match
         /// a class with an RFWS key.</param>
-        public RfwsPropertyAttribute(string keyName, float minimumVersion, RfswVersionMode versionMode = RfswVersionMode.SupportedVersionsAndLater)
+        public RfwsPropertyAttribute(string keyName, float minimumVersion, RfwsVersionMode versionMode = RfwsVersionMode.SupportedVersionsAndLater)
         {
             Key = keyName;
             Versions = new float[1] { minimumVersion };
@@ -118,11 +119,34 @@ namespace NationalInstruments.Utilities.WaveformParsing
         /// <param name="versionMode">Specifies how the version numbers specified in <paramref name="versions"/> should 
         /// be interpreted when attempting to match a class with an RFWS key.</param>
         /// <param name="versions">Specifies one or more valid versions for this key as defined by the parent section.</param>
-        public RfwsPropertyAttribute(string keyName, RfswVersionMode versionMode, params float[] versions)
+        public RfwsPropertyAttribute(string keyName, RfwsVersionMode versionMode, params float[] versions)
         {
             Key = keyName;
             Versions = versions;
             VersionMode = versionMode;
+        }
+
+        /// <summary>
+        /// Determines whether <paramref name="versionToCheck"/> is compatible with the combination of <see cref="Versions"/> and
+        /// the <see cref="VersionMode"/> setting.
+        /// </summary>
+        /// <param name="versionToCheck"></param>
+        /// <returns></returns>
+        public bool IsSupported(float versionToCheck)
+        {
+            switch (VersionMode)
+            {
+                case RfwsVersionMode.AllVersions:
+                    return true;
+                case RfwsVersionMode.SpecificVersions:
+                    return Versions.Contains(versionToCheck);
+                case RfwsVersionMode.SupportedVersionsAndLater:
+                    return (from supportedVersion in Versions
+                            select versionToCheck >= supportedVersion)
+                            .Aggregate((current, next) => current |= next);
+                default:
+                    return false;
+            }
         }
     }
 }

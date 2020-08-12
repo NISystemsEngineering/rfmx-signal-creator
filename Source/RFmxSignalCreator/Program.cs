@@ -54,6 +54,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
             #region Logger Configuration
             string logOutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}" +
                                        "                    {Properties:j}{NewLine}{Exception}";
+            string consoleOutputTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}";
 
             LogEventLevel fileLogLevel = LogEventLevel.Debug;
             if (o.Verbose)
@@ -65,6 +66,8 @@ namespace NationalInstruments.Utilities.WaveformParsing
             if (o.LogToConsole)
             {
                 consoleLogLevel = fileLogLevel;
+                consoleOutputTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}" +
+                                        "               {Properties: j}{NewLine}{Exception}";
             }
 
             Log.Logger = new LoggerConfiguration()
@@ -72,7 +75,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                 .MinimumLevel.Verbose()
                 .WriteTo.File("Log.txt", outputTemplate: logOutputTemplate, restrictedToMinimumLevel: fileLogLevel)
                 .WriteTo.Logger(lc => lc
-                    .WriteTo.Console(consoleLogLevel))
+                    .WriteTo.Console(consoleLogLevel, outputTemplate: consoleOutputTemplate))
                 .CreateLogger();
 
             Log.Debug("--------------------------------------------------------");

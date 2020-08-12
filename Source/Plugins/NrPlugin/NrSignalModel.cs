@@ -58,9 +58,9 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         public Subblock(XElement childSection, RfwsSection parentGroup)
             : base(childSection, parentGroup)
         {
-            SubblockIndex = int.Parse(FetchValue(SectionRoot, KeySubblockNumber));
-            CarrierDefinitionIndex = int.Parse(FetchValue(SectionRoot, KeyCarrierDefinition));
-            ComponentCarrierIndex = int.Parse(FetchValue(SectionRoot, KeyCarrierCCIndex));
+            SubblockIndex = int.Parse(SectionRoot.ReadKeyValue(KeySubblockNumber));
+            CarrierDefinitionIndex = int.Parse(SectionRoot.ReadKeyValue(KeyCarrierDefinition));
+            ComponentCarrierIndex = int.Parse(SectionRoot.ReadKeyValue(KeyCarrierCCIndex));
         }
 
         public override void CustomConfigure(ISignalConfiguration signal)
@@ -78,7 +78,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.CenterFrequency,
             SelectorStringType = RfmxNrSelectorStringType.Subblock,
-            CustomMap = (value) => SiNotationToStandard((string)value) + absoluteFrequency,
+            CustomMap = (value) => ParseSiNotationDouble((string)value) + absoluteFrequency,
         };
         [RfwsProperty("CarrierFrequencyOffset", 3)]
         public NrRfmxPropertyMap<double> CarrierFrequencyOffset = new NrRfmxPropertyMap<double>
@@ -155,7 +155,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
             RfmxPropertyId = (int)RFmxNRMXPropertyId.ReferenceGridStart,
         };
         // This key is only located here in RFmx 19.1; it is moved to the CarrierSet section in 20.0
-        [RfwsProperty("Auto Increment Cell ID Enabled", 3, RfswVersionMode.SpecificVersions)]
+        [RfwsProperty("Auto Increment Cell ID Enabled", 3, RfwsVersionMode.SpecificVersions)]
         public NrRfmxPropertyMap<bool> AutoIncrementCellId_19_1 = new NrRfmxPropertyMap<bool>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.AutoIncrementCellIDEnabled,
@@ -288,7 +288,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         public BandwidthPartSettings(XElement childSection, RfwsSection parentSection)
             : base(childSection, parentSection)
         {
-            BandwidthPartIndex = int.Parse(FetchValue(SectionRoot, KeyBandwidthPartIndex));
+            BandwidthPartIndex = int.Parse(SectionRoot.ReadKeyValue(KeyBandwidthPartIndex));
         }
 
         #region RFmx Properties
@@ -348,7 +348,7 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         public UeSettings(XElement childSection, RfwsSection parentSection)
         : base(childSection, parentSection)
         {
-            UeIndex = int.Parse(FetchValue(SectionRoot, KeyUeIndex));
+            UeIndex = int.Parse(SectionRoot.ReadKeyValue(KeyUeIndex));
         }
 
         [RfwsProperty("nRNTI", 1)]
@@ -388,87 +388,87 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         public PdschSlotSettings(XElement childSection, RfwsSection parentSection)
             : base(childSection, parentSection)
         {
-            PdschSlotIndex = int.Parse(FetchValue(SectionRoot, KeyPdschSlotIndex));
+            PdschSlotIndex = int.Parse(SectionRoot.ReadKeyValue(KeyPdschSlotIndex));
         }
 
-        [RfwsProperty("PDSCH Present in SSB RB", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("PDSCH Present in SSB RB", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<bool> PdschPressentInSsbRb = new NrRfmxPropertyMap<bool>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschPresentInSsbResourceBlock,
         };
-        [RfwsProperty("Slot Allocation", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("Slot Allocation", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<string> RbAllocation = new NrRfmxPropertyMap<string>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschSlotAllocation,
         };
-        [RfwsProperty("Symbol Allocation", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("Symbol Allocation", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<string> SymbolAllocation = new NrRfmxPropertyMap<string>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschSymbolAllocation,
         };
-        [RfwsProperty("Modulation Type", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("Modulation Type", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> ModulationType = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschModulationType,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPdschModulationType>()
         };
-        [RfwsProperty("PDSCH Mapping Type", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("PDSCH Mapping Type", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> MappingType = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschMappingType,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPdschMappingType>()
         };
-        [RfwsProperty("DMRS Duration", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DMRS Duration", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> DmrsDuration = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsDuration,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPdschDmrsDuration>()
         };
-        [RfwsProperty("DMRS Configuration", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DMRS Configuration", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> DmrsConfiguration = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsConfigurationType,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPdschDmrsConfigurationType>()
         };
-        [RfwsProperty("DMRS Power Mode", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DMRS Power Mode", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> DmrsPowerMode = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsPowerMode,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPdschDmrsPowerMode>()
         };
-        [RfwsProperty("DMRS Scaling Factor", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DMRS Scaling Factor", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<double> DmrsPower = new NrRfmxPropertyMap<double>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsPower,
             CustomMap = (value) => ValueTodB((string)value)
         };
-        [RfwsProperty("DMRS Additional Positions", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DMRS Additional Positions", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> AdditionalPositions = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsAdditionalPositions,
         };
-        [RfwsProperty("DMRS Type A Position", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DMRS Type A Position", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> TypeAPosition = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsTypeAPosition,
         };
-        [RfwsProperty("DMRS Scrambling ID", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DMRS Scrambling ID", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> ScramblingId = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsScramblingID,
         };
-        [RfwsProperty("DMRS Scrambling ID Mode", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DMRS Scrambling ID Mode", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> ScramblingMode = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsScramblingIDMode,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPdschDmrsScramblingIDMode>()
         };
-        [RfwsProperty("Number of CDM Groups", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("Number of CDM Groups", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> CdmGroups = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsNumberOfCdmGroups,
         };
-        [RfwsProperty("nSCID", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("nSCID", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> Nscid = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsnScid,
@@ -484,44 +484,44 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 return (int)textValue.ToEnum<RFmxNRMXPdschDmrsReleaseVersion>();
             }
         };
-        [RfwsProperty("PTRS Ports", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("PTRS Ports", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<string> PtrsPorts = new NrRfmxPropertyMap<string>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschPtrsAntennaPorts,
         };
-        [RfwsProperty("PTRS Time Density", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("PTRS Time Density", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> PtrsTimeDensity = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschPtrsTimeDensity,
         };
-        [RfwsProperty("PTRS Frequency Density", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("PTRS Frequency Density", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> PtrsFrequencyDensity = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschPtrsFrequencyDensity,
         };
-        [RfwsProperty("DL PTRS RE Offset", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DL PTRS RE Offset", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> PtrsReOffset = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschPtrsREOffset,
         };
-        [RfwsProperty("PTRS Enabled", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("PTRS Enabled", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<bool> PtrsEnabled = new NrRfmxPropertyMap<bool>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschPtrsEnabled,
         };
-        [RfwsProperty("PTRS Power Mode", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("PTRS Power Mode", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<int> PtrsPowerMode = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschPtrsPowerMode,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPdschPtrsPowerMode>()
         };
-        [RfwsProperty("PTRS Scaling Factor", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("PTRS Scaling Factor", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<double> PtrsPower = new NrRfmxPropertyMap<double>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschPtrsPower,
             CustomMap = (value) => ValueTodB((string)value)
         };
-        [RfwsProperty("DMRS Ports", RfswVersionMode.SupportedVersionsAndLater, 3, 4)]
+        [RfwsProperty("DMRS Ports", RfwsVersionMode.SupportedVersionsAndLater, 3, 4)]
         public NrRfmxPropertyMap<string> DmrsPorts = new NrRfmxPropertyMap<string>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsAntennaPorts,
@@ -553,96 +553,96 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         public PuschSlotSettings(XElement childSection, RfwsSection parentSection)
             : base(childSection, parentSection)
         {
-            PuschSlotIndex = int.Parse(FetchValue(SectionRoot, KeyPuschSlotIndex));
+            PuschSlotIndex = int.Parse(SectionRoot.ReadKeyValue(KeyPuschSlotIndex));
         }
-        [RfwsProperty("Slot Allocation", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("Slot Allocation", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<string> RbAllocation = new NrRfmxPropertyMap<string>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschSlotAllocation,
         };
-        [RfwsProperty("Symbol Allocation", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("Symbol Allocation", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<string> SymbolAllocation = new NrRfmxPropertyMap<string>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschSymbolAllocation,
         };
-        [RfwsProperty("Modulation Type", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("Modulation Type", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> ModulationType = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschModulationType,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPuschModulationType>()
         };
-        [RfwsProperty("PUSCH Mapping Type", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("PUSCH Mapping Type", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> MappingType = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschMappingType,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPuschMappingType>()
         };
-        [RfwsProperty("DMRS Duration", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("DMRS Duration", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> DmrsDuration = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsDuration,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPuschDmrsDuration>()
         };
-        [RfwsProperty("DMRS Configuration Type", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("DMRS Configuration Type", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> DmrsConfiguration = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsConfigurationType,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPuschDmrsConfigurationType>()
         };
-        [RfwsProperty("DMRS Power Mode", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("DMRS Power Mode", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> DmrsPowerMode = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsPowerMode,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPuschDmrsPowerMode>()
         };
-        [RfwsProperty("DMRS Scaling Factor", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("DMRS Scaling Factor", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<double> DmrsPower = new NrRfmxPropertyMap<double>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsPower,
             CustomMap = (value) => ValueTodB((string)value)
         };
-        [RfwsProperty("DMRS Additional Positions", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("DMRS Additional Positions", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> AdditionalPositions = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsAdditionalPositions,
         };
-        [RfwsProperty("DMRS Type A Position", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("DMRS Type A Position", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> TypeAPosition = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsTypeAPosition,
         };
-        [RfwsProperty("Transform Precoding Enabled", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("Transform Precoding Enabled", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<bool> TransformPreCodingEnabled = new NrRfmxPropertyMap<bool>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschTransformPrecodingEnabled,
         };
-        [RfwsProperty("PTRS Time Density", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("PTRS Time Density", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> PtrsTimeDensity = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsTimeDensity,
         };
-        [RfwsProperty("PTRS Frequency Density", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("PTRS Frequency Density", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> PtrsFrequencyDensity = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsFrequencyDensity,
         };
-        [RfwsProperty("UL PTRS RE Offset", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("UL PTRS RE Offset", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> PtrsReOffset = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsREOffset,
         };
-        [RfwsProperty("PTRS Enabled", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("PTRS Enabled", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<bool> PtrsEnabled = new NrRfmxPropertyMap<bool>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsEnabled,
         };
 
-        [RfwsProperty("DMRS Scrambling ID", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("DMRS Scrambling ID", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> ScramblingId = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsScramblingID,
         };
-        [RfwsProperty("DMRS Scrambling ID Mode", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("DMRS Scrambling ID Mode", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> ScramblingMode = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsScramblingIDMode,
@@ -659,40 +659,40 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 return (int)textValue.ToEnum<RFmxNRMXPuschDmrsReleaseVersion>();
             }
         };
-        [RfwsProperty("PTRS Power Mode", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("PTRS Power Mode", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> PtrsPowerMode = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsPowerMode,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPuschPtrsPowerMode>()
         };
-        [RfwsProperty("PTRS Scaling Factor", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("PTRS Scaling Factor", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<double> PtrsPower = new NrRfmxPropertyMap<double>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsPower,
             CustomMap = (value) => ValueTodB((string)value)
         };
-        [RfwsProperty("PUSCH ID", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("PUSCH ID", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> DrmsPuschId = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsPuschID,
         };
-        [RfwsProperty("PUSCH ID Mode", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("PUSCH ID Mode", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> DrmsPuschIdMode = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsPuschIDMode,
             CustomMap = (value) => (int)value.ToEnum<RFmxNRMXPuschDmrsPuschIDMode>()
         };
-        [RfwsProperty("Number of CDM Groups", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("Number of CDM Groups", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<int> CdmGroups = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsNumberOfCdmGroups,
         };
-        [RfwsProperty("DMRS Ports", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("DMRS Ports", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<string> DmrsPorts = new NrRfmxPropertyMap<string>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschDmrsAntennaPorts,
         };
-        [RfwsProperty("PTRS Ports", RfswVersionMode.SupportedVersionsAndLater, 3, 6)]
+        [RfwsProperty("PTRS Ports", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<string> PtrsPorts = new NrRfmxPropertyMap<string>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PuschPtrsAntennaPorts,

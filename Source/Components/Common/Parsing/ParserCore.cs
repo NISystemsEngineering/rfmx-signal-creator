@@ -51,7 +51,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                         }
                         else
                         {
-                            Log.Debug("{FieldName} skipped because it did not pass the validation check.", field.Name);
+                            Log.Verbose("{FieldName} skipped because it did not pass the validation check.", field.Name);
                         }
                     }
                     catch (Exception ex)

@@ -14,31 +14,28 @@ namespace NationalInstruments.Utilities.WaveformParsing
     /// </summary>
     public abstract class RfwsSection : PropertyGroup
     {
+        #region Fields & Properties
         public const string KeyVersion = "version";
-
-        public RfwsPropertyAttribute GetAttribute(FieldInfo field)
-            => field.GetCustomAttribute<RfwsPropertyAttribute>();
-
-        public RfwsSectionAttribute SectionAttribute
-            => GetType().GetCustomAttribute<RfwsSectionAttribute>();
-
         private List<RfwsSection> _subSections;
-
-        public virtual IEnumerable<RfwsSection> SubSections => _subSections;
-
 
         /// <summary>Specifies the root element represented by this section.</summary>
         public XElement SectionRoot { get; protected set; }
         /// <summary>Specifies the version of the section loaded at runtime from the "version" attribute of the section.</summary>
-        public float Version { get => float.Parse(SectionRoot.Attribute(KeyVersion).Value); }
+        public float Version => float.Parse(SectionRoot.Attribute(KeyVersion).Value);
+        /// <summary>Returns all of the public fields of type <see cref="RfwsSection"/> contained within this class.</summary>
+        public virtual IEnumerable<RfwsSection> SubSections => _subSections;
+        /// <summary>Fetches the section attribute associated with this class.</summary>
+        public RfwsSectionAttribute SectionAttribute => GetType().GetCustomAttribute<RfwsSectionAttribute>();
+        #endregion
 
+        // Used to initialize root sections
         protected RfwsSection(XElement propertySection)
             : base(string.Empty)
         {
             SectionRoot = propertySection;
             InitSubsections();
         }
-
+        // Used to initialize subsections
         protected RfwsSection(XElement propertySection, RfwsSection parentGroup)
             : base(parentGroup.SelectorString)
         {
@@ -54,7 +51,39 @@ namespace NationalInstruments.Utilities.WaveformParsing
             {
                 XElement childSection;
 
-                // Determine if 
+                #region Long Comment
+                // Determine if this child field is of the special subsection type that impelments a list
+                // If so, we may need to handle its section root in a more specific way. See the two examples below
+                // showcase the difference.
+                //
+                // -------------------------------------------------
+                // SameSectionAsParent = true
+                // -------------------------------------------------
+                // <section name="CarrierDefinition" version="1">
+                //      <section name="Bandwidth Part Settings 0" version="3">      <- Subsections are directly children of the root element
+                //          <key name="Subcarrier Spacing (Hz)">60k</key>
+                //          ...
+                //      </section>
+                //      <section name="Bandwidth Part Settings 1" version="3">
+                //          <key name="Subcarrier Spacing (Hz)">60k</key>
+                //          ...
+                //      </section>
+                // -------------------------------------------------
+                // SameSectionAsParent = false
+                // -------------------------------------------------
+                // <section name="CarrierManager" version="3">                      <- Higher level section defines list section
+                //      <key name="count">2</key>
+                //      <section name="0" version="1">                           
+                //              <section name="Carrier" version="3">                <- Subsections are a root of the higher level section
+                //                  ...
+                //              </section>
+                //      </section>
+                //      <section name = "1" version="1">
+                //              <section name="Carrier" version="3">
+                //                  ...
+                // -------------------------------------------------
+                #endregion
+
                 if (attr is RfwsSectionListAttribute sectionAttr
                     && sectionAttr.SameSectionAsParent == true)
                 {
@@ -62,6 +91,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
                 }
                 else
                 {
+                    // Find the child section from the root node
                     try
                     {
                         childSection = RfwsParserUtilities.FindSections(SectionRoot, attr.sectionName).First();
