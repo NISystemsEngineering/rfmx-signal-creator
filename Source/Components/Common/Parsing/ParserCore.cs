@@ -1,114 +1,135 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Collections.Generic;
-using Serilog;
+﻿using Serilog;
 using Serilog.Context;
+using System;
+using System.Reflection;
 
 namespace NationalInstruments.Utilities.WaveformParsing
 {
+    /// <summary>
+    /// Represents the core parsing functionality reading values from the input and parsing those values to 
+    /// apply to the mapped properties in the <see cref="PropertyGroup"/>. 
+    /// <para></para>
+    /// Concrete implementations will define how the values are read from the input source and how they are parsed.
+    /// </summary>
     public abstract class ParserCore
     {
         #region Parse Functions
-        public virtual void Parse(ParsingGroup group)
+        /// <summary>
+        /// Reads the raw value for each <see cref="PropertyMap{T}"/> object in <paramref name="group"/> from the input source,
+        /// then parses the value and applies the parsed value to the object.
+        /// </summary>
+        /// <param name="group"></param>
+        public virtual void Parse(PropertyGroup group)
         {
             using (LogContext.PushProperty("Group", group.GetType().Name))
             {
-                foreach (var field in group.MappedFields)
+                foreach ((FieldInfo field, object propertyMap) in group.MappedFields)
                 {
                     try
                     {
+                        // Allow child classes to determine whether this field is valid - i.e. matches expected version
                         if (ValidateProperty(group, field))
                         {
                             try
                             {
-                                object value = FetchValue(group, field);
-                                Log.Verbose("Read property {Property} with value {Value}", field.Field.Name, value);
+                                object rawValue = ReadValueFromInput(group, field);
+                                Log.Verbose("Read property {Property} with value {Value}", field.Name, rawValue);
                                 try
                                 {
-                                    ParseAndApplyValue(field, value);
+                                    ParseAndApplyValue(propertyMap, rawValue);
                                 }
                                 catch (Exception ex)
                                 {
                                     Log.Error(ex, "Error parsing property {Property}; attempted to parse {Value} but operation failed",
-                                        field.Field.Name, value);
+                                        field.Name, rawValue);
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Log.Error(ex, "Failed to fetch value for {Property}", field.Field.Name);
+                                Log.Error(ex, "Failed to fetch value for {Property}", field.Name);
                             }
                         }
                         else
                         {
-                            LogFailedPropertyValidation(group, field);
+                            Log.Debug("{FieldName} skipped because it did not pass the validation check.", field.Name);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, "Error validating property {Property}", field.Field.Name);
+                        Log.Error(ex, "Error validating property {Property}", field.Name);
                     }
                 }
             }
         }
 
         /// <summary>
-        /// 
+        /// Parses <paramref name="rawValue"/> and applies the parsed value to <paramref name="propertyMap"/>.
         /// </summary>
-        /// <param name="field"></param>
-        /// <param name="value"></param>
-        private void ParseAndApplyValue(FieldValuePair field, object value)
+        /// <param name="propertyMap">Specifies the <see cref="PropertyMap{T}"/> object to set the value to.</param>
+        /// <param name="rawValue">Specifies the raw value read from the input source for the property.</param>
+        private void ParseAndApplyValue(object propertyMap, object rawValue)
         {
-            switch (field.Value)
+            switch (propertyMap)
             {
-                case RFmxPropertyMap<bool> boolKey:
+                case PropertyMap<bool> boolProperty:
                     // If delegate is not set, then just directly parse the value
-                    if (boolKey.CustomMap == null)
-                        boolKey.Value = ParseValue<bool>(value);
+                    if (boolProperty.CustomMap == null)
+                        boolProperty.Value = ParseValue<bool>(rawValue);
                     // Otherwise, invoke the delgate to manually map the value
                     else
-                        boolKey.Value = boolKey.CustomMap(value);
+                        boolProperty.Value = boolProperty.CustomMap(rawValue);
                     break;
-                case RFmxPropertyMap<double> doubleKey:
+                case PropertyMap<double> doubleProperty:
                     // If delegate is not set, then just directly parse the value
-                    if (doubleKey.CustomMap == null)
-                        doubleKey.Value = ParseValue<double>(value);
+                    if (doubleProperty.CustomMap == null)
+                        doubleProperty.Value = ParseValue<double>(rawValue);
                     // Otherwise, invoke the delgate to manually map the value
                     else
-                        doubleKey.Value = doubleKey.CustomMap(value);
+                        doubleProperty.Value = doubleProperty.CustomMap(rawValue);
                     break;
-                case RFmxPropertyMap<int> intKey:
+                case PropertyMap<int> intProperty:
                     // If delegate is not set, then just directly parse the value
-                    if (intKey.CustomMap == null)
-                        intKey.Value = ParseValue<int>(value);
+                    if (intProperty.CustomMap == null)
+                        intProperty.Value = ParseValue<int>(rawValue);
                     // Otherwise, invoke the delgate to manually map the value
                     else
-                        intKey.Value = intKey.CustomMap(value);
+                        intProperty.Value = intProperty.CustomMap(rawValue);
                     break;
-                case RFmxPropertyMap<string> stringKey:
+                case PropertyMap<string> stringProperty:
                     // If delegate is not set, then just directly pass the value
-                    if (stringKey.CustomMap == null)
-                        stringKey.Value = ParseValue<string>(value);
+                    if (stringProperty.CustomMap == null)
+                        stringProperty.Value = ParseValue<string>(rawValue);
                     // Otherwise, invoke the delgate to manually map the value
                     else
-                        stringKey.Value = stringKey.CustomMap(value);
+                        stringProperty.Value = stringProperty.CustomMap(rawValue);
                     break;
                 default:
-                    throw new NotImplementedException($"Key type {field.Value.GetType()} not supported");
+                    throw new NotImplementedException($"Key type {propertyMap.GetType()} not supported");
             }
         }
 
-        protected virtual bool ValidateProperty(ParsingGroup group, FieldValuePair field) => true;
-        protected abstract object FetchValue(ParsingGroup group, FieldValuePair field);
+        /// <summary>
+        /// A required override for child classes to implement to define how the <see cref="PropertyMap{T}"/> object
+        /// in <paramref name="field"/> should be read from the input source. Returns an object representing the value
+        /// read from the input source.
+        /// </summary>
+        protected abstract object ReadValueFromInput(PropertyGroup group, FieldInfo field);
+
+        /// <summary>
+        /// An optional method for child classes to override if validation should be performed on a specific
+        /// property. Return true if the property should be parsed and false if it should be skipped.
+        /// </summary>
+        protected virtual bool ValidateProperty(PropertyGroup group, FieldInfo field) => true;
+
+        /// <summary>
+        /// An optional method for child classes to override to define custom parsing for values read from the input source
+        /// if they cannot be directly cast to the expected type.
+        /// </summary>
+        /// <typeparam name="T">Specififes the expected type of <paramref name="value"/></typeparam>
+        /// <param name="value">Specifies the object to apply custom parsing to.</param>
+        /// <returns></returns>
         protected virtual T ParseValue<T>(object value) => (T)value;
         #endregion
 
-
-        #region Optional Log Functions
-        protected virtual void LogFailedPropertyValidation(ParsingGroup group, FieldValuePair field)
-        {
-            Log.Debug("{KeyName} skipped because it did not pass the validation check.", field.Field.Name);
-        }
-        #endregion
     }
 }

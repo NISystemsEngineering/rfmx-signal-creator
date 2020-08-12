@@ -5,41 +5,46 @@ using Serilog;
 
 namespace NationalInstruments.Utilities.WaveformParsing.Plugins
 {
-    class NrRFmxMapper : RfmxMapper<RFmxNRMX>
+    /// <summary>
+    /// Represents a mapper to apply values to an RFmx NR session.
+    /// </summary>
+    public class NrRFmxMapper : RfwsMapper<RFmxNRMX>
     {
         public NrRFmxMapper(RFmxNRMX signal)
             : base(signal) { }
 
-        protected override void ApplyConfiguration(RfwsSection section, RfwsKey<bool> key)
+        #region Overrides
+        protected override void ApplyConfiguration(string selectorString, PropertyMap<bool> key)
         {
-            string overridenSelectorString = OverrideSelectorString(key, section.SelectorString);
+            string overridenSelectorString = OverrideSelectorString(key, selectorString);
             LogKey(key, overridenSelectorString);
             Signal.SetAttributeBool(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
-        protected override void ApplyConfiguration(RfwsSection section, RfwsKey<double> key)
+        protected override void ApplyConfiguration(string selectorString, PropertyMap<double> key)
         {
-            string overridenSelectorString = OverrideSelectorString(key, section.SelectorString);
+            string overridenSelectorString = OverrideSelectorString(key, selectorString);
             LogKey(key, overridenSelectorString);
 
             Signal.SetAttributeDouble(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
-        protected override void ApplyConfiguration(RfwsSection section, RfwsKey<int> key)
+        protected override void ApplyConfiguration(string selectorString, PropertyMap<int> key)
         {
-            string overridenSelectorString = OverrideSelectorString(key, section.SelectorString);
+            string overridenSelectorString = OverrideSelectorString(key, selectorString);
             LogKey(key, overridenSelectorString);
             Signal.SetAttributeInt(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
 
-        protected override void ApplyConfiguration(RfwsSection section, RfwsKey<string> key)
+        protected override void ApplyConfiguration(string selectorString, PropertyMap<string> key)
         {
-            string overridenSelectorString = OverrideSelectorString(key, section.SelectorString);
+            string overridenSelectorString = OverrideSelectorString(key, selectorString);
             LogKey(key, overridenSelectorString);
             Signal.SetAttributeString(overridenSelectorString, key.RfmxPropertyId, key.Value);
         }
+        #endregion
 
-        static void LogKey<T>(RfwsKey<T> key, string selectorString)
+        static void LogKey<T>(PropertyMap<T> key, string selectorString)
         {
             RFmxNRMXPropertyId id = (RFmxNRMXPropertyId)key.RfmxPropertyId;
             if (string.IsNullOrEmpty(selectorString)) selectorString = "<signal>";
@@ -47,9 +52,16 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 id, typeof(T), selectorString, key.Value);
         }
 
-        protected static string OverrideSelectorString<T>(RfwsKey<T> key, string selectorString)
+        /// <summary>
+        /// Overrides the incoming selector string when the <see cref="RfmxNrSelectorStringType"/> value is not 
+        /// <see cref="RfmxNrSelectorStringType.Default"/>.
+        /// <para></para>
+        /// This is used in a few corner cases where a property is defined in one 
+        /// section of an RFWS file but must use a different selector string than the other properties.
+        /// </summary>
+        protected static string OverrideSelectorString<T>(PropertyMap<T> key, string selectorString)
         {
-            var nrKey = (NrRfwsKey<T>)key;
+            var nrKey = (NrRfmxPropertyMap<T>)key;
             switch (nrKey.SelectorStringType)
             {
                 case RfmxNrSelectorStringType.Subblock:

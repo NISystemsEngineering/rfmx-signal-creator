@@ -3,11 +3,10 @@
 namespace NationalInstruments.Utilities.WaveformParsing
 {
     /// <summary>
-    /// Maps a class to a specific section and version contained within an RFWS file. 
-    /// Only valid on <see cref="RfwsSection{T}"/> classes and derived classes.
+    /// Maps a <see cref="RfwsSection"/> class to a specific section and version contained within an RFWS file. 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-    public sealed class RfwsSectionAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
+    public class RfwsSectionAttribute : Attribute
     {
         /// <summary>
         /// Specifies the value of the "name" attribute of the section element.
@@ -31,6 +30,35 @@ namespace NationalInstruments.Utilities.WaveformParsing
             regexMatch = this.regExMatch;
         }
     }
+
+    /// <summary>
+    /// Maps a <see cref="RfwsSectionList{T}"/> class to a specific section and version contained within an RFWS file. 
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
+    public sealed class RfwsSectionListAttribute : RfwsSectionAttribute
+    {
+        /// <summary>
+        /// Specifies the hierarchy of this section list. When the <see cref="RfwsSectionList{T}"/> is parsed, if this is true
+        /// then the object will be initialized with the same section as its parent. Otherwise, the specific section will be searched for
+        /// and used as the parent section.
+        /// <para></para>
+        /// This is necessary because some section lists in the RFWS file are contained with a higher-level subsection (i.e. CarrierManager).
+        /// Howevever, some of the section lists begin without any subsection at all.
+        /// </summary>
+        public bool SameSectionAsParent { get; } = true;
+
+        public RfwsSectionListAttribute(string sectionName)
+            : base(sectionName) 
+        {
+            SameSectionAsParent = false;
+        }
+        public RfwsSectionListAttribute()
+            : base("")
+        {
+            SameSectionAsParent = true;
+        }
+    }
+
     /// <summary>
     /// Specifies how version information should be handled when matching a section or key in the RFWS file.
     /// </summary>
@@ -46,7 +74,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
 
     /// <summary>
     /// Maps a class to a specific key and version contained within an RFWS file.
-    /// Only valid on <see cref="RfwsKey{T}"/> classes and derived classes.
+    /// Only valid on <see cref="PropertyMap{T}"/> classes and derived classes.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
     public sealed class RfwsPropertyAttribute : Attribute
@@ -85,6 +113,7 @@ namespace NationalInstruments.Utilities.WaveformParsing
             Versions = new float[1] { minimumVersion };
             VersionMode = versionMode;
         }
+
         /// <param name="keyName">Specifies the value of the "name" attribute of the key element.</param>
         /// <param name="versionMode">Specifies how the version numbers specified in <paramref name="versions"/> should 
         /// be interpreted when attempting to match a class with an RFWS key.</param>
@@ -94,13 +123,6 @@ namespace NationalInstruments.Utilities.WaveformParsing
             Key = keyName;
             Versions = versions;
             VersionMode = versionMode;
-        }
-
-        public void Deconstruct(out string key, out float[] versions, out RfswVersionMode versionMode)
-        {
-            key = this.Key;
-            versions = this.Versions;
-            versionMode = this.VersionMode;
         }
     }
 }

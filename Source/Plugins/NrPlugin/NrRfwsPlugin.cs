@@ -21,6 +21,15 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
         string filePath;
         XElement rootData;
 
+        public NrRfwsPlugin()
+        {
+
+        }
+        public NrRfwsPlugin(ILogger logger)
+        {
+            Log.Logger = logger;
+        }
+
         public bool CanParse(WaveformConfigFileType file)
         {
             using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
@@ -37,11 +46,12 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 try
                 {
                     rootData = XElement.Load(filePath);
-                    var result = rootData.Descendants("section")
-                        .Where(e => (string)e.Attribute("name") == XmlIdentifer && (int)e.Attribute("version") == XmlNrVersion)
-                        .First();
-                    bool parseable = result != null;
-                    Log.Verbose("CanParse returning {Result} indicating that tag {XmlIdentifer} with version {Version} was or was not found",
+                    var result = from element in rootData.Descendants("section")
+                                 where (string)element.Attribute("name") == XmlIdentifer
+                                 select element;
+
+                    bool parseable = result.FirstOrDefault() != null;
+                    Log.Verbose("CanParse returning {Result} indicating that tag {XmlIdentifer} was or was not found",
                                     parseable, XmlIdentifer, XmlNrVersion);
                     return parseable;
                 }
@@ -62,7 +72,9 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                 {
                     RFmxNRMX signal = instr.GetNRSignalConfiguration($"CarrierSet{carrierSetIndex}");
 
+                    // Select initial measurements so RFmx doesn't complain on launch that nothing is selected
                     signal.SelectMeasurements("", RFmxNRMXMeasurementTypes.Acp | RFmxNRMXMeasurementTypes.ModAcc, true);
+                    // RFmx will complain in some configurations if this enabled; since the plugin identifes the RBs this uneeded
                     signal.SetAutoResourceBlockDetectionEnabled("", RFmxNRMXAutoResourceBlockDetectionEnabled.False);
 
                     using (LogContext.PushProperty("CarrierSet", carrierSetIndex))
@@ -70,33 +82,32 @@ namespace NationalInstruments.Utilities.WaveformParsing.Plugins
                         RfwsParser parser = new RfwsParser();
                         NrRFmxMapper nrMapper = new NrRFmxMapper(signal);
 
-                        CarrierSet carrierSet = new CarrierSet(rootData, carrierSetSection, "");
-                        var carrierSets = parser.ParseSectionAndKeys(carrierSet);
+                        CarrierSet carrierSet = new CarrierSet(carrierSetSection);
+                        parser.Parse(carrierSet);
 
-                        List<RfwsSection> carrierConfigurations = new List<RfwsSection>();
+                        // The carrier sets identify which carrier definition is associated with that subblcok.
+                        // Hence, for each carrier definition that we find, we determine which subblock object
+                        // uses that carrier definition and we use that subblock as the parent object to create
+                        // the carrier.
                         int i = 0;
+                        List<Carrier> carriers = new List<Carrier>();
                         foreach (XElement carrierDefinitionSetion in FindSections(rootData, typeof(Carrier)))
                         {
-                            var matchingSections = carrierSets.Where(p => p is CarrierSet.Subblock sub && sub.CarrierDefinitionIndex == i);
-                            foreach (var matchedSection in matchingSections)
+                            var matchingSections = from Subblock s in carrierSet.Subblocks
+                                                   where s.CarrierDefinitionIndex == i
+                                                   select s;
+                            foreach(Subblock subblock in matchingSections)
                             {
-                                using (LogContext.PushProperty("Carrier", matchedSection.SelectorString))
-                                {
-                                    //Console.WriteLine($"Configuring {matchedSection.SelectorString}");
-                                    Carrier c = new Carrier(carrierDefinitionSetion, matchedSection);
-                                    carrierConfigurations.AddRange(parser.ParseSectionAndKeys(c));
-                                }
+                                Carrier c = new Carrier(carrierDefinitionSetion, subblock);
+                                parser.Parse(c);
+                                carriers.Add(c);
                             }
                             i++;
                         }
 
-                        var allParsedSections = new List<RfwsSection>(carrierSets.Union(carrierConfigurations));
-
-
-                        foreach (var section in allParsedSections)
-                        {
-                            nrMapper.MapSection(section);
-                        }
+                        // Everything has been parsed; now, map the results
+                        nrMapper.Map(carrierSet);
+                        foreach (Carrier c in carriers) nrMapper.Map(c);
                     }
                 }
             }

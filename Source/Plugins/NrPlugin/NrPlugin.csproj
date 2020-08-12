@@ -32,9 +32,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NationalInstruments.RFmx.InstrMX.Fx40, Version=20.0.0.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="NationalInstruments.RFmx.NRMX.Fx40, Version=20.0.0.49152, Culture=neutral, PublicKeyToken=dc6ad606294fc298, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -43,22 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NrRFmxMapper.cs" />
-    <Compile Include="NrRfwsKey.cs" />
+    <Compile Include="NrRfmxPropertyMap.cs" />
     <Compile Include="NrRfwsPlugin.cs" />
     <Compile Include="NrSignalModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Components\Common\Common.csproj">
-      <Project>{ee8d4a5c-c291-4cbe-a8a1-e148cb3840e1}</Project>
-      <Name>Common</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Components\RfwsParser\RfwsParser.csproj">
-      <Project>{5ce77ac6-acc7-4001-88da-b14b06365bb6}</Project>
-      <Name>RfwsParser</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog">
@@ -73,6 +63,18 @@
       <Version>4.1.0</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Components\Common\Common.csproj">
+      <Project>{ee8d4a5c-c291-4cbe-a8a1-e148cb3840e1}</Project>
+      <Name>Common</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Components\RfwsParser\RfwsParser.csproj">
+      <Project>{5ce77ac6-acc7-4001-88da-b14b06365bb6}</Project>
+      <Name>RfwsParser</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
