@@ -1,4 +1,4 @@
-# NI-RFmx Signal Creator
+# Signal Creator for NI-RFmx
 
 This tool simplifies the process of creating NI-RFmx signal configurations by creating them automatically from NI-RFmx Waveform Creator configuration files. For supported waveform configuration files, a NI-RFmx signal will be created that maps all available properties from the configuration file to the appropriate NI-RFmx settings.
 
@@ -8,7 +8,7 @@ This tool simplifies the process of creating NI-RFmx signal configurations by cr
 
 ## Currently Supported Standards
 
-The NI-RFmx Signal Creator features plugin support to support the different standards implemented in NI-RFmx. The list below contains all currently available plugins:
+The Signal Creator features plugin support to support the different standards implemented in NI-RFmx. The list below contains all currently available plugins:
 
 - [5G NR](/Source/Plugins/NrPlugin)
 
@@ -19,8 +19,8 @@ The best way to install is by adding the release feed to NI Package Manager. Thi
 # Usage
 
 1) Do one of the following to launch the program and show the help screen with the list of arguments and examples. 
-    - Search for "NI-RFmx Signal Creator" from the Windows Start Menu, or select it from National Instruments >> NI-RFmx Signal Creator
-    - From the command prompt, launch the program from *C:\Program Files (x86)\National Instruments\Shared\NI-RFmx Signal Creator\RFmxSignalCreator.exe*. 
+    - Search for "Signal Creator for NI-RFmx" from the Windows Start Menu, or select it from National Instruments >> Signal Creator for NI-RFmx
+    - From the command prompt, launch the program from *C:\Program Files (x86)\National Instruments\Shared\Signal Creator for NI-RFmx\SignalCreator.exe*. 
 
 2) Pass the utility one or more supported waveform configuration files. For each file that can be parsed by a plugin, a TDMS file containing the NI-RFmx signal configuration will be created.
 
@@ -42,10 +42,10 @@ The best way to install is by adding the release feed to NI Package Manager. Thi
 ### Examples
 
 ##### Process a single waveform configuration
-`RFmxSignalCreator C:\waveform.rfws`
+`SignalCreator C:\waveform.rfws`
 ##### Process a directory containing multiple waveform configurations with a custom output directory
-`RFmxSignalCreator -o "C:\RFmx Configurations" "C:\Waveform Configurations"`
+`SignalCreator -o "C:\RFmx Configurations" "C:\Waveform Configurations"`
 ##### Process multiple files and diretories containing multiple waveform configurations
-`RFmxSignalCreator -o "C:\RFmx Configurations" waveform1.rfws waveform2.rfws Waveforms\MoreFiles`
+`SignalCreator -o "C:\RFmx Configurations" waveform1.rfws waveform2.rfws Waveforms\MoreFiles`
 ##### Process a directory with verbose logging to the console
-`RFmxSignalCreator -c -v "C:\Waveform Configurations"`
+`SignalCreator -c -v "C:\Waveform Configurations"`
