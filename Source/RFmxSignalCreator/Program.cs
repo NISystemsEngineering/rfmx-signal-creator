@@ -46,7 +46,13 @@ namespace NationalInstruments.Utilities.SignalCreator
         static void Main(string[] args)
         {
             // Parse command line arguments and hand them over to Execute
-            Parser.Default.ParseArguments<Options>(args).WithParsed(o => Execute(o));
+            var result = Parser.Default.ParseArguments<Options>(args);
+            result.WithParsed(o => Execute(o));
+            result.WithNotParsed(o =>
+            {
+                Console.WriteLine("\nPress any key to exit...");
+                Console.ReadKey();
+            });
         }
         public static void Execute(Options o)
         {
