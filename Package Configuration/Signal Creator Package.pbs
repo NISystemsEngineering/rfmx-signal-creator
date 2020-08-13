@@ -39,55 +39,55 @@
         </SourceItem>
         <SourceItem z:Id="i8">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RFmxSignalCreator.exe</RelativePath>
+            <RelativePath>..\Build\Release\RfwsParser.dll</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i9">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RFmxSignalCreator.exe.config</RelativePath>
+            <RelativePath>..\Build\Release\RfwsParser.pdb</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i10">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RFmxSignalCreator.pdb</RelativePath>
+            <RelativePath>..\Build\Release\Serilog.dll</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i11">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RfwsParser.dll</RelativePath>
+            <RelativePath>..\Build\Release\Serilog.Sinks.Console.dll</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i12">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\RfwsParser.pdb</RelativePath>
+            <RelativePath>..\Build\Release\Serilog.Sinks.File.dll</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i13">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\Serilog.dll</RelativePath>
+            <RelativePath>..\Build\Release\Serilog.Sinks.File.pdb</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i14">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\Serilog.Sinks.Console.dll</RelativePath>
+            <RelativePath>..\Build\Release\SignalCreator.exe</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i15">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\Serilog.Sinks.File.dll</RelativePath>
+            <RelativePath>..\Build\Release\SignalCreator.exe.config</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
         <SourceItem z:Id="i16">
             <PluginConfigurationOptions />
-            <RelativePath>..\Build\Release\Serilog.Sinks.File.pdb</RelativePath>
+            <RelativePath>..\Build\Release\SignalCreator.pdb</RelativePath>
             <DependentItems />
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
@@ -114,10 +114,10 @@
                 <SourceItem z:Ref="i11" />
                 <SourceItem z:Ref="i12" />
                 <SourceItem z:Ref="i13" />
+                <SourceItem z:Ref="i17" />
                 <SourceItem z:Ref="i14" />
                 <SourceItem z:Ref="i15" />
                 <SourceItem z:Ref="i16" />
-                <SourceItem z:Ref="i17" />
             </DependentItems>
             <IsDiscoverable>true</IsDiscoverable>
         </SourceItem>
@@ -129,108 +129,108 @@
         <Distribution z:Id="i19" i:type="Package">
             <DistributionItems>
                 <DistributionItem z:Id="i20" i:type="DistributionDirectoryItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator</DestinationRelativePath>
-                    <Name>NI-RFmx Signal Creator</Name>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx</DestinationRelativePath>
+                    <Name>Signal Creator for NI-RFmx</Name>
                     <SourceItem i:nil="true" />
                 </DistributionItem>
                 <DistributionItem z:Id="i21" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Common.dll</DestinationRelativePath>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Common.dll</DestinationRelativePath>
                     <Name>Common.dll</Name>
                     <SourceItem z:Ref="i3" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
                 <DistributionItem z:Id="i22" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Common.pdb</DestinationRelativePath>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Common.pdb</DestinationRelativePath>
                     <Name>Common.pdb</Name>
                     <SourceItem z:Ref="i4" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
                 <DistributionItem z:Id="i23" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RFmxSignalCreator.exe</DestinationRelativePath>
-                    <Name>RFmxSignalCreator.exe</Name>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\RfwsParser.dll</DestinationRelativePath>
+                    <Name>RfwsParser.dll</Name>
                     <SourceItem z:Ref="i8" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
                 <DistributionItem z:Id="i24" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RFmxSignalCreator.exe.config</DestinationRelativePath>
-                    <Name>RFmxSignalCreator.exe.config</Name>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\RfwsParser.pdb</DestinationRelativePath>
+                    <Name>RfwsParser.pdb</Name>
                     <SourceItem z:Ref="i9" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
                 <DistributionItem z:Id="i25" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RFmxSignalCreator.pdb</DestinationRelativePath>
-                    <Name>RFmxSignalCreator.pdb</Name>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Serilog.dll</DestinationRelativePath>
+                    <Name>Serilog.dll</Name>
                     <SourceItem z:Ref="i10" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
                 <DistributionItem z:Id="i26" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RfwsParser.dll</DestinationRelativePath>
-                    <Name>RfwsParser.dll</Name>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Serilog.Sinks.Console.dll</DestinationRelativePath>
+                    <Name>Serilog.Sinks.Console.dll</Name>
                     <SourceItem z:Ref="i11" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
                 <DistributionItem z:Id="i27" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\RfwsParser.pdb</DestinationRelativePath>
-                    <Name>RfwsParser.pdb</Name>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Serilog.Sinks.File.dll</DestinationRelativePath>
+                    <Name>Serilog.Sinks.File.dll</Name>
                     <SourceItem z:Ref="i12" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
                 <DistributionItem z:Id="i28" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Serilog.dll</DestinationRelativePath>
-                    <Name>Serilog.dll</Name>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Serilog.Sinks.File.pdb</DestinationRelativePath>
+                    <Name>Serilog.Sinks.File.pdb</Name>
                     <SourceItem z:Ref="i13" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
                 <DistributionItem z:Id="i29" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Serilog.Sinks.Console.dll</DestinationRelativePath>
-                    <Name>Serilog.Sinks.Console.dll</Name>
-                    <SourceItem z:Ref="i14" />
-                    <PluginConfigurationOptions />
-                    <ProcessDuringStaging>true</ProcessDuringStaging>
-                </DistributionItem>
-                <DistributionItem z:Id="i30" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Serilog.Sinks.File.dll</DestinationRelativePath>
-                    <Name>Serilog.Sinks.File.dll</Name>
-                    <SourceItem z:Ref="i15" />
-                    <PluginConfigurationOptions />
-                    <ProcessDuringStaging>true</ProcessDuringStaging>
-                </DistributionItem>
-                <DistributionItem z:Id="i31" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Serilog.Sinks.File.pdb</DestinationRelativePath>
-                    <Name>Serilog.Sinks.File.pdb</Name>
-                    <SourceItem z:Ref="i16" />
-                    <PluginConfigurationOptions />
-                    <ProcessDuringStaging>true</ProcessDuringStaging>
-                </DistributionItem>
-                <DistributionItem z:Id="i32" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\CommandLine.dll</DestinationRelativePath>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\CommandLine.dll</DestinationRelativePath>
                     <Name>CommandLine.dll</Name>
                     <SourceItem z:Ref="i2" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
-                <DistributionItem z:Id="i33" i:type="DistributionDirectoryItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins</DestinationRelativePath>
+                <DistributionItem z:Id="i30" i:type="DistributionDirectoryItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Plugins</DestinationRelativePath>
                     <Name>Plugins</Name>
                     <SourceItem i:nil="true" />
                 </DistributionItem>
-                <DistributionItem z:Id="i34" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins\Placeholder.txt</DestinationRelativePath>
+                <DistributionItem z:Id="i31" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Plugins\Placeholder.txt</DestinationRelativePath>
                     <Name>Placeholder.txt</Name>
                     <SourceItem z:Ref="i7" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
+                <DistributionItem z:Id="i32" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\SignalCreator.exe</DestinationRelativePath>
+                    <Name>SignalCreator.exe</Name>
+                    <SourceItem z:Ref="i14" />
+                    <PluginConfigurationOptions />
+                    <ProcessDuringStaging>true</ProcessDuringStaging>
+                </DistributionItem>
+                <DistributionItem z:Id="i33" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\SignalCreator.exe.config</DestinationRelativePath>
+                    <Name>SignalCreator.exe.config</Name>
+                    <SourceItem z:Ref="i15" />
+                    <PluginConfigurationOptions />
+                    <ProcessDuringStaging>true</ProcessDuringStaging>
+                </DistributionItem>
+                <DistributionItem z:Id="i34" i:type="DistributionFileItem">
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\SignalCreator.pdb</DestinationRelativePath>
+                    <Name>SignalCreator.pdb</Name>
+                    <SourceItem z:Ref="i16" />
+                    <PluginConfigurationOptions />
+                    <ProcessDuringStaging>true</ProcessDuringStaging>
+                </DistributionItem>
             </DistributionItems>
-            <Name>NI-RFmx Signal Creator</Name>
+            <Name>Signal Creator for NI-RFmx</Name>
             <OutputDirectory>..\Build\Package</OutputDirectory>
             <PluginConfigurationOptions>
                 <ConfigurationOption z:Id="i35">
@@ -254,14 +254,13 @@
             <Architecture>windows_all</Architecture>
             <AutoIncrementVersion>Build</AutoIncrementVersion>
             <BuildStatus z:Id="i40">
-                <BuildEverSuccessful>true</BuildEverSuccessful>
-                <FileName>ni-rfmx-signal-creator_1.0.0.6_windows_all.nipkg</FileName>
-                <Version>1.0.0.6</Version>
+                <FileName />
+                <Version>none</Version>
             </BuildStatus>
             <CompanyName>MyCompany</CompanyName>
             <CustomExecutes>
                 <CustomExecute z:Id="i41">
-                    <Arguments>-Command "$WScriptShell = New-Object -ComObject 'WScript.Shell'; $Shortcut = $WScriptShell.CreateShortcut('%ProgramData%\Microsoft\Windows\Start Menu\Programs\National Instruments\NI-RFmx Signal Creator.lnk'); $Shortcut.Arguments = '/K ""C:\Program Files (x86)\National Instruments\Shared\NI-RFmx Signal Creator\RFmxSignalCreator.exe""" --help'; $Shortcut.TargetPath = 'cmd.exe'; $Shortcut.WorkingDirectory = 'C:\Program Files (x86)\National Instruments\Shared\NI-RFmx Signal Creator\'; $Shortcut.Save()"</Arguments>
+                    <Arguments>-Command "$WScriptShell = New-Object -ComObject 'WScript.Shell'; $Shortcut = $WScriptShell.CreateShortcut('%ProgramData%\Microsoft\Windows\Start Menu\Programs\National Instruments\Signal Creator for NI-RFmx.lnk'); $Shortcut.Arguments = '/K ""C:\Program Files (x86)\National Instruments\Shared\Signal Creator for NI-RFmx\SignalCreator.exe""" --help'; $Shortcut.TargetPath = 'cmd.exe'; $Shortcut.WorkingDirectory = 'C:\Program Files (x86)\National Instruments\Shared\Signal Creator for NI-RFmx\'; $Shortcut.Save()"</Arguments>
                     <ExeName>WindowsPowerShell\v1.0\powershell.exe</ExeName>
                     <HideConsoleWindow>true</HideConsoleWindow>
                     <IgnoreErrors>true</IgnoreErrors>
@@ -282,48 +281,48 @@
                 </CustomExecute>
             </CustomExecutes>
             <Description>This tool simplifies the process of creating NI-RFmx signal configurations by creating them automatically from NI-RFmx Waveform Creator configuration files. For supported waveform configuration files, a NI-RFmx signal will be created that maps all available properties from the configuration file to the appropriate NI-RFmx settings.</Description>
-            <DisplayName>NI-RFmx Signal Creator</DisplayName>
-            <FileName>ni-rfmx-signal-creator_1.0.0.7_windows_all.nipkg</FileName>
-            <Homepage>https://github.com/NISystemsEngineering/ni-rfmx-signal-creator</Homepage>
+            <DisplayName>Signal Creator for NI-RFmx</DisplayName>
+            <FileName>rfmx-signal-creator_1.0.0.7_windows_all.nipkg</FileName>
+            <Homepage>https://github.com/NISystemsEngineering/rfmx-signal-creator</Homepage>
             <MaintainerEmail>michael.whitten@ni.com</MaintainerEmail>
             <MaintainerName>National Instruments</MaintainerName>
             <Messages xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-            <PackageName>ni-rfmx-signal-creator</PackageName>
+            <PackageName>rfmx-signal-creator</PackageName>
             <PackageRelationships />
             <ProductName>MyProduct</ProductName>
             <ReleaseNotes>Initial release of tool.</ReleaseNotes>
             <Section>Utilities</Section>
-            <Synopsis>ni-rfmx-signal-creator</Synopsis>
+            <Synopsis>rfmx-signal-creator</Synopsis>
             <Version>1.0.0.7</Version>
         </Distribution>
         <Distribution z:Id="i43" i:type="Package">
             <DistributionItems>
                 <DistributionItem z:Id="i44" i:type="DistributionDirectoryItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator</DestinationRelativePath>
-                    <Name>NI-RFmx Signal Creator</Name>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx</DestinationRelativePath>
+                    <Name>Signal Creator for NI-RFmx</Name>
                     <SourceItem i:nil="true" />
                 </DistributionItem>
                 <DistributionItem z:Id="i45" i:type="DistributionDirectoryItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins</DestinationRelativePath>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Plugins</DestinationRelativePath>
                     <Name>Plugins</Name>
                     <SourceItem i:nil="true" />
                 </DistributionItem>
                 <DistributionItem z:Id="i46" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins\NrPlugin.dll</DestinationRelativePath>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Plugins\NrPlugin.dll</DestinationRelativePath>
                     <Name>NrPlugin.dll</Name>
                     <SourceItem z:Ref="i5" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
                 <DistributionItem z:Id="i47" i:type="DistributionFileItem">
-                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\NI-RFmx Signal Creator\Plugins\NrPlugin.pdb</DestinationRelativePath>
+                    <DestinationRelativePath>[National Instruments Shared (32-bit)]\Signal Creator for NI-RFmx\Plugins\NrPlugin.pdb</DestinationRelativePath>
                     <Name>NrPlugin.pdb</Name>
                     <SourceItem z:Ref="i6" />
                     <PluginConfigurationOptions />
                     <ProcessDuringStaging>true</ProcessDuringStaging>
                 </DistributionItem>
             </DistributionItems>
-            <Name>NR Plugin for NI-RFmx Signal Creator</Name>
+            <Name>NR Plugin for Signal Creator</Name>
             <OutputDirectory>..\Build\Package</OutputDirectory>
             <PluginConfigurationOptions>
                 <ConfigurationOption z:Id="i48">
@@ -344,25 +343,24 @@
             <Architecture>windows_all</Architecture>
             <AutoIncrementVersion>Build</AutoIncrementVersion>
             <BuildStatus z:Id="i52">
-                <BuildEverSuccessful>true</BuildEverSuccessful>
-                <FileName>ni-rfmx-signal-creator-plugin-nr_1.0.0.6_windows_all.nipkg</FileName>
-                <Version>1.0.0.6</Version>
+                <FileName />
+                <Version>none</Version>
             </BuildStatus>
             <CompanyName>MyCompany</CompanyName>
             <CustomExecutes />
-            <Description>A plugin that enables the NI-RFmx Signal Creator to parse RFmx Waveform Creator files (.rfws) containing 5G New Radio waveform configurations. </Description>
-            <DisplayName>NR Plugin for NI-RFmx Signal Creator</DisplayName>
-            <FileName>ni-rfmx-signal-creator-plugin-nr_1.0.0.7_windows_all.nipkg</FileName>
-            <Homepage>https://github.com/NISystemsEngineering/ni-rfmx-signal-creator</Homepage>
+            <Description>A plugin that enables the Signal Creator for NI-RFmx to parse RFmx Waveform Creator files (.rfws) containing 5G New Radio waveform configurations. </Description>
+            <DisplayName>NR Plugin for Signal Creator</DisplayName>
+            <FileName>rfmx-signal-creator-plugin-nr_1.0.0.7_windows_all.nipkg</FileName>
+            <Homepage>https://github.comhttps://github.com/NISystemsEngineering/rfmx-signal-creator</Homepage>
             <MaintainerEmail>michael.whitten@ni.com</MaintainerEmail>
             <MaintainerName>National Instruments</MaintainerName>
             <Messages xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-            <PackageName>ni-rfmx-signal-creator-plugin-nr</PackageName>
+            <PackageName>rfmx-signal-creator-plugin-nr</PackageName>
             <PackageRelationships>
                 <PackageRelationship z:Id="i53">
                     <Constraint>LaterOrEqual</Constraint>
-                    <DisplayName>NI-RFmx Signal Creator</DisplayName>
-                    <PackageName>ni-rfmx-signal-creator</PackageName>
+                    <DisplayName>Signal Creator for NI-RFmx</DisplayName>
+                    <PackageName>rfmx-signal-creator</PackageName>
                     <Relation>Depends</Relation>
                     <Version>1.0.0.0</Version>
                     <VersionType>Custom</VersionType>
@@ -379,7 +377,7 @@
             <ProductName>MyProduct-1</ProductName>
             <ReleaseNotes>Initial release of plugin supporting most features of the 5G NR standard.</ReleaseNotes>
             <Section>Utilities</Section>
-            <Synopsis>ni-rfmx-signal-creator-plugin-nr</Synopsis>
+            <Synopsis>rfmx-signal-creator-plugin-nr</Synopsis>
             <Version>1.0.0.7</Version>
         </Distribution>
     </Distributions>
@@ -387,7 +385,7 @@
         <Feed z:Id="i55" i:type="PackageInstaller">
             <Configurable>false</Configurable>
             <Enabled>false</Enabled>
-            <Name>NI-RFmx Signal Creator Installer</Name>
+            <Name>Signal Creator for NI-RFmx Installer</Name>
             <Products>
                 <Product z:Id="i56" i:type="PackageInstallerPackageProduct">
                     <Package z:Ref="i19" />
