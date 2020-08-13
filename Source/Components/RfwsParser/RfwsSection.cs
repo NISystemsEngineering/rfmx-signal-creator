@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using NationalInstruments.RFmx.InstrMX;
 using Serilog;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Represents a section (tag "section") contained within an RFWS file and the RFmx signal and selector string

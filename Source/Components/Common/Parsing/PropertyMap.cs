@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Represents a single RFmx property and the information needed to translate it from the incoming value to the value

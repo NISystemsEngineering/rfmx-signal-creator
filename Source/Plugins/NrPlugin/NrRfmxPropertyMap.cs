@@ -1,4 +1,4 @@
-﻿namespace NationalInstruments.Utilities.WaveformParsing.Plugins
+﻿namespace NationalInstruments.Utilities.SignalCreator.Plugins
 {
     /// <summary>
     /// Defines custom behavior for using the selector string when the <see cref="NrRfmxPropertyMap{T}"/> value is applied

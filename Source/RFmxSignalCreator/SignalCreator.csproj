@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>RFmxSignalCreator</RootNamespace>
-    <AssemblyName>RFmxSignalCreator</AssemblyName>
+    <RootNamespace>SignalCreator</RootNamespace>
+    <AssemblyName>SignalCreator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

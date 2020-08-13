@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using NationalInstruments.RFmx.InstrMX;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Represents a group of <see cref="PropertyMap{T}"/> objects and the RFmx selector string required to appropriately configure the properties.

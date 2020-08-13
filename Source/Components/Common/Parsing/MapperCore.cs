@@ -4,7 +4,7 @@ using NationalInstruments.RFmx.InstrMX;
 using Serilog;
 using Serilog.Context;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Represents the core class used to apply parsed values for a property group to an RFmx session. Concrete

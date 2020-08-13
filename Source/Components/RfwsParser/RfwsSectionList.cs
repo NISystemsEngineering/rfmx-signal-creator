@@ -5,7 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Serilog;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     // -------------------------------------------------
     // Example Section for this Class

@@ -3,7 +3,7 @@ using System.IO;
 using NationalInstruments.RFmx.InstrMX;
 using Serilog;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Represents a waveform configuration file type.

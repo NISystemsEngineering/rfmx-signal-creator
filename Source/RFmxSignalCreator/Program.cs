@@ -7,9 +7,8 @@ using System.Linq;
 using System.Collections.Generic;
 using Serilog;
 using Serilog.Events;
-using NationalInstruments.Utilities.WaveformParsing;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     class Program
     {

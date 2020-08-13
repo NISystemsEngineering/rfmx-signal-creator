@@ -1,7 +1,7 @@
 ﻿using System;
 using NationalInstruments.RFmx.InstrMX;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Adds additional mapping functionality on the base to support subsections in the RFWS file

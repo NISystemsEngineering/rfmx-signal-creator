@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using NationalInstruments.RFmx.NRMX;
 using Serilog;
 
-namespace NationalInstruments.Utilities.WaveformParsing.Plugins
+namespace NationalInstruments.Utilities.SignalCreator.Plugins
 {
     /// <summary>
     /// Represents a mapper to apply values to an RFmx NR session.

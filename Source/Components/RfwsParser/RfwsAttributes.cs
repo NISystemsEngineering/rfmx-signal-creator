@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Maps a <see cref="RfwsSection"/> class to a specific section and version contained within an RFWS file. 

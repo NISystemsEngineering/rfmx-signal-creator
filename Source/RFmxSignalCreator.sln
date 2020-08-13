@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RFmxSignalCreator", "RFmxSignalCreator\RFmxSignalCreator.csproj", "{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalCreator", "RFmxSignalCreator\SignalCreator.csproj", "{9D8472D0-B836-44D7-BDD0-B971AC45AFA3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{40DCEDD7-596E-4BFB-B6D2-0AA60E1BB6C7}"
 EndProject

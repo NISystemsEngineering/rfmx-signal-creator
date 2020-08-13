@@ -1,7 +1,7 @@
 ﻿using System;
 using NationalInstruments.RFmx.InstrMX;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Represents a waveform configuring file parsing pluging. Any plugin must also implement the <see cref="WaveformFilePlugInAttribute"></see>.

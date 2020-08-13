@@ -3,7 +3,7 @@ using Serilog.Context;
 using System;
 using System.Reflection;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Represents the core parsing functionality reading values from the input and parsing those values to 

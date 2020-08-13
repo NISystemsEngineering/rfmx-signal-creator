@@ -3,7 +3,7 @@ using NationalInstruments.RFmx.InstrMX;
 using NationalInstruments.RFmx.NRMX;
 using Serilog;
 
-namespace NationalInstruments.Utilities.WaveformParsing.Plugins
+namespace NationalInstruments.Utilities.SignalCreator.Plugins
 {
     using static RfwsParserUtilities;
 

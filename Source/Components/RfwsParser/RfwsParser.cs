@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using Serilog;
 using Serilog.Context;
 
-namespace NationalInstruments.Utilities.WaveformParsing
+namespace NationalInstruments.Utilities.SignalCreator
 {
     /// <summary>
     /// Implements parsing functionality for RFWS waveform cofniguration files.

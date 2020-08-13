@@ -8,7 +8,7 @@ using Serilog;
 using Serilog.Context;
 
 
-namespace NationalInstruments.Utilities.WaveformParsing.Plugins
+namespace NationalInstruments.Utilities.SignalCreator.Plugins
 {
     using static RfwsParserUtilities;
 
