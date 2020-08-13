@@ -15,7 +15,7 @@ namespace NationalInstruments.Utilities.SignalCreator
     public static class WaveformPluginFactory
     {
         public const string PluginDirectory = "Plugins";
-        public static string FullPluginDirectoryPath => Path.Combine(Environment.CurrentDirectory, PluginDirectory);
+        public static string FullPluginDirectoryPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PluginDirectory);
 
         static List<IWaveformFilePlugin> _loadedPlugins;
 
