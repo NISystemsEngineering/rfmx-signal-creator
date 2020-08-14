@@ -35,29 +35,31 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
             using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
             {
                 // No point in continuing if it is a TDMS file
-                if (file is TdmsFile)
+                if (file is RfwsFile)
+                {
+                    filePath = file.FilePath;
+
+                    try
+                    {
+                        rootData = XElement.Load(filePath);
+                        var result = from element in rootData.Descendants("section")
+                                     where (string)element.Attribute("name") == XmlIdentifer
+                                     select element;
+
+                        bool parseable = result.FirstOrDefault() != null;
+                        Log.Verbose("CanParse returning {Result} indicating that tag {XmlIdentifer} was or was not found",
+                                        parseable, XmlIdentifer, XmlNrVersion);
+                        return parseable;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Verbose(ex, "CanParse returning false because an exception occurred loading the file.");
+                        return false;
+                    }
+                }
+                else
                 {
                     Log.Verbose("CanParse returning false because file is a TDMS file.");
-                    return false;
-                }
-
-                filePath = file.FilePath;
-
-                try
-                {
-                    rootData = XElement.Load(filePath);
-                    var result = from element in rootData.Descendants("section")
-                                 where (string)element.Attribute("name") == XmlIdentifer
-                                 select element;
-
-                    bool parseable = result.FirstOrDefault() != null;
-                    Log.Verbose("CanParse returning {Result} indicating that tag {XmlIdentifer} was or was not found",
-                                    parseable, XmlIdentifer, XmlNrVersion);
-                    return parseable;
-                }
-                catch (Exception ex)
-                {
-                    Log.Verbose(ex, "CanParse returning false because an exception occurred loading the file.");
                     return false;
                 }
             }
