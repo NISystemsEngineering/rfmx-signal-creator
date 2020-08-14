@@ -67,6 +67,12 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
 
         public void Parse(WaveformConfigFileType file, RFmxInstrMX instr)
         {
+            // Ensure CanParse was first called prior to executing this function
+            if (rootData == null)
+            {
+                bool result = CanParse(file);
+                if (!result) throw new InvalidOperationException($"{file.FileName} is not a valid file for this plugin.");
+            }
             using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
             {
                 int carrierSetIndex = 0;
