@@ -48,6 +48,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NrParsingUtilities.cs" />
     <Compile Include="NrRFmxMapper.cs" />
     <Compile Include="NrRfmxPropertyMap.cs" />
     <Compile Include="NrRfwsPlugin.cs" />
@@ -70,6 +71,7 @@
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
       <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
