@@ -334,6 +334,8 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
 
         [RfwsSectionList(version = "1")]
         public RfwsSectionList<UeSettings> Users;
+        [RfwsSectionList(version = "1")]
+        public RfwsSectionList<CoresetSettings> Coresets;
 
     }
     // Section has number in title
@@ -392,7 +394,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
         public override void CustomConfigure(ISignalConfiguration signal)
         {
             RFmxNRMX nrSignal = (RFmxNRMX)signal;
-            
+
             // Configure RB clusters
             if (Version >= 3)
             {
@@ -401,7 +403,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
 
                 nrSignal.ComponentCarrier.SetPdschNumberOfResourceBlockClusters(SelectorString, rbConfigs.Count);
 
-                for(int i = 0; i < rbConfigs.Count; i++)
+                for (int i = 0; i < rbConfigs.Count; i++)
                 {
                     string clusterString = RFmxNRMX.BuildPdschClusterString(SelectorString, i);
                     nrSignal.ComponentCarrier.SetPdschResourceBlockOffset(clusterString, rbConfigs[i].offset);
@@ -410,7 +412,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
             }
 
         }
-        public override IEnumerable<RfwsSection> SubSections => base.SubSections;   
+        //public override IEnumerable<RfwsSection> SubSections => base.SubSections;   
 
         public PdschSlotSettings(XElement childSection, RfwsSection parentSection)
             : base(childSection, parentSection)
@@ -556,7 +558,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
     }
 
 
-    public class PdschCluster : RfwsSection
+    /*public class PdschCluster : RfwsSection
     {
         public int ClusterNumber { get; }
         //public override string SelectorString => RFmxNRMX.BuildPdschClusterString(base.SelectorString, ClusterNumber);
@@ -575,7 +577,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschNumberOfResourceBlocks
         };
-    }
+    }*/
 
     public class PuschSettings : RfwsSectionList<PuschSlotSettings>
     {
@@ -594,6 +596,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
     public class PuschSlotSettings : RfwsSection
     {
         const string KeyPuschSlotIndex = "Array Index";
+        public const string KeyRbAllocation = "RB Allocation";
         public int PuschSlotIndex { get; }
 
         public override string SelectorString
@@ -604,6 +607,31 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
         {
             PuschSlotIndex = int.Parse(SectionRoot.ReadKeyValue(KeyPuschSlotIndex));
         }
+
+
+        public override void CustomConfigure(ISignalConfiguration signal)
+        {
+            RFmxNRMX nrSignal = (RFmxNRMX)signal;
+
+            // Configure RB clusters
+            if (Version >= 3)
+            {
+                string rbAllocation = RfwsParserUtilities.ReadKeyValue(SectionRoot, KeyRbAllocation);
+                var rbConfigs = NrParsingUtilities.ParseRbAllocationString(rbAllocation);
+
+                nrSignal.ComponentCarrier.SetPuschNumberOfResourceBlockClusters(SelectorString, rbConfigs.Count);
+
+                for (int i = 0; i < rbConfigs.Count; i++)
+                {
+                    string clusterString = RFmxNRMX.BuildPuschClusterString(SelectorString, i);
+                    nrSignal.ComponentCarrier.SetPuschResourceBlockOffset(clusterString, rbConfigs[i].offset);
+                    nrSignal.ComponentCarrier.SetPuschNumberOfResourceBlocks(clusterString, rbConfigs[i].numRbs);
+                }
+            }
+
+        }
+
+
         [RfwsProperty("Slot Allocation", RfwsVersionMode.SupportedVersionsAndLater, 3, 6)]
         public NrRfmxPropertyMap<string> RbAllocation = new NrRfmxPropertyMap<string>
         {
@@ -752,26 +780,149 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
     [RfwsSection(@"CORESET Settings \d+", version = "1", regExMatch = true)]
     public class CoresetSettings : RfwsSection
     {
+        public const string KeyRbAllocation = "RB Allocation";
         public const string KeyCoresetIndex = "Coreset Index";
+        public int CoresetIndex { get; }
 
         public CoresetSettings(XElement childSection, RfwsSection parentSection)
             : base(childSection, parentSection)
         {
-            Log.Warning("Configuration includes one or more Coresets. Coresets are not supported in the " +
-                "current version of this plugin and will be ignored.");
-            //int coreSetIndex = int.Parse(FetchValue(SectionRoot, KeyCoresetIndex));
-            //Signal.ComponentCarrier.SetNumberOfCoresets(SelectorString, coreSetIndex + 1);
-            //SelectorString = RFmxNRMX.BuildCoresetString(SelectorString, coreSetIndex);
+            CoresetIndex = int.Parse(SectionRoot.ReadKeyValue(KeyCoresetIndex));
         }
-        /*[RfwsProperty("Coreset Num Symbols", 1)]
-        public NrRfwsKey<int> NumberOfCoreset = new NrRfwsKey<int>
+
+        public override string SelectorString => RFmxNRMX.BuildCoresetString(base.SelectorString, CoresetIndex);
+
+        public override void CustomConfigure(ISignalConfiguration signal)
+        {
+            // Configure RB clusters
+            if (Version >= 1)
+            {
+                RFmxNRMX nrSignal = (RFmxNRMX)signal;
+
+                string rbAllocation = RfwsParserUtilities.ReadKeyValue(SectionRoot, KeyRbAllocation);
+                var rbConfigs = NrParsingUtilities.ParseRbAllocationString(rbAllocation);
+
+                nrSignal.ComponentCarrier.SetCoresetNumberOfResourceBlockClusters(SelectorString, rbConfigs.Count);
+
+                for (int i = 0; i < rbConfigs.Count; i++)
+                {
+                    string clusterString = RFmxNRMX.BuildCoresetClusterString(SelectorString, i);
+                    nrSignal.ComponentCarrier.SetCoresetResourceBlockOffset(clusterString, rbConfigs[i].offset);
+                    nrSignal.ComponentCarrier.SetCoresetNumberOfResourceBlocks(clusterString, rbConfigs[i].numRbs);
+                }
+
+                if (CceToRegMappingType.Value == (int)RFmxNRMXCoresetCceToRegMappingType.NonInterleaved)
+                {
+                    RegBundleSize.Value = 6;
+                }
+            }
+
+        }
+
+        #region RFmx Properties
+        // Does not appear to be supported in RFmx 20.0
+        /*[RfwsProperty("PDCCH UE Count", 1)]
+        public NrRfmxPropertyMap<int> PdcchUeCount = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.
+        };*/
+        [RfwsProperty("Coreset Num Symbols", 1)]
+        public NrRfmxPropertyMap<int> NumberOfSymbols = new NrRfmxPropertyMap<int>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.CoresetNumberOfSymbols,
         };
-        [RfwsProperty("Coreset Num Symbols", 1)]
-        public NrRfwsKey<int> NumberOfCoreset = new NrRfwsKey<int>
+        [RfwsProperty("Symbol Offset", 1)]
+        public NrRfmxPropertyMap<int> SymbolOffset = new NrRfmxPropertyMap<int>
         {
-            RfmxPropertyId = (int)RFmxNRMXPropertyId.Coreset,
-        };*/
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.CoresetSymbolOffset,
+        };
+        // Not implemented: DMRS Scrambling ID/Mode. Do not appear to be implemented in RFmx NR 20.0
+        private static readonly Dictionary<string, RFmxNRMXCoresetPrecodingGranularity> GranularityMap =
+            new Dictionary<string, RFmxNRMXCoresetPrecodingGranularity>
+            {
+                ["Same As REG Bundle"] = RFmxNRMXCoresetPrecodingGranularity.SameAsRegBundle,
+                ["All Contiguous RBs"] = RFmxNRMXCoresetPrecodingGranularity.AllContiguousResourceBlocks
+            };
+        [RfwsProperty("Precoder Granularity", 1)]
+        public NrRfmxPropertyMap<int> PrecoderGranularity = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.CoresetPrecodingGranularity,
+            CustomMap = (value) => (int)GranularityMap[(string)value]
+        };
+        [RfwsProperty("CCE to REG Mapping Type", 1)]
+        public NrRfmxPropertyMap<int> CceToRegMappingType = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.CoresetCceToRegMappingType,
+            CustomMap = (value) =>
+            {
+                string valueString = (string)value;
+                valueString = valueString.Replace("-", string.Empty);
+                return (int)valueString.ToEnum<RFmxNRMXCoresetCceToRegMappingType>();
+            }
+        };
+        [RfwsProperty("REG Bundle Size", 1)]
+        public NrRfmxPropertyMap<int> RegBundleSize = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.CoresetRegBundleSize
+        };
+        [RfwsProperty("Interleaver Size", 1)]
+        public NrRfmxPropertyMap<int> InterleaverSize = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.CoresetInterleaverSize
+        };
+        [RfwsProperty("Shift Index", 1)]
+        public NrRfmxPropertyMap<int> ShiftIndex = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.CoresetShiftIndex
+        };
+        #endregion
+
+        [RfwsSectionList(version = "2")]
+        public PdcchUeSettings PdcchUeSettings;
+    }
+
+    //[RfwsSectionList(@"Pdcch Ue Settings \d+", version = "2", regExMatch = true)]
+    public class PdcchUeSettings : RfwsSectionList<PdcchSlotSettings>
+    {
+        public PdcchUeSettings(XElement childSection, RfwsSection parentSection) 
+            : base(childSection, parentSection) { }
+
+        [RfwsProperty("PDCCH Slot Count", 1)]
+        public NrRfmxPropertyMap<int> NumberOfPdcchConfigs = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.NumberOfPdcchConfigurations
+        };
+    }
+    [RfwsSectionList(@"PDCCH Slot Settings \d+", version = "3", regExMatch = true)]
+    public class PdcchSlotSettings : RfwsSection
+    {
+        const string KeyIndex = "Index";
+        public int Index { get; }
+       
+        public PdcchSlotSettings(XElement childSection, RfwsSection parentSection)
+            : base(childSection, parentSection) 
+        {
+            Index = int.Parse(SectionRoot.ReadKeyValue(KeyIndex));
+        }
+
+        public override string SelectorString => RFmxNRMX.BuildPdcchString(base.SelectorString, Index);
+
+        #region RFmx Properties
+        [RfwsProperty("Cce Aggregation Level", 3)]
+        public NrRfmxPropertyMap<int> CceAggregationLevel = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.PdcchCceAggregationLevel,
+        };
+        [RfwsProperty("CCE Offset", 3)]
+        public NrRfmxPropertyMap<int> CceOffset = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.PdcchCceOffset,
+        };
+        [RfwsProperty("Slot Allocation", 3)]
+        public NrRfmxPropertyMap<string> SlotAllocation = new NrRfmxPropertyMap<string>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.PdcchSlotAllocation
+        };
+        #endregion
     }
 }

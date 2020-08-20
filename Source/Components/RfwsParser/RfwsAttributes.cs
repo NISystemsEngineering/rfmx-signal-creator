@@ -6,7 +6,7 @@ namespace NationalInstruments.Utilities.SignalCreator
     /// <summary>
     /// Maps a <see cref="RfwsSection"/> class to a specific section and version contained within an RFWS file. 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
     public class RfwsSectionAttribute : Attribute
     {
         /// <summary>
@@ -35,7 +35,7 @@ namespace NationalInstruments.Utilities.SignalCreator
     /// <summary>
     /// Maps a <see cref="RfwsSectionList{T}"/> class to a specific section and version contained within an RFWS file. 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
     public sealed class RfwsSectionListAttribute : RfwsSectionAttribute
     {
         /// <summary>
@@ -77,7 +77,7 @@ namespace NationalInstruments.Utilities.SignalCreator
     /// Maps a class to a specific key and version contained within an RFWS file.
     /// Only valid on <see cref="PropertyMap{T}"/> classes and derived classes.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
     public sealed class RfwsPropertyAttribute : Attribute
     {
         /// <summary>
