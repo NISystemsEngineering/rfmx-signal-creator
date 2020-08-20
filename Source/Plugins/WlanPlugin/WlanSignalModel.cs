@@ -9,9 +9,9 @@ using NationalInstruments.RFToolkits.Interop;
 namespace NationalInstruments.Utilities.SignalCreator.Plugins
 {
 
-    class WlanSignal : PropertyGroup
+    class WlanSignalGroup : PropertyGroup
     {
-        public WlanSignal(string selectorString)
+        public WlanSignalGroup(string selectorString)
             : base(selectorString) { }
 
         [WlanProperty(niWLANGProperties.ChannelBandwidth)]
@@ -20,7 +20,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
             RfmxPropertyId = (int)RFmxWlanMXPropertyId.ChannelBandwidth,
         };
 
-        private static Dictionary<int, RFmxWlanMXStandard> standardMap = new Dictionary<int, RFmxWlanMXStandard>
+        private static readonly Dictionary<int, RFmxWlanMXStandard> standardMap = new Dictionary<int, RFmxWlanMXStandard>
         {
             [niWLANGConstants.Standard80211AcMimoOfdm] = RFmxWlanMXStandard.Standard802_11ac,
             [niWLANGConstants.Standard80211agOfdm] = RFmxWlanMXStandard.Standard802_11ag,

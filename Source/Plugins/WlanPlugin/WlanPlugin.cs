@@ -51,12 +51,12 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
                 }
                 WlanParser parser = new WlanParser(wlan);
 
-                WlanSignal signal = new WlanSignal("");
+                WlanSignalGroup signal = new WlanSignalGroup("");
                 parser.Parse(signal);
 
-                var rfmxWlanSingal = instr.GetWlanSignalConfiguration();
+                RFmxWlanMX rfmxWlanSignal = instr.GetWlanSignalConfiguration();
 
-                WlanRFmxMapper mapper = new WlanRFmxMapper(rfmxWlanSingal);
+                WlanRFmxMapper mapper = new WlanRFmxMapper(rfmxWlanSignal);
                 mapper.Map(signal);
             }
         }
