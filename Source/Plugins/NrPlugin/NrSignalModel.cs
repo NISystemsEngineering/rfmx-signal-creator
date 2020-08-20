@@ -1,11 +1,13 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Xml.Linq;
 using NationalInstruments.RFmx.InstrMX;
 using NationalInstruments.RFmx.NRMX;
+using NationalInstruments.Utilities.SignalCreator;
 using Serilog;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins
 {
-    using static RfwsParserUtilities;
+    using static NationalInstruments.Utilities.SignalCreator.RfwsParserUtilities;
 
 
     //[RfwsSection]
@@ -112,7 +114,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
         [RfwsSection(@"Ssb Settings", version = "4")]
         public SsbSettings Ssb;
         [RfwsSectionList(version = "3")]
-        public RfwsSectionList<BandwidthPartSettings> BandwidthParts; 
+        public RfwsSectionList<BandwidthPartSettings> BandwidthParts;
 
     }
     public class CellSettings : RfwsSection
@@ -363,7 +365,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
         [RfwsSectionList("PUSCH Settings", version = "1")]
         public PuschSettings PuschSlots;
     }
-    
+
     public class PdschSettings : RfwsSectionList<PdschSlotSettings>
     {
         public PdschSettings(XElement childSection, RfwsSection parentSection)
@@ -380,10 +382,35 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
     public class PdschSlotSettings : RfwsSection
     {
         public const string KeyPdschSlotIndex = "Array Index";
+        // Versions 3, 4
+        public const string KeyRbAllocation = "RB Allocation";
         public int PdschSlotIndex { get; }
 
         public override string SelectorString
             => RFmxNRMX.BuildPdschString(base.SelectorString, PdschSlotIndex);
+
+        public override void CustomConfigure(ISignalConfiguration signal)
+        {
+            RFmxNRMX nrSignal = (RFmxNRMX)signal;
+            
+            // Configure RB clusters
+            if (Version >= 3)
+            {
+                string rbAllocation = RfwsParserUtilities.ReadKeyValue(SectionRoot, KeyRbAllocation);
+                var rbConfigs = NrParsingUtilities.ParseRbAllocationString(rbAllocation);
+
+                nrSignal.ComponentCarrier.SetPdschNumberOfResourceBlockClusters(SelectorString, rbConfigs.Count);
+
+                for(int i = 0; i < rbConfigs.Count; i++)
+                {
+                    string clusterString = RFmxNRMX.BuildPdschClusterString(SelectorString, i);
+                    nrSignal.ComponentCarrier.SetPdschResourceBlockOffset(clusterString, rbConfigs[i].offset);
+                    nrSignal.ComponentCarrier.SetPdschNumberOfResourceBlocks(clusterString, rbConfigs[i].numRbs);
+                }
+            }
+
+        }
+        public override IEnumerable<RfwsSection> SubSections => base.SubSections;   
 
         public PdschSlotSettings(XElement childSection, RfwsSection parentSection)
             : base(childSection, parentSection)
@@ -525,6 +552,28 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
         public NrRfmxPropertyMap<string> DmrsPorts = new NrRfmxPropertyMap<string>
         {
             RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschDmrsAntennaPorts,
+        };
+    }
+
+
+    public class PdschCluster : RfwsSection
+    {
+        public int ClusterNumber { get; }
+        //public override string SelectorString => RFmxNRMX.BuildPdschClusterString(base.SelectorString, ClusterNumber);
+        
+        public PdschCluster(XElement childSection, RfwsSection parentSection, int clusterNumber)
+            : base(childSection, parentSection)
+        {
+            ClusterNumber = clusterNumber;  
+        }
+
+        public NrRfmxPropertyMap<int> RbOffset = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschResourceBlockOffset
+        };
+        public NrRfmxPropertyMap<int> NumRbs = new NrRfmxPropertyMap<int>
+        {
+            RfmxPropertyId = (int)RFmxNRMXPropertyId.PdschNumberOfResourceBlocks
         };
     }
 
