@@ -125,7 +125,7 @@
                     <section name="PDSCH Slot Settings 0" version="4">
                       <key name="Array Index">0</key>
                       <key name="PDSCH Present in SSB RB">true</key>
-                      <key name="RB Allocation">0:last</key>
+                      <key name="RB Allocation">0:10, 15:20, 11,13,14,59:last</key>
                       <key name="Slot Allocation">0:last</key>
                       <key name="Symbol Allocation">0:last</key>
                       <key name="Number of Layers">1</key>
@@ -884,32 +884,32 @@
                   <key name="count">6</key>
                   <section name="0" version="1">
                     <key name="uid">ModulationParameterSettings</key>
-                    <key name="wid">58b7de82-8519-4a7e-a007-35c0a9f21506</key>
+                    <key name="wid">df40cba5-7282-441b-8b3f-f71c13a7751e</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="1" version="1">
                     <key name="uid">MultiCarrierPanelNR</key>
-                    <key name="wid">493230c2-0968-4a09-a0da-c1a1721c873c</key>
+                    <key name="wid">f09c20d4-ff53-40ad-9bf9-3327a973bb72</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="2" version="1">
                     <key name="uid">FilterParameterSettings</key>
-                    <key name="wid">08e99c42-d815-4d4d-9d06-caafafdcba8f</key>
+                    <key name="wid">46db476d-f4e3-4ad9-87e3-41d0f8adde50</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="3" version="1">
                     <key name="uid">CfrParameterSettings</key>
-                    <key name="wid">2f1faa2d-26ac-499a-aaf4-dadb0a2859c1</key>
+                    <key name="wid">7886b3f7-185b-46b2-9d67-26f25e755186</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="4" version="1">
                     <key name="uid">ImpairmentParameterSettings</key>
-                    <key name="wid">b53bd3cc-79b8-46b6-bce8-e5681aa0a524</key>
+                    <key name="wid">74632ff5-c5c0-43ea-98b2-c62a59a0e229</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="5" version="1">
                     <key name="uid">GraphicsPanel</key>
-                    <key name="wid">30e9a3ae-8e9f-4a47-973e-902cbf428091</key>
+                    <key name="wid">04fad0d9-6f82-487d-a66d-a1d69c9bb8d1</key>
                     <section name="user" version="3">
                       <key name="CurrentGraph">IQ FFT</key>
                       <key name="Deactivated">false</key>
