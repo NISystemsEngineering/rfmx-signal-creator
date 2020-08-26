@@ -84,8 +84,9 @@ namespace NationalInstruments.Utilities.SignalCreator
                 .CreateLogger();
 
             Log.Debug("--------------------------------------------------------");
-            Log.Debug("Beginning new execution");
             #endregion
+
+            Log.Information("Initializing...");
 
             #region Plugin Loading
             // Load plugins first before loading any files
@@ -191,7 +192,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                     Log.Warning("Skipping {file}; no installed plugin is compatible with this file.", fileName);
                 }
             }
-            Log.Debug("Execution complete");
+            Log.Information("Execution complete");
             Log.Debug("--------------------------------------------------------");
             Log.CloseAndFlush();
         }

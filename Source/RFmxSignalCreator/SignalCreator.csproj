@@ -49,6 +49,9 @@
     <None Include="TestFiles\20.0 File.rfws" Condition=" '$(Configuration)' == 'Debug' ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="TestFiles\80211ax_80M_MCS11.tdms" Condition=" '$(Configuration)' == 'Debug' ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestFiles\LTE.rfws" Condition=" '$(Configuration)' == 'Debug' ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

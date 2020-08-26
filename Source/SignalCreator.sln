@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfwsParser", "Components\Rf
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{F30B836E-4026-4930-9A0C-F5520F768041}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WlanPlugin", "Plugins\WlanPlugin\WlanPlugin.csproj", "{09789CB0-8853-4DBA-8DDA-FFFCFBE4682D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09789CB0-8853-4DBA-8DDA-FFFCFBE4682D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09789CB0-8853-4DBA-8DDA-FFFCFBE4682D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09789CB0-8853-4DBA-8DDA-FFFCFBE4682D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09789CB0-8853-4DBA-8DDA-FFFCFBE4682D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,6 +51,7 @@ Global
 		{43E80067-E805-4DD7-AC69-25D2501A1D2B} = {40DCEDD7-596E-4BFB-B6D2-0AA60E1BB6C7}
 		{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1} = {F30B836E-4026-4930-9A0C-F5520F768041}
 		{5CE77AC6-ACC7-4001-88DA-B14B06365BB6} = {F30B836E-4026-4930-9A0C-F5520F768041}
+		{09789CB0-8853-4DBA-8DDA-FFFCFBE4682D} = {40DCEDD7-596E-4BFB-B6D2-0AA60E1BB6C7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A59CD970-85F4-4AA2-9721-5E045ED32480}
