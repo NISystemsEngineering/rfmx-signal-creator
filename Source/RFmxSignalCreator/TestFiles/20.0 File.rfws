@@ -101,7 +101,7 @@
                   <key name="UE Index">0</key>
                   <key name="nRNTI">1</key>
                   <section name="PDSCH Settings" version="3">
-                    <key name="Count">1</key>
+                    <key name="Count">3</key>
                     <section name="PDSCH Data Source" version="2">
                       <key name="DataSourceType">afGen_bsPrbs</key>
                       <key name="PRBSType">afGen_ptPN23</key>
@@ -125,8 +125,98 @@
                     <section name="PDSCH Slot Settings 0" version="4">
                       <key name="Array Index">0</key>
                       <key name="PDSCH Present in SSB RB">true</key>
-                      <key name="RB Allocation">0:last</key>
-                      <key name="Slot Allocation">0:last</key>
+                      <key name="RB Allocation">0:10, 15:20, 11,13,14,59:last</key>
+                      <key name="Slot Allocation">0:10</key>
+                      <key name="Symbol Allocation">0:last</key>
+                      <key name="Number of Layers">1</key>
+                      <key name="Modulation Type">QPSK</key>
+                      <key name="Modulation Type Cw1">QPSK</key>
+                      <key name="PDSCH Scaling Factor">1.000000000000000000e+00</key>
+                      <key name="PDSCH Mapping Type">Type A</key>
+                      <key name="DMRS Duration">Single Symbol</key>
+                      <key name="DMRS Configuration">Type 1</key>
+                      <key name="DMRS Power Mode">CDM Groups</key>
+                      <key name="DMRS Scaling Factor">1.000000000000000000e+00</key>
+                      <key name="DMRS Additional Positions">0</key>
+                      <key name="DMRS Type A Position">2</key>
+                      <key name="Carrying RMSI">false</key>
+                      <key name="DMRS Scrambling ID">0</key>
+                      <key name="DMRS Scrambling ID Mode">Cell ID</key>
+                      <key name="Number of CDM Groups">1</key>
+                      <key name="nSCID">0</key>
+                      <key name="Dmrs Release Version">3GPP Release 15</key>
+                      <key name="VRB to PRB Mapping Scheme">Non-Interleaved</key>
+                      <key name="VRB to PRB Interleaver">1</key>
+                      <key name="Data Scrambling ID">0</key>
+                      <key name="Data Scrambling ID Mode">Cell ID</key>
+                      <key name="PTRS Ports">1000</key>
+                      <key name="PTRS Time Density">1</key>
+                      <key name="PTRS Frequency Density">2</key>
+                      <key name="DL PTRS RE Offset">0</key>
+                      <key name="PTRS Enabled">false</key>
+                      <key name="PTRS Power Mode">Standard</key>
+                      <key name="PTRS epre-Ratio">0</key>
+                      <key name="Reset lref">true</key>
+                      <key name="PTRS Scaling Factor">1.000000000000000000e+00</key>
+                      <key name="Channel Coding Enabled">false</key>
+                      <key name="LBRM Enabled">true</key>
+                      <key name="Mcs Table">PDSCH Table1</key>
+                      <key name="Mcs Index Cw0">0</key>
+                      <key name="Redundancy Version Cw0">0</key>
+                      <key name="Mcs Index Cw1">0</key>
+                      <key name="Redundancy Version Cw1">0</key>
+                      <key name="DMRS Ports">1000</key>
+                    </section>
+                    <section name="PDSCH Slot Settings 1" version="4">
+                      <key name="Array Index">1</key>
+                      <key name="PDSCH Present in SSB RB">true</key>
+                      <key name="RB Allocation">0:10, 15:20, 11,13,14,59:last</key>
+                      <key name="Slot Allocation">11:20</key>
+                      <key name="Symbol Allocation">0:last</key>
+                      <key name="Number of Layers">1</key>
+                      <key name="Modulation Type">QPSK</key>
+                      <key name="Modulation Type Cw1">QPSK</key>
+                      <key name="PDSCH Scaling Factor">1.000000000000000000e+00</key>
+                      <key name="PDSCH Mapping Type">Type A</key>
+                      <key name="DMRS Duration">Single Symbol</key>
+                      <key name="DMRS Configuration">Type 1</key>
+                      <key name="DMRS Power Mode">CDM Groups</key>
+                      <key name="DMRS Scaling Factor">1.000000000000000000e+00</key>
+                      <key name="DMRS Additional Positions">0</key>
+                      <key name="DMRS Type A Position">2</key>
+                      <key name="Carrying RMSI">false</key>
+                      <key name="DMRS Scrambling ID">0</key>
+                      <key name="DMRS Scrambling ID Mode">Cell ID</key>
+                      <key name="Number of CDM Groups">1</key>
+                      <key name="nSCID">0</key>
+                      <key name="Dmrs Release Version">3GPP Release 15</key>
+                      <key name="VRB to PRB Mapping Scheme">Non-Interleaved</key>
+                      <key name="VRB to PRB Interleaver">1</key>
+                      <key name="Data Scrambling ID">0</key>
+                      <key name="Data Scrambling ID Mode">Cell ID</key>
+                      <key name="PTRS Ports">1000</key>
+                      <key name="PTRS Time Density">1</key>
+                      <key name="PTRS Frequency Density">2</key>
+                      <key name="DL PTRS RE Offset">0</key>
+                      <key name="PTRS Enabled">false</key>
+                      <key name="PTRS Power Mode">Standard</key>
+                      <key name="PTRS epre-Ratio">0</key>
+                      <key name="Reset lref">true</key>
+                      <key name="PTRS Scaling Factor">1.000000000000000000e+00</key>
+                      <key name="Channel Coding Enabled">false</key>
+                      <key name="LBRM Enabled">true</key>
+                      <key name="Mcs Table">PDSCH Table1</key>
+                      <key name="Mcs Index Cw0">0</key>
+                      <key name="Redundancy Version Cw0">0</key>
+                      <key name="Mcs Index Cw1">0</key>
+                      <key name="Redundancy Version Cw1">0</key>
+                      <key name="DMRS Ports">1000</key>
+                    </section>
+                    <section name="PDSCH Slot Settings 2" version="4">
+                      <key name="Array Index">2</key>
+                      <key name="PDSCH Present in SSB RB">true</key>
+                      <key name="RB Allocation">0:10, 15:20, 11,13,14,59:last</key>
+                      <key name="Slot Allocation">21:last</key>
                       <key name="Symbol Allocation">0:last</key>
                       <key name="Number of Layers">1</key>
                       <key name="Modulation Type">QPSK</key>
@@ -312,10 +402,10 @@
                 <key name="PSS Scaling Factor">1.000000000000000000e+00</key>
                 <key name="PBCH Scaling Factor">1.000000000000000000e+00</key>
                 <key name="PBCH DMRS Scaling Factor">1.000000000000000000e+00</key>
-                <key name="PSS Channel Mode">true</key>
-                <key name="SSS Channel Mode">true</key>
-                <key name="PBCH DMRS Channel Mode">true</key>
-                <key name="PBCH Channel Mode">true</key>
+                <key name="PSS Channel Mode">false</key>
+                <key name="SSS Channel Mode">false</key>
+                <key name="PBCH DMRS Channel Mode">false</key>
+                <key name="PBCH Channel Mode">false</key>
                 <key name="Subcarrier Spacing Common">60k</key>
                 <key name="Subcarrier Offset">0</key>
                 <key name="Common PRB Offset">2</key>
@@ -373,7 +463,7 @@
                       <key name="Slot Allocation">0:last</key>
                       <key name="Symbol Allocation">0:last</key>
                       <key name="Number of Layers">1</key>
-                      <key name="Modulation Type">QPSK</key>
+                      <key name="Modulation Type">QAM256</key>
                       <key name="Modulation Type Cw1">QPSK</key>
                       <key name="PDSCH Scaling Factor">1.000000000000000000e+00</key>
                       <key name="PDSCH Mapping Type">Type A</key>
@@ -544,7 +634,7 @@
                 <key name="Number of RBs">-1</key>
                 <key name="Bandwidth Part Index">0</key>
                 <key name="UE Count">1</key>
-                <key name="Coreset Count">0</key>
+                <key name="Coreset Count">1</key>
                 <section name="UE Settings 0" version="1">
                   <key name="UE Index">0</key>
                   <key name="nRNTI">1</key>
@@ -678,6 +768,46 @@
                       <key name="Redundancy Version">0</key>
                       <key name="DMRS Ports">0</key>
                       <key name="PTRS Ports">0</key>
+                    </section>
+                  </section>
+                </section>
+                <section name="CORESET Settings 0" version="1">
+                  <key name="PDCCH UE Count">1</key>
+                  <key name="Coreset Index">0</key>
+                  <key name="Coreset Num Symbols">1</key>
+                  <key name="RB Allocation">0:last</key>
+                  <key name="Symbol Offset">0</key>
+                  <key name="DMRS Scrambling ID">0</key>
+                  <key name="DMRS Scrambling ID Mode">Cell ID</key>
+                  <key name="Precoder Granularity">Same As REG Bundle</key>
+                  <key name="CCE to REG Mapping Type">Non-Interleaved</key>
+                  <key name="REG Bundle Size">2</key>
+                  <key name="Interleaver Size">2</key>
+                  <key name="Shift Index">0</key>
+                  <section name="Pdcch Ue Settings 0" version="2">
+                    <key name="PDCCH Slot Count">1</key>
+                    <key name="Index">0</key>
+                    <section name="PDCCH Slot Settings 0" version="3">
+                      <key name="Index">0</key>
+                      <key name="DMRS Scaling Factor">1.000000000000000000e+00</key>
+                      <key name="Rnti">1</key>
+                      <key name="Search Space Type">UE Specific</key>
+                      <key name="Pdcch Scaling Factor">1.000000000000000000e+00</key>
+                      <key name="Cce Aggregation Level">1</key>
+                      <key name="CCE Offset">0</key>
+                      <key name="Slot Allocation">0:last</key>
+                      <key name="Channel Coding Enabled">false</key>
+                      <key name="Payload Size">20</key>
+                      <section name="PDCCH Data Source" version="3">
+                        <key name="DataSourceType">afGen_bsPrbs</key>
+                        <key name="PRBSType">afGen_ptPN23</key>
+                        <key name="PRBSSeed">2147483647</key>
+                        <key name="PatternData">0011</key>
+                        <key name="FilePath"></key>
+                        <key name="CurrentCsvFile"></key>
+                        <key name="PRBSTapMask">17</key>
+                        <key name="PRBSLength">9</key>
+                      </section>
                     </section>
                   </section>
                 </section>
@@ -884,32 +1014,32 @@
                   <key name="count">6</key>
                   <section name="0" version="1">
                     <key name="uid">ModulationParameterSettings</key>
-                    <key name="wid">58b7de82-8519-4a7e-a007-35c0a9f21506</key>
+                    <key name="wid">5a887ec3-a8cb-40fc-91fc-0e0647e360ea</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="1" version="1">
                     <key name="uid">MultiCarrierPanelNR</key>
-                    <key name="wid">493230c2-0968-4a09-a0da-c1a1721c873c</key>
+                    <key name="wid">95d9670b-71d2-4af6-a908-6e72059cddd0</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="2" version="1">
                     <key name="uid">FilterParameterSettings</key>
-                    <key name="wid">08e99c42-d815-4d4d-9d06-caafafdcba8f</key>
+                    <key name="wid">7e00e240-cad5-4aae-b799-68ca4b59feb3</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="3" version="1">
                     <key name="uid">CfrParameterSettings</key>
-                    <key name="wid">2f1faa2d-26ac-499a-aaf4-dadb0a2859c1</key>
+                    <key name="wid">58aad605-2d46-43b6-ba05-e6b7e0facec2</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="4" version="1">
                     <key name="uid">ImpairmentParameterSettings</key>
-                    <key name="wid">b53bd3cc-79b8-46b6-bce8-e5681aa0a524</key>
+                    <key name="wid">89eb4e40-d50e-4779-adba-793a2645761b</key>
                     <section name="user" version="1"/>
                   </section>
                   <section name="5" version="1">
                     <key name="uid">GraphicsPanel</key>
-                    <key name="wid">30e9a3ae-8e9f-4a47-973e-902cbf428091</key>
+                    <key name="wid">5a6f1d20-fe7b-4825-ac34-c3379a4f9068</key>
                     <section name="user" version="3">
                       <key name="CurrentGraph">IQ FFT</key>
                       <key name="Deactivated">false</key>
