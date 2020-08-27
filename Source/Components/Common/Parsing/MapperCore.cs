@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using NationalInstruments.RFmx.InstrMX;
 using Serilog;
@@ -6,6 +7,7 @@ using Serilog.Context;
 
 namespace NationalInstruments.Utilities.SignalCreator
 {
+
     /// <summary>
     /// Represents the core class used to apply parsed values for a property group to an RFmx session. Concrete
     /// implementations will define how the properties are applied to a specific RFmx signal type.
@@ -41,52 +43,52 @@ namespace NationalInstruments.Utilities.SignalCreator
                 }
 
                 // Discard the attribute; we only need the keys and associated values
-                foreach ((FieldInfo field, object property) in propertyGroup.MappedFields)
+                foreach ((MemberInfo member, List<RFmxMappableAttribute> attributes) in propertyGroup.MappableMembers)
                 {
-                    using (LogContext.PushProperty("Field", field.Name))
+                    using (LogContext.PushProperty("Member", member.Name))
                     {
                         try
                         {
                             // Invoke the correct instance of the Apply Configuration overloaded method based on the type of the generic
                             // parameter. Skip all keys that do not have a value (meaning they were not found or version was not a match).
-                            ApplyConfigurationCore(propertyGroup, property);
+                            object memberValue = member.GetValue(propertyGroup);
+                            if (memberValue == null)
+                            {
+                                Log.Debug("Skipping member {MemberName} as its value was not set by the parser.", member.Name);
+                            }
+                            else
+                            {
+                                ApplyConfigurationCore(propertyGroup, memberValue, attributes);
+                            }
                         }
                         catch (Exception ex)
                         {
-                            Log.Error(ex, "Exception occured applying property {Property}", property);
+                            Log.Error(ex, "Exception occured applying member {MemberName}", member.Name);
                         }
                     }
                 }
             }
         }
 
-        private void ApplyConfigurationCore(PropertyGroup group, object property)
+        private void ApplyConfigurationCore(PropertyGroup group, object property, List<RFmxMappableAttribute> attributes)
         {
             switch (property)
             {
-                case PropertyMap<bool> boolKey:
-                    if (boolKey.HasValue)
-                    {
-                        ApplyConfiguration(group.SelectorString, boolKey);
-                    }
+                case bool boolValue:
+                    ApplyConfiguration(group.SelectorString, boolValue, attributes);
                     break;
-                case PropertyMap<double> doubleKey:
-                    if (doubleKey.HasValue)
-                    {
-                        ApplyConfiguration(group.SelectorString, doubleKey);
-                    }
+                case double doubleValue:
+                    ApplyConfiguration(group.SelectorString, doubleValue, attributes);
                     break;
-                case PropertyMap<int> intKey:
-                    if (intKey.HasValue)
-                    {
-                        ApplyConfiguration(group.SelectorString, intKey);
-                    }
+                case Enum enumValue:
+                    int convertedValue = Convert.ToInt32(enumValue);
+                    ApplyConfiguration(group.SelectorString, convertedValue, attributes);
                     break;
-                case PropertyMap<string> stringKey:
-                    if (stringKey.HasValue)
-                    {
-                        ApplyConfiguration(group.SelectorString, stringKey);
-                    }
+                case int intValue:
+                    ApplyConfiguration(group.SelectorString, intValue, attributes);
+                    break;
+                case string stringValue:
+                    ApplyConfiguration(group.SelectorString, stringValue, attributes);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -100,25 +102,25 @@ namespace NationalInstruments.Utilities.SignalCreator
         /// </summary>
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
         /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(string selectorString, PropertyMap<bool> property);
+        protected abstract void ApplyConfiguration(string selectorString, bool value, List<RFmxMappableAttribute> attributes);
         /// <summary>
         /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
         /// </summary>
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
         /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(string selectorString, PropertyMap<double> property);
+        protected abstract void ApplyConfiguration(string selectorString, double value, List<RFmxMappableAttribute> attributes);
         /// <summary>
         /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
         /// </summary>
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
         /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(string selectorString, PropertyMap<int> property);
+        protected abstract void ApplyConfiguration(string selectorString, int value, List<RFmxMappableAttribute> attributes);
         /// <summary>
         /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
         /// </summary>
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
         /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(string selectorString, PropertyMap<string> property);
+        protected abstract void ApplyConfiguration(string selectorString, string value, List<RFmxMappableAttribute> attributes);
         #endregion
 
     }

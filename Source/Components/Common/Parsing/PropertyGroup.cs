@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NationalInstruments.RFmx.InstrMX;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NationalInstruments.RFmx.InstrMX;
 
 namespace NationalInstruments.Utilities.SignalCreator
 {
@@ -13,30 +13,20 @@ namespace NationalInstruments.Utilities.SignalCreator
     /// </summary>
     public abstract class PropertyGroup
     {
+        private List<(MemberInfo, List<RFmxMappableAttribute>)> _mappableMembers;
+        private List<(MemberInfo, List<ParseableAttribute>)> _parseableMembers;
 
-        private List<(FieldInfo, object)> _mappedFields;
 
         /// <summary>
         /// Returns all of the public <see cref="PropertyMap{T}"/> fields contained within the object and the values of those 
         /// fields if non-null.
         /// </summary>
-        public IEnumerable<(FieldInfo field, object fieldValue)> MappedFields
-        {
-            get
-            {
-                if (_mappedFields == null)
-                {
-                    var fields = from field in GetType().GetFields() // Get all configured fields for the input type
-                                 let type = field.FieldType
-                                 where type.IsSubclassOfRawGeneric(typeof(PropertyMap<>)) // Retrieve all PropertyMaps regardless of specific type
-                                 let value = field.GetValue(this)
-                                 where value != null // The value should be set by default in the class; if not, we can't do anything with it so skip it
-                                 select (field, value); // Return the field and its value as a paired tuple
-                    _mappedFields = fields.ToList();
-                }
-                return _mappedFields.AsReadOnly();
-            }
-        }
+        public IEnumerable<(MemberInfo member, List<ParseableAttribute> attribute)> ParseableMembers
+            => _parseableMembers;
+        public IEnumerable<(MemberInfo member, List<RFmxMappableAttribute> attribute)> MappableMembers => _mappableMembers;
+
+        //public IEnumerable<PropertyMapCore> AllPropertyMaps => _mappedFields.Select(f => f.property);
+
 
         /// <summary>Specifies the RFmx selector string required to configure the properties contianed within this property group.</summary>
         public virtual string SelectorString { get; }
@@ -44,6 +34,29 @@ namespace NationalInstruments.Utilities.SignalCreator
         protected PropertyGroup(string selectorString)
         {
             SelectorString = selectorString;
+
+            var fields = GetType().GetFields().Cast<MemberInfo>();
+            var readableProperties = GetType().GetProperties()
+                                              .Where(property => property.GetGetMethod() != null)
+                                              .Cast<MemberInfo>();
+            var writeableProperteies = GetType().GetProperties()
+                                                .Where(property => property.GetSetMethod() != null)
+                                                .Cast<MemberInfo>();
+
+            var parseableMembers = from member in writeableProperteies.Concat(fields) // Get all configured fields for the input type
+                                   where member.IsDefined(typeof(ParseableAttribute))
+                                   let attributes = member.GetCustomAttributes<ParseableAttribute>().ToList()
+                                   //where type.IsSubclassOf(typeof(PropertyMapCore)) // Retrieve all PropertyMaps regardless of specific type
+                                   //let value = (PropertyMapCore)field.GetValue(this)
+                                   //where value != null // The value should be set by default in the class; if not, we can't do anything with it so skip it
+                                   select (member, attributes); // Return the field and its value as a paired tuple
+            _parseableMembers = parseableMembers.ToList();
+
+            var mappableMembers = from member in readableProperties.Concat(fields) // Get all configured fields for the input type
+                                  where member.IsDefined(typeof(RFmxMappableAttribute))
+                                  let attributes = member.GetCustomAttributes<RFmxMappableAttribute>().ToList()
+                                  select (member, attributes); // Return the field and its value as a paired tuple
+            _mappableMembers = mappableMembers.ToList();
         }
 
         /// <summary>
@@ -57,8 +70,56 @@ namespace NationalInstruments.Utilities.SignalCreator
 
     }
 
-    public static class TypeExtensions
+   [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+    public abstract class ParseableAttribute : Attribute
     {
+        public Type ConverterType;
+    }
+
+    public static class Extensions
+    {
+
+        public static object GetValue(this MemberInfo member, object containingObject)
+        {
+            switch (member)
+            {
+                case FieldInfo f:
+                    return f.GetValue(containingObject);
+                case PropertyInfo p:
+                    return p.GetValue(containingObject);
+                default:
+                    throw new ArgumentException($"Paramter must be a {typeof(FieldInfo)} or a {typeof(MemberInfo)}.", nameof(member));
+            }
+        }
+        public static void SetValue(this MemberInfo member, object containingObject, object value)
+        {
+            switch (member)
+            {
+                case FieldInfo f:
+                    f.SetValue(containingObject, value);
+                    break;
+                case PropertyInfo p:
+                    p.SetValue(containingObject, value);
+                    break;
+                default:
+                    throw new ArgumentException($"Paramter must be a {typeof(FieldInfo)} or a {typeof(MemberInfo)}.", nameof(member));
+            }
+        }
+        public static Type GetMemberType(this MemberInfo member)
+        {
+            switch (member)
+            {
+                case FieldInfo f:
+                    return f.FieldType;
+                case PropertyInfo p:
+                    return p.PropertyType;
+                default:
+                    throw new ArgumentException($"Paramter must be a {typeof(FieldInfo)} or a {typeof(MemberInfo)}.", nameof(member));
+            }
+        }
+
+
+
         // From https://www.extensionmethod.net/csharp/type/issubclassofrawgeneric
         /// <summary>
         /// Alternative version of <see cref="Type.IsSubclassOf"/> that supports raw generic types (generic types without

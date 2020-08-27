@@ -40,6 +40,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parsing\Converters\ValueConverter.cs" />
+    <Compile Include="Parsing\Converters\ValueConverterOfT.cs" />
+    <Compile Include="Parsing\Converters\EnumConverter.cs" />
     <Compile Include="Parsing\MapperCore.cs" />
     <Compile Include="Parsing\ParserCore.cs" />
     <Compile Include="Parsing\PropertyGroup.cs" />

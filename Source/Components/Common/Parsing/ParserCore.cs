@@ -1,7 +1,9 @@
 ﻿using Serilog;
 using Serilog.Context;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 
 namespace NationalInstruments.Utilities.SignalCreator
 {
@@ -13,6 +15,8 @@ namespace NationalInstruments.Utilities.SignalCreator
     /// </summary>
     public abstract class ParserCore
     {
+        //private static readonly Type[] validFieldTypes = { typeof(int), typeof(double), typeof(string), typeof(bool), typeof(Enum) };
+
         #region Parse Functions
         /// <summary>
         /// Reads the raw value for each <see cref="PropertyMap{T}"/> object in <paramref name="group"/> from the input source,
@@ -23,40 +27,55 @@ namespace NationalInstruments.Utilities.SignalCreator
         {
             using (LogContext.PushProperty("Group", group.GetType().Name))
             {
-                foreach ((FieldInfo field, object propertyMap) in group.MappedFields)
+                foreach ((MemberInfo member, List<ParseableAttribute> attributes) in group.ParseableMembers)
                 {
+                    Type t = member.GetMemberType();
+                    /*if (!validFieldTypes.Any(type => type == t))
+                    {
+                        Log.Error("Parseable field {FieldName} is of invalid type {Type}. Valid field types are {Types}",
+                            field.Name, t, validFieldTypes);
+                        continue;
+                    }*/
+                    Type underlyingType = Nullable.GetUnderlyingType(t);
+
+                    t = underlyingType == null ? t : underlyingType;
                     try
                     {
-                        // Allow child classes to determine whether this field is valid - i.e. matches expected version
-                        if (ValidateProperty(group, field))
+                        // Allow child classes to determine whether this member is valid - i.e. matches expected version
+                        ParseableAttribute validAttribute = attributes.FirstOrDefault(attr => ValidateProperty(group, member, attr));
+                        if (validAttribute != null)
                         {
                             try
                             {
-                                object rawValue = ReadValueFromInput(group, field);
-                                Log.Verbose("Read property {Property} with value {Value}", field.Name, rawValue);
+                                object rawValue = ReadValueFromInput(group, validAttribute);
+                                Log.Verbose("Read property {Property} with value {Value}", member.Name, rawValue);
                                 try
                                 {
-                                    ParseAndApplyValue(propertyMap, rawValue);
+                                    Type converterType = validAttribute.ConverterType == null ? typeof(ValueConverter) : validAttribute.ConverterType;
+                                    ValueConverter c = (ValueConverter)Activator.CreateInstance(converterType);
+                                    object o = c.Convert(rawValue, t);
+                                    member.SetValue(group, o);
+                                    //ParseAndApplyValue(propertyMap, rawValue);
                                 }
                                 catch (Exception ex)
                                 {
                                     Log.Error(ex, "Error parsing property {Property}; attempted to parse {Value} but operation failed",
-                                        field.Name, rawValue);
+                                        member.Name, rawValue);
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Log.Error(ex, "Failed to fetch value for {Property}", field.Name);
+                                Log.Error(ex, "Failed to fetch value for {MemberName}", member.Name);
                             }
                         }
                         else
                         {
-                            Log.Verbose("{FieldName} skipped because it did not pass the validation check.", field.Name);
+                            Log.Verbose("{MemberName} skipped because it did not pass the validation check.", member.Name);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, "Error validating property {Property}", field.Name);
+                        Log.Error(ex, "Error validating property {MemberName}", member.Name);
                     }
                 }
             }
@@ -67,11 +86,11 @@ namespace NationalInstruments.Utilities.SignalCreator
         /// </summary>
         /// <param name="propertyMap">Specifies the <see cref="PropertyMap{T}"/> object to set the value to.</param>
         /// <param name="rawValue">Specifies the raw value read from the input source for the property.</param>
-        private void ParseAndApplyValue(object propertyMap, object rawValue)
+        private void ParseAndApplyValue(PropertyMapCore propertyMap, object rawValue)
         {
             switch (propertyMap)
             {
-                case PropertyMap<bool> boolProperty:
+                case BoolPropertyMap boolProperty:
                     // If delegate is not set, then just directly parse the value
                     if (boolProperty.CustomMap == null)
                         boolProperty.Value = ParseValue<bool>(rawValue);
@@ -79,7 +98,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                     else
                         boolProperty.Value = boolProperty.CustomMap(rawValue);
                     break;
-                case PropertyMap<double> doubleProperty:
+                case DoublePropertyMap doubleProperty:
                     // If delegate is not set, then just directly parse the value
                     if (doubleProperty.CustomMap == null)
                         doubleProperty.Value = ParseValue<double>(rawValue);
@@ -87,7 +106,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                     else
                         doubleProperty.Value = doubleProperty.CustomMap(rawValue);
                     break;
-                case PropertyMap<int> intProperty:
+                case IntPropertyMap intProperty:
                     // If delegate is not set, then just directly parse the value
                     if (intProperty.CustomMap == null)
                         intProperty.Value = ParseValue<int>(rawValue);
@@ -95,7 +114,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                     else
                         intProperty.Value = intProperty.CustomMap(rawValue);
                     break;
-                case PropertyMap<string> stringProperty:
+                case StringPropertyMap stringProperty:
                     // If delegate is not set, then just directly pass the value
                     if (stringProperty.CustomMap == null)
                         stringProperty.Value = ParseValue<string>(rawValue);
@@ -113,13 +132,13 @@ namespace NationalInstruments.Utilities.SignalCreator
         /// in <paramref name="field"/> should be read from the input source. Returns an object representing the value
         /// read from the input source.
         /// </summary>
-        protected abstract object ReadValueFromInput(PropertyGroup group, FieldInfo field);
+        protected abstract object ReadValueFromInput(PropertyGroup group, ParseableAttribute attribute);
 
         /// <summary>
         /// An optional method for child classes to override if validation should be performed on a specific
         /// property. Return true if the property should be parsed and false if it should be skipped.
         /// </summary>
-        protected virtual bool ValidateProperty(PropertyGroup group, FieldInfo field) => true;
+        protected virtual bool ValidateProperty(PropertyGroup group, MemberInfo member, ParseableAttribute attribute) => true;
 
         /// <summary>
         /// An optional method for child classes to override to define custom parsing for values read from the input source

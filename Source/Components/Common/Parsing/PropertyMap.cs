@@ -2,6 +2,25 @@
 
 namespace NationalInstruments.Utilities.SignalCreator
 {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+    public class RFmxMappableAttribute : Attribute
+    {
+        public int RFmxPropertyId { get; }
+
+        public RFmxMappableAttribute(int RFmxPropertyId)
+        {
+            this.RFmxPropertyId = RFmxPropertyId;
+        }
+    }
+
+    public class PropertyMapCore
+    {
+        /// <summary>
+        /// Specifies the RFmx property ID required to set this property.
+        /// </summary>
+        public int RfmxPropertyId;
+    }
+
     /// <summary>
     /// Represents a single RFmx property and the information needed to translate it from the incoming value to the value
     /// expected by RFmx.
@@ -9,14 +28,10 @@ namespace NationalInstruments.Utilities.SignalCreator
     /// <typeparam name="T">Specifies the type of the value of the key. Valid types are <see cref="int"/>, <see cref="double"/>, 
     /// <see cref="bool"/>, and <see cref="string"/>.
     /// This type will be used to select the appropriate RFmx function in order to apply the property.</typeparam>
-    public class PropertyMap<T>
+    public abstract class PropertyMap<T> : PropertyMapCore
     {
         private T value;
 
-        /// <summary>
-        /// Specifies the RFmx property ID required to set this property.
-        /// </summary>
-        public int RfmxPropertyId;
         /// <summary>
         /// An optional delegate to translate the raw input value to the proper type and value expected by RFmx.
         /// This is necessary if the property cannot be directly mapped to the RFmx value. If this delegate is not specified (i.e. null)
@@ -50,5 +65,15 @@ namespace NationalInstruments.Utilities.SignalCreator
                 HasValue = true;
             }
         }
+        public static implicit operator T(PropertyMap<T> map) => map.Value;
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
+
+    public class BoolPropertyMap : PropertyMap<bool> { }
+    public class StringPropertyMap : PropertyMap<string> { }
+    public class DoublePropertyMap : PropertyMap<double> { }
+    public class IntPropertyMap : PropertyMap<int> { }
 }
