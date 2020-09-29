@@ -2,14 +2,29 @@
 
 namespace NationalInstruments.Utilities.SignalCreator
 {
+    public abstract class RFmxMappableAttribute : Attribute { }
+
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    public class RFmxMappableAttribute : Attribute
+    public class RFmxMappablePropertyAttribute : RFmxMappableAttribute
     {
         public int RFmxPropertyId { get; }
 
-        public RFmxMappableAttribute(int RFmxPropertyId)
+        public RFmxMappablePropertyAttribute(int RFmxPropertyId)
         {
             this.RFmxPropertyId = RFmxPropertyId;
+        }
+    }
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+    public sealed class RFmxMappableSectionAttribute : RFmxMappableAttribute
+    {
+        public string SelectorString { get; }
+        public RFmxMappableSectionAttribute()
+        {
+            SelectorString = "";
+        }
+        public RFmxMappableSectionAttribute(string selectorString)
+        {
+            SelectorString = selectorString;
         }
     }
 

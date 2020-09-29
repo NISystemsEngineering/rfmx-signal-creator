@@ -10,6 +10,17 @@ namespace NationalInstruments.Utilities.SignalCreator
             return Convert(value);
         }
 
-        protected abstract T Convert(object value);
+        protected virtual T Convert(object value)
+        {
+            try
+            {
+                T result = (T)value;
+                return result;
+            }
+            catch (InvalidCastException e)
+            {
+                throw new ArgumentException($"Value {value} cannot be converted to type {typeof(T)}", e);
+            }
+        }
     }
 }

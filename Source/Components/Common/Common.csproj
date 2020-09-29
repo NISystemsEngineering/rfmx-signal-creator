@@ -40,13 +40,16 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
     <Compile Include="Parsing\Converters\ValueConverter.cs" />
     <Compile Include="Parsing\Converters\ValueConverterOfT.cs" />
     <Compile Include="Parsing\Converters\EnumConverter.cs" />
     <Compile Include="Parsing\MapperCore.cs" />
     <Compile Include="Parsing\ParserCore.cs" />
+    <Compile Include="Parsing\ParserCorev2.cs" />
     <Compile Include="Parsing\PropertyGroup.cs" />
     <Compile Include="Parsing\PropertyMap.cs" />
+    <Compile Include="Serialization\RFmxSerializer.cs" />
     <Compile Include="Plugins\WaveformPluginFactory.cs" />
     <Compile Include="WaveformConfigFileType.cs" />
     <Compile Include="Plugins\IWaveformFilePlugin.cs" />
@@ -66,6 +69,8 @@
       <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Deserialization\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

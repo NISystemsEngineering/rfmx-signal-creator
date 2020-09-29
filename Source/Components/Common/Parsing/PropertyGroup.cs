@@ -73,7 +73,6 @@ namespace NationalInstruments.Utilities.SignalCreator
    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
     public abstract class ParseableAttribute : Attribute
     {
-        public Type ConverterType;
     }
 
     public static class Extensions
@@ -142,6 +141,7 @@ namespace NationalInstruments.Utilities.SignalCreator
 
             return false;
         }
+        public virtual Type ConverterType { get; set; }
     }
 }
 

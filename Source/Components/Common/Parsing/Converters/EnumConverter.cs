@@ -8,7 +8,9 @@ namespace NationalInstruments.Utilities.SignalCreator
         {
             if (value is string s)
             {
-                bool valid = Enum.TryParse<T>(s, true, out T result);
+                // Strip whitespace
+                s = s.Replace(" ", string.Empty);
+                bool valid = Enum.TryParse(s, true, out T result);
                 if (!valid)
                 {
                     throw new ArgumentException($"No valid enumerated value found for enum type {typeof(T)} with value {s}");
@@ -18,15 +20,8 @@ namespace NationalInstruments.Utilities.SignalCreator
             }
             else
             {
-                try
-                {
-                    T result = (T)value;
-                    return result;
-                }
-                catch (InvalidCastException e)
-                {
-                    throw new ArgumentException($"Value {value} cannot be converted to type {typeof(T)}", e);
-                }
+                // If it's not a string, we'll try directly casting it (i.e. if value is an integer and the enum is an integer type)
+                return base.Convert(value);
             }
         }
     }
