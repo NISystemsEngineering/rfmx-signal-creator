@@ -27,7 +27,6 @@ namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
             {
                 case RfwsParseableKeyAttribute keyAttr:
                     object value = section.ReadKeyValue(keyAttr.Key);
-                    t = Nullable.GetUnderlyingType(t) ?? t;
                     if (t == typeof(double))
                     {
                         return RfwsParserUtilities.ParseSiNotationDouble((string)value);

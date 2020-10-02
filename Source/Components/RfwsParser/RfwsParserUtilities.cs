@@ -7,94 +7,21 @@ using System.Text.RegularExpressions;
 using Serilog;
 using Serilog.Context;
 
-namespace NationalInstruments.Utilities.SignalCreator
+namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
 {
-    /// <summary>
-    /// Implements parsing functionality for RFWS waveform cofniguration files.
-    /// </summary>
-    public class RfwsParser : ParserCore
-    {
-        /// <summary>
-        /// Returns true if the field supports the section version of the file; false if not.
-        /// </summary>
-        protected sealed override bool ValidateProperty(PropertyGroup group, FieldInfo field)
-        {
-            string fieldName = field.Name;
-            RfwsSection rfwsSection = (RfwsSection)group;
-
-            RfwsPropertyAttribute attr = field.GetCustomAttribute<RfwsPropertyAttribute>();
-            if (attr != null)
-            {
-                bool result = attr.IsSupported(rfwsSection.Version);
-                if (!result)
-                {
-                    Log.Debug("No matching version for {Key} was found for section version {Version}",
-                        fieldName, rfwsSection.Version);
-                }
-                return result;
-            }
-            else
-            {
-                Log.Error("{Key} will not be parsed because there is no valid {Attribute} associated with it",
-                    fieldName, nameof(RfwsPropertyAttribute));
-                return false;
-            }
-
-        }
-
-        public override void Parse(PropertyGroup group)
-        {
-            if (group is RfwsSection rfwsGroup)
-            {
-                using (LogContext.PushProperty("SelectorString", rfwsGroup.SelectorString))
-                {
-                    base.Parse(group);
-                    foreach (RfwsSection subGroup in rfwsGroup.SubSections)
-                    {
-                        Parse(subGroup);
-                    }
-                }
-            }
-            else
-            {
-                throw new ArgumentException($"Expected type {typeof(RfwsSection)} but instead type is {group.GetType()}",
-                    nameof(group));
-            }
-        }
-
-        protected sealed override T ParseValue<T>(object value)
-        {
-            Type t = typeof(T);
-            string textValue = (string)value;
-
-            object result;
-            if (t == typeof(bool))
-                result = bool.Parse(textValue);
-            else if (t == typeof(int))
-                result = int.Parse(textValue);
-            else if (t == typeof(double))
-                result = RfwsParserUtilities.ParseSiNotationDouble(textValue);
-            else if (t == typeof(string))
-                result = textValue;
-            else
-                throw new NotSupportedException();
-
-            return (T)result;
-        }
-        protected sealed override object ReadValueFromInput(PropertyGroup group, FieldInfo field)
-        {
-            RfwsSection rfwsGroup = (RfwsSection)group;
-            RfwsPropertyAttribute attr = field.GetCustomAttribute<RfwsPropertyAttribute>();
-            return rfwsGroup.SectionRoot.ReadKeyValue(attr.Key);
-        }
-
-    }
 
     /// <summary>
     /// Contains various utility functions for parsing data from the RFWS file
     /// </summary>
     public static class RfwsParserUtilities
     {
+
+        public const string KeyVersion = "version";
+
+        /// <summary>Returns the version of the section loaded at runtime from the "version" attribute of the section.</summary>
+        public static float GetSectionVersion(this XElement section)
+            => float.Parse(section.Attribute(KeyVersion).Value);
+
         /// <summary>
         /// Finds descendant nodes named <i>section</i> where the <i>name</i> attribute matches <paramref name="sectionName"/>.
         /// </summary>
@@ -188,26 +115,6 @@ namespace NationalInstruments.Utilities.SignalCreator
                 }
                 throw new ArgumentException($"Value of \"{valueToConvert}\" does not match any SI suffixes and cannot be converted.");
             }
-        }
-        public static T ToEnum<T>(this object value) where T : Enum
-        {
-            return StringToEnum<T>((string)value);
-        }
-        public static T ToEnum<T>(this string value) where T : Enum
-        {
-            return StringToEnum<T>(value);
-        }
-        /// <summary>
-        /// Simple extension function to generically convert a string to an enum.
-        /// </summary>
-        /// <typeparam name="T">Specifies the enum type to conver <paramref name="value"/> to.</typeparam>
-        /// <param name="value">Specifies the string to parse to the desired enum type.</param>
-        /// <returns></returns>
-        private static T StringToEnum<T>(string value) where T : Enum
-        {
-            // Strip whitespace
-            value = value.Replace(" ", string.Empty);
-            return (T)Enum.Parse(typeof(T), value, true);
         }
         /// <summary>
         /// Converts a linear ratio value string from Volts to decibels.

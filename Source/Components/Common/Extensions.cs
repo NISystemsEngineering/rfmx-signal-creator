@@ -29,7 +29,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                     properties = properties.Where(p => p.CanWrite);
                     break;
             }
-            return fields.Concat(properties);
+            return properties.Concat(fields);
         }
         public static object GetValue(this MemberInfo member, object containingObject)
         {

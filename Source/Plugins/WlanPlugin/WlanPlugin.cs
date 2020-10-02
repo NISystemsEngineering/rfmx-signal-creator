@@ -49,15 +49,12 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
                     bool result = CanParse(file);
                     if (!result) throw new InvalidOperationException($"{file.FileName} is not a valid file for this plugin.");
                 }
-                WlanParser parser = new WlanParser(wlan);
 
-                WlanSignalGroup signal = new WlanSignalGroup("");
-                parser.Parse(signal);
+                WlanSignalGroup signal = wlan.Parse<WlanSignalGroup>();
 
                 RFmxWlanMX rfmxWlanSignal = instr.GetWlanSignalConfiguration();
 
-                WlanRFmxMapper mapper = new WlanRFmxMapper(rfmxWlanSignal);
-                mapper.Map(signal);
+                instr.CreateWlanSignalConfigurationFromObject(signal);
             }
         }
     }

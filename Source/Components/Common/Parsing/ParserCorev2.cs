@@ -17,7 +17,7 @@ namespace NationalInstruments.Utilities.SignalCreator
         {
             return (T)ParseValue(typeof(T));
         }*/
-        protected object ParseValue(Type t, object valueToParse, Type converterType = null )
+        protected object ParseValue(Type t, object valueToParse, Type converterType = null)
         {
             t = Nullable.GetUnderlyingType(t) ?? t;
             if (converterType != null)
@@ -29,21 +29,13 @@ namespace NationalInstruments.Utilities.SignalCreator
             {
                 if (t.IsPrimitive || t == typeof(string))
                 {
-                    return Convert.ChangeType(valueToParse, t);
+                    ValueConverter converter = new ValueConverter();
+                    return converter.Convert(valueToParse, t);
                 }
                 if (t.IsEnum)
                 {
-                    if (valueToParse is string s)
-                    {
-                        // Strip whitespace
-                        s = s.Replace(" ", string.Empty);
-                        return Enum.Parse(t, s, true);
-                    }
-                    else
-                    {
-                        // If it's not a string, we'll try directly casting it (i.e. if value is an integer and the enum is an integer type)
-                        return Convert.ChangeType(valueToParse, t);
-                    }
+                    EnumConverter converter = new EnumConverter();
+                    return converter.Convert(valueToParse, t);
                 }
                 if (t.IsSubclassOfRawGeneric(typeof(List<>)))
                 {
@@ -85,10 +77,37 @@ namespace NationalInstruments.Utilities.SignalCreator
                 if (SelectValidAttribute(attrs, valueToParse, out ParseableAttribute attr))
                 {
                     Type memberType = m.GetMemberType();
-                    object rawValue = ReadValue(memberType, valueToParse, attr);
+                    memberType = Nullable.GetUnderlyingType(memberType) ?? memberType;
                     //Log.Verbose("Read {MemberName} with raw value {RawValue}", m.Name, rawValue);
-                    object parsedValue = ParseValue(memberType, rawValue, attr.ConverterType);
-                    m.SetValue(instance, parsedValue);
+                    object rawValue = default;
+                    try
+                    {
+                        rawValue = ReadValue(memberType, valueToParse, attr);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error reading raw member {MemberName} value from file", m.Name);
+                        continue;
+                    }
+                    object parsedValue = default;
+                    try
+                    {
+                        parsedValue = ParseValue(memberType, rawValue, attr.ConverterType);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error parsing member {MemberName}", m.Name);
+                    }
+                    if (memberType.IsAssignableFrom(parsedValue.GetType()))
+                    {
+                        m.SetValue(instance, parsedValue);
+                    }
+                    else
+                    {
+                        Log.Error("A value of {RawValue} was read from the input and parsed to the value of {ParsedValue} succesfully. " +
+                            "However, the member type of {MemberType} is not assignable from the type of {ParsedType}.",
+                            rawValue, parsedValue, memberType, parsedValue.GetType());
+                    }
                     //Log.Verbose("Set member {MemberName} with parsed value {ParsedValue}", m.Name, parsedValue);
                 }
             }

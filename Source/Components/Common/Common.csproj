@@ -41,16 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Parsing\Converters\LookupTableConverter.cs" />
     <Compile Include="Parsing\Converters\ValueConverter.cs" />
     <Compile Include="Parsing\Converters\ValueConverterOfT.cs" />
     <Compile Include="Parsing\Converters\EnumConverter.cs" />
-    <Compile Include="Parsing\MapperCore.cs" />
-    <Compile Include="Parsing\ParserCore.cs" />
     <Compile Include="Parsing\ParserCorev2.cs" />
-    <Compile Include="Parsing\PropertyGroup.cs" />
-    <Compile Include="Parsing\PropertyMap.cs" />
+    <Compile Include="Parsing\ParsingAttributes.cs" />
     <Compile Include="Serialization\RFmxSerializer.cs" />
     <Compile Include="Plugins\WaveformPluginFactory.cs" />
+    <Compile Include="Serialization\SerializationAttributes.cs" />
     <Compile Include="WaveformConfigFileType.cs" />
     <Compile Include="Plugins\IWaveformFilePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,9 +8,11 @@ using Serilog;
 using Serilog.Context;
 
 
-namespace NationalInstruments.Utilities.SignalCreator.Plugins
+namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
 {
-    using static RfwsParserUtilities;
+    using NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel;
+    using SignalCreator.RfwsParser;
+    using static SignalCreator.RfwsParser.RfwsParserUtilities;
 
     [WaveformFilePlugIn("Plugin for parsing 5G NR .rfws files.", "19.1", "20")]
     public class NrRfwsPlugin : IWaveformFilePlugin
@@ -76,6 +78,26 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
             using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
             {
                 int carrierSetIndex = 0;
+                List<CarrierSet> carrierSets = new List<CarrierSet>();
+                foreach (XElement carrierSetSection in rootData.FindSections(typeof(CarrierSet)))
+                {
+                    CarrierSet set = carrierSetSection.Parse<CarrierSet>();
+                    carrierSets.Add(set);
+                }
+                List<Carrier> carriers = new List<Carrier>();
+                foreach (XElement carrierDefinitionSetion in rootData.FindSections(typeof(Carrier)))
+                {
+                    Carrier carrier = carrierDefinitionSetion.Parse<Carrier>();
+                    carriers.Add(carrier);
+                }
+                foreach (CarrierSet set in carrierSets)
+                {
+                    SignalModel.SignalModel signal = new SignalModel.SignalModel(set, carriers);
+                    instr.CreateNRSignalConfigurationFromObject(signal, signalName: $"CarrierSet{carrierSetIndex}");
+                    carrierSetIndex++;
+                }
+                /*
+                int carrierSetIndex = 0;
                 foreach (XElement carrierSetSection in rootData.FindSections(typeof(CarrierSet)))
                 {
                     RFmxNRMX signal = instr.GetNRSignalConfiguration($"CarrierSet{carrierSetIndex}");
@@ -97,7 +119,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
                         // Hence, for each carrier definition that we find, we determine which subblock object
                         // uses that carrier definition and we use that subblock as the parent object to create
                         // the carrier.
-                        int i = 0;
+                        /*int i = 0;
                         List<Carrier> carriers = new List<Carrier>();
                         foreach (XElement carrierDefinitionSetion in rootData.FindSections(typeof(Carrier)))
                         {
@@ -115,9 +137,9 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
 
                         // Everything has been parsed; now, map the results
                         nrMapper.Map(carrierSet);
-                        foreach (Carrier c in carriers) nrMapper.Map(c);
+                        //foreach (Carrier c in carriers) nrMapper.Map(c);
                     }
-                }
+                }*/
             }
         }
     }

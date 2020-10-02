@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using NationalInstruments.RFmx.InstrMX;
+using Serilog;
 
 namespace NationalInstruments.Utilities.SignalCreator.Seralization
 {
@@ -29,8 +30,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Seralization
                     ApplyConfiguration(signal, selectorString, intValue, (RFmxMappablePropertyAttribute)attr);
                     break;
                 case Enum enumValue:
-                    int convertedValue = Convert.ToInt32(enumValue);
-                    ApplyConfiguration(signal, selectorString, convertedValue, (RFmxMappablePropertyAttribute)attr);
+                    ApplyConfiguration(signal, selectorString, enumValue, (RFmxMappablePropertyAttribute)attr);
                     break;
                 case string stringValue:
                     ApplyConfiguration(signal, selectorString, stringValue, (RFmxMappablePropertyAttribute)attr);
@@ -49,10 +49,15 @@ namespace NationalInstruments.Utilities.SignalCreator.Seralization
                         i++;
                     }
                     break;
+                case null:
+                    break;
                 default:
                     if (attr is RFmxMappableSectionAttribute sectionAttr)
                     {
-                        selectorString = BuildSelectorString(selectorString, sectionAttr.SelectorString, 0);
+                        if (!string.IsNullOrEmpty(sectionAttr.SelectorString))
+                        {
+                            selectorString = BuildSelectorString(selectorString, sectionAttr.SelectorString, 0);
+                        }
                     }
                     SerializeClass(signal, selectorString, obj);
                     break;
@@ -73,7 +78,14 @@ namespace NationalInstruments.Utilities.SignalCreator.Seralization
             {
                 object value = member.GetValue(obj);
                 RFmxMappableAttribute attr = member.GetCustomAttribute<RFmxMappableAttribute>();
-                SerializeValue(signal, selectorString, value, attr);
+                try
+                {
+                    SerializeValue(signal, selectorString, value, attr);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error applying member {MemberName} for {SelectorString}", member.Name, selectorString);
+                }
             }
         }
 
@@ -110,6 +122,12 @@ namespace NationalInstruments.Utilities.SignalCreator.Seralization
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
         /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
         protected abstract void ApplyConfiguration(T signal, string selectorString, int value, RFmxMappablePropertyAttribute attribute);
+        /// <summary>
+        /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
+        /// </summary>
+        /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
+        /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
+        protected abstract void ApplyConfiguration(T signal, string selectorString, Enum value, RFmxMappablePropertyAttribute attribute);
         /// <summary>
         /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
         /// </summary>

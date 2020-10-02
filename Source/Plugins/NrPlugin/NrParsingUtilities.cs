@@ -9,6 +9,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
     {
         public static IReadOnlyList<(int offset, int numRbs)> ParseRbAllocationString(string rbAllocation)
         {
+            rbAllocation = Regex.Replace(rbAllocation, @"\s", string.Empty);
             if (Regex.IsMatch(rbAllocation, @"[^\d,-:last]"))
             {
                 throw new ArgumentException("One or more invalid characters are specified", nameof(rbAllocation));

@@ -6,38 +6,39 @@ using NationalInstruments.RFToolkits.Interop;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins
 {
-    class WlanParser : ParserCore
+    class WlanParser : ParserCorev2
     {
-        private niWLANG wlan;
-        
-        public WlanParser(niWLANG wlan)
+        public object Parse(Type type, niWLANG wlan)
         {
-            this.wlan = wlan;
+            return ParseValue(type, wlan);
+        }
+        public T Parse<T>(niWLANG wlan)
+        {
+            return (T)Parse(typeof(T), wlan);
         }
 
-        protected override object ReadValueFromInput(PropertyGroup group, FieldInfo field)
+        public override object ReadValue(Type t, object valueToParse, ParseableAttribute attr)
         {
-            if (field.IsDefined(typeof(WlanPropertyAttribute)))
+            WlanTkParseableAttribute wlanAttr = (WlanTkParseableAttribute)attr;
+            niWLANG wlan = (niWLANG)valueToParse;
+            if (t == typeof(double))
             {
-                WlanPropertyAttribute attr = field.GetCustomAttribute<WlanPropertyAttribute>();
-
-                object map = field.GetValue(group);
-                if (map is PropertyMap<double>)
-                {
-                    wlan.GetScalarAttributeF64("", attr.WlanGPropertyId, out double doubleValue);
-                    return doubleValue;
-                }
-                else
-                {
-                    wlan.GetScalarAttributeI32("", attr.WlanGPropertyId, out int intValue);
-                    return intValue;
-                }
+                wlan.GetScalarAttributeF64("", wlanAttr.WlanGPropertyId, out double doubleValue);
+                return doubleValue;
             }
             else
             {
-                throw new CustomAttributeFormatException($"{typeof(WlanPropertyAttribute)}" +
-                    $"must be defined for {field.Name}");
+                wlan.GetScalarAttributeI32("", wlanAttr.WlanGPropertyId, out int intValue);
+                return intValue;
             }
+        }
+    }
+    public static class WlansParserExtensions
+    {
+        public static T Parse<T>(this niWLANG wlan)
+        {
+            WlanParser parser = new WlanParser();
+            return parser.Parse<T>(wlan);
         }
     }
 }
