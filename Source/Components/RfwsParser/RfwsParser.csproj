@@ -7,7 +7,7 @@
     <ProjectGuid>{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RfwsParser</RootNamespace>
+    <RootNamespace>NationalInstruments.Utilities.SignalCreator.RfwsParser</RootNamespace>
     <AssemblyName>RfwsParser</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -40,12 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\DefaultRfwsConverter.cs" />
+    <Compile Include="Converters\LinearTodBConverter.cs" />
     <Compile Include="RfwsAttributes.cs" />
-    <Compile Include="RfwsMapper.cs" />
-    <Compile Include="RfwsParser.cs" />
+    <Compile Include="RfwsParserUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RfwsSection.cs" />
-    <Compile Include="RfwsSectionList.cs" />
+    <Compile Include="RfwsParserV2.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog">

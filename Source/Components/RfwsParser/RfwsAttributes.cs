@@ -1,13 +1,16 @@
-﻿using System;
+﻿
+using System;
 using System.Linq;
 
-namespace NationalInstruments.Utilities.SignalCreator
+namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
 {
+    using Converters;
+
     /// <summary>
     /// Maps a <see cref="RfwsSection"/> class to a specific section and version contained within an RFWS file. 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
-    public class RfwsSectionAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
+    public class RfwsSectionAttribute : ParseableAttribute
     {
         /// <summary>
         /// Specifies the value of the "name" attribute of the section element.
@@ -35,7 +38,7 @@ namespace NationalInstruments.Utilities.SignalCreator
     /// <summary>
     /// Maps a <see cref="RfwsSectionList{T}"/> class to a specific section and version contained within an RFWS file. 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
     public sealed class RfwsSectionListAttribute : RfwsSectionAttribute
     {
         /// <summary>
@@ -77,9 +80,10 @@ namespace NationalInstruments.Utilities.SignalCreator
     /// Maps a class to a specific key and version contained within an RFWS file.
     /// Only valid on <see cref="PropertyMap{T}"/> classes and derived classes.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
-    public sealed class RfwsPropertyAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+    public sealed class RfwsParseableKeyAttribute : ParseableAttribute
     {
+
         /// <summary>
         /// Specifies the value of the "name" attribute of the key element.
         /// </summary>
@@ -96,7 +100,7 @@ namespace NationalInstruments.Utilities.SignalCreator
         public RfwsVersionMode VersionMode { get; } = RfwsVersionMode.SpecificVersions;
 
         /// <param name="keyName">Specifies the value of the "name" attribute of the key element.</param>
-        public RfwsPropertyAttribute(string keyName)
+        public RfwsParseableKeyAttribute(string keyName)
         {
             Key = keyName;
             // No version is specfied, so ensure that all versions are supported
@@ -108,7 +112,7 @@ namespace NationalInstruments.Utilities.SignalCreator
         /// <param name="versionMode">Optional; with a single version set, it is assumed that this version and later should be supported.<para></para>;
         /// Specifies how the version numbers specified in <see cref="Versions"/> should be interpreted when attempting to match
         /// a class with an RFWS key.</param>
-        public RfwsPropertyAttribute(string keyName, float minimumVersion, RfwsVersionMode versionMode = RfwsVersionMode.SupportedVersionsAndLater)
+        public RfwsParseableKeyAttribute(string keyName, float minimumVersion, RfwsVersionMode versionMode = RfwsVersionMode.SupportedVersionsAndLater)
         {
             Key = keyName;
             Versions = new float[1] { minimumVersion };
@@ -119,7 +123,7 @@ namespace NationalInstruments.Utilities.SignalCreator
         /// <param name="versionMode">Specifies how the version numbers specified in <paramref name="versions"/> should 
         /// be interpreted when attempting to match a class with an RFWS key.</param>
         /// <param name="versions">Specifies one or more valid versions for this key as defined by the parent section.</param>
-        public RfwsPropertyAttribute(string keyName, RfwsVersionMode versionMode, params float[] versions)
+        public RfwsParseableKeyAttribute(string keyName, RfwsVersionMode versionMode, params float[] versions)
         {
             Key = keyName;
             Versions = versions;
@@ -148,5 +152,11 @@ namespace NationalInstruments.Utilities.SignalCreator
                     return false;
             }
         }
+    }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+    public sealed class RfwsParseableSectionAttribute : ParseableAttribute
+    {
+        public override Type ConverterType { get => base.ConverterType; set => base.ConverterType = value; }
     }
 }

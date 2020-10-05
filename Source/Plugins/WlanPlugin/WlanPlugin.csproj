@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Dependencies\niInteropCommon.cs" />
     <Compile Include="Dependencies\niWLANG.cs" />
-    <Compile Include="WlanPropertyAttribute.cs" />
+    <Compile Include="WlanPluginAttributes.cs" />
     <Compile Include="WlanParser.cs" />
     <Compile Include="WlanPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
