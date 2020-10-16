@@ -50,7 +50,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
 
                         bool parseable = result.FirstOrDefault() != null;
                         Log.Verbose("CanParse returning {Result} indicating that tag {XmlIdentifer} was or was not found",
-                                        parseable, XmlIdentifer, XmlNrVersion);
+                                        parseable, XmlIdentifer);
                         return parseable;
                     }
                     catch (Exception ex)

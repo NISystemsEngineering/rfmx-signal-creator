@@ -189,7 +189,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                 }
                 else
                 {
-                    Log.Warning("Skipping {file}; no installed plugin is compatible with this file.", fileName);
+                    Log.Warning("Skipping {File}; no installed plugin is compatible with this file.", fileName);
                 }
             }
             Log.Information("Execution complete");

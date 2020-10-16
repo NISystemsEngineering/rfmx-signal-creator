@@ -66,7 +66,7 @@ namespace NationalInstruments.Utilities.SignalCreator
             Log.Debug("Output path {Path}", newPath);
 
             instr.SaveAllConfigurations(newPath);
-            Log.Information("Configuration saved to {path}", newPath);
+            Log.Information("Configuration saved to {Path}", newPath);
         }
     }
     /// <summary>

@@ -59,7 +59,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                         continue;
                     }
                     plugInAssemblyList.Add(assembly);
-                    Log.Debug("Loaded assembly {file}", file);
+                    Log.Debug("Loaded assembly {File}", file);
                 }
             }
             else
