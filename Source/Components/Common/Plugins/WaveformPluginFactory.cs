@@ -6,7 +6,7 @@ using System.Reflection;
 using Serilog;
 using System.Collections.ObjectModel;
 
-namespace NationalInstruments.Utilities.SignalCreator
+namespace NationalInstruments.Utilities.SignalCreator.Plugins
 {
     // Adapted from https://www.c-sharpcorner.com/article/introduction-to-building-a-plug-in-architecture-using-C-Sharp/
     /// <summary>

@@ -41,12 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions.cs" />
-    <Compile Include="Parsing\Converters\LookupTableConverter.cs" />
-    <Compile Include="Parsing\Converters\ValueConverter.cs" />
-    <Compile Include="Parsing\Converters\ValueConverterOfT.cs" />
-    <Compile Include="Parsing\Converters\EnumConverter.cs" />
-    <Compile Include="Parsing\ParserCorev2.cs" />
-    <Compile Include="Parsing\ParsingAttributes.cs" />
+    <Compile Include="Serialization\Converters\LookupTableConverter.cs" />
+    <Compile Include="Serialization\Converters\ValueConverter.cs" />
+    <Compile Include="Serialization\Converters\ValueConverterOfT.cs" />
+    <Compile Include="Serialization\Converters\EnumConverter.cs" />
+    <Compile Include="Serialization\Deserializer.cs" />
+    <Compile Include="Serialization\DeserializationAttributes.cs" />
     <Compile Include="Serialization\RFmxSerializer.cs" />
     <Compile Include="Plugins\WaveformPluginFactory.cs" />
     <Compile Include="Serialization\SerializationAttributes.cs" />
@@ -68,8 +68,6 @@
       <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Deserialization\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

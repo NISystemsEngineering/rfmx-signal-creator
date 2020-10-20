@@ -1,46 +1,47 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 using NationalInstruments.RFmx.InstrMX;
 using Serilog;
 
-namespace NationalInstruments.Utilities.SignalCreator.Seralization
+namespace NationalInstruments.Utilities.SignalCreator.Serialization
 {
+    /// <summary>
+    /// Provides the base functionality for serializing an object to an RFmx signal configuration object.
+    /// </summary>
+    /// <typeparam name="T">Specifies the type of RFmx signal that the child class can serialize to.</typeparam>
     public abstract class RFmxSerializer<T> where T : ISignalConfiguration
     {
         public void Serialize(T signal, string selectorString, object obj)
         {
             SerializeValue(signal, selectorString, obj, null);
         }
-        private void SerializeValue(T signal, string selectorString, object obj, RFmxMappableAttribute attr)
+        private void SerializeValue(T signal, string selectorString, object obj, RFmxSerializableAttribute attr)
         {
             switch (obj)
             {
                 case bool boolValue:
-                    ApplyConfiguration(signal, selectorString, boolValue, (RFmxMappablePropertyAttribute)attr);
+                    ApplyConfiguration(signal, selectorString, boolValue, (RFmxSerializablePropertyAttribute)attr);
                     break;
                 case double doubleValue:
-                    ApplyConfiguration(signal, selectorString, doubleValue, (RFmxMappablePropertyAttribute)attr);
+                    ApplyConfiguration(signal, selectorString, doubleValue, (RFmxSerializablePropertyAttribute)attr);
                     break;
                 case int intValue:
-                    ApplyConfiguration(signal, selectorString, intValue, (RFmxMappablePropertyAttribute)attr);
+                    ApplyConfiguration(signal, selectorString, intValue, (RFmxSerializablePropertyAttribute)attr);
                     break;
                 case Enum enumValue:
-                    ApplyConfiguration(signal, selectorString, enumValue, (RFmxMappablePropertyAttribute)attr);
+                    ApplyConfiguration(signal, selectorString, enumValue, (RFmxSerializablePropertyAttribute)attr);
                     break;
                 case string stringValue:
-                    ApplyConfiguration(signal, selectorString, stringValue, (RFmxMappablePropertyAttribute)attr);
+                    ApplyConfiguration(signal, selectorString, stringValue, (RFmxSerializablePropertyAttribute)attr);
                     break;
                 case IList list:
                     int i = 0;
                     foreach (object o in list)
                     {
                         string elementSelectorString;
-                        if (attr is RFmxMappableSectionAttribute sectionAttrList)
+                        if (attr is RFmxSerializableSectionAttribute sectionAttrList)
                         {
                             elementSelectorString = BuildSelectorString(selectorString, sectionAttrList.SelectorString, i);
                         }
@@ -52,7 +53,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Seralization
                 case null:
                     break;
                 default:
-                    if (attr is RFmxMappableSectionAttribute sectionAttr)
+                    if (attr is RFmxSerializableSectionAttribute sectionAttr)
                     {
                         if (!string.IsNullOrEmpty(sectionAttr.SelectorString))
                         {
@@ -67,17 +68,13 @@ namespace NationalInstruments.Utilities.SignalCreator.Seralization
         {
             Type t = obj.GetType();
 
-            bool hasAttribute = t.IsDefined<RFmxMappableSectionAttribute>();
-
-            /*string segmentSelectorString = hasAttribute ?
-                t.GetCustomAttribute<RFmxMappableSectionAttribute>().SelectorString : string.Empty;*/
-
             var members = t.GetPropertiesAndFields(MemberAccessibility.Readable)
-                           .Where(m => m.IsDefined<RFmxMappableAttribute>());
+                           .Where(m => m.IsDefined<RFmxSerializableAttribute>());
+
             foreach (MemberInfo member in members)
             {
                 object value = member.GetValue(obj);
-                RFmxMappableAttribute attr = member.GetCustomAttribute<RFmxMappableAttribute>();
+                RFmxSerializableAttribute attr = member.GetCustomAttribute<RFmxSerializableAttribute>();
                 try
                 {
                     SerializeValue(signal, selectorString, value, attr);
@@ -103,37 +100,53 @@ namespace NationalInstruments.Utilities.SignalCreator.Seralization
                 return string.Join("/", selectorString, combinedSegment);
             }
         }
+
         #region Abstract Methods
         /// <summary>
-        /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
+        /// Applies <paramref name="value"/> to the RFmx signal defined by <paramref name="signal"/> and <paramref name="selectorString"/> using the 
+        /// RFmx property ID specified in <paramref name="attribute"/>.
         /// </summary>
+        /// <param name="signal">Specifies the RFmx signal to apply the property to.</param>
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
-        /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(T signal, string selectorString, bool value, RFmxMappablePropertyAttribute attribute);
+        /// <param name="value">Specifies the value to set the property to.</param>
+        /// <param name="attribute">Specifies the RFmx property ID to set.</param>
+        protected abstract void ApplyConfiguration(T signal, string selectorString, bool value, RFmxSerializablePropertyAttribute attribute);
         /// <summary>
-        /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
+        /// Applies <paramref name="value"/> to the RFmx signal defined by <paramref name="signal"/> and <paramref name="selectorString"/> using the 
+        /// RFmx property ID specified in <paramref name="attribute"/>.
         /// </summary>
+        /// <param name="signal">Specifies the RFmx signal to apply the property to.</param>
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
-        /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(T signal, string selectorString, double value, RFmxMappablePropertyAttribute attribute);
+        /// <param name="value">Specifies the value to set the property to.</param>
+        /// <param name="attribute">Specifies the RFmx property ID to set.</param>
+        protected abstract void ApplyConfiguration(T signal, string selectorString, double value, RFmxSerializablePropertyAttribute attribute);
         /// <summary>
-        /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
+        /// Applies <paramref name="value"/> to the RFmx signal defined by <paramref name="signal"/> and <paramref name="selectorString"/> using the 
+        /// RFmx property ID specified in <paramref name="attribute"/>.
         /// </summary>
+        /// <param name="signal">Specifies the RFmx signal to apply the property to.</param>
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
-        /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(T signal, string selectorString, int value, RFmxMappablePropertyAttribute attribute);
+        /// <param name="value">Specifies the value to set the property to.</param>
+        /// <param name="attribute">Specifies the RFmx property ID to set.</param>
+        protected abstract void ApplyConfiguration(T signal, string selectorString, int value, RFmxSerializablePropertyAttribute attribute);
         /// <summary>
-        /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
+        /// Applies <paramref name="value"/> to the RFmx signal defined by <paramref name="signal"/> and <paramref name="selectorString"/> using the 
+        /// RFmx property ID specified in <paramref name="attribute"/>.
         /// </summary>
+        /// <param name="signal">Specifies the RFmx signal to apply the property to.</param>
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
-        /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(T signal, string selectorString, Enum value, RFmxMappablePropertyAttribute attribute);
+        /// <param name="value">Specifies the value to set the property to.</param>
+        /// <param name="attribute">Specifies the RFmx property ID to set.</param>
+        protected abstract void ApplyConfiguration(T signal, string selectorString, Enum value, RFmxSerializablePropertyAttribute attribute);
         /// <summary>
-        /// Applies a setting defined by <paramref name="property"/> to the RFmx signal and selector string .
+        /// Applies <paramref name="value"/> to the RFmx signal defined by <paramref name="signal"/> and <paramref name="selectorString"/> using the 
+        /// RFmx property ID specified in <paramref name="attribute"/>.
         /// </summary>
+        /// <param name="signal">Specifies the RFmx signal to apply the property to.</param>
         /// <param name="selectorString">Specifies the selector string to apply the proprety to.</param>
-        /// <param name="property">Specifies the RFmx parameter ID and value to be set.</param>
-        protected abstract void ApplyConfiguration(T signal, string selectorString, string value, RFmxMappablePropertyAttribute attribute);
+        /// <param name="value">Specifies the value to set the property to.</param>
+        /// <param name="attribute">Specifies the RFmx property ID to set.</param>
+        protected abstract void ApplyConfiguration(T signal, string selectorString, string value, RFmxSerializablePropertyAttribute attribute);
         #endregion
     }
 
