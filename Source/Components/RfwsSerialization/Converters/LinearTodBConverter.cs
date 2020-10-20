@@ -1,7 +1,6 @@
 ﻿using System;
 
-
-namespace NationalInstruments.Utilities.SignalCreator.RfwsParser.Converters
+namespace NationalInstruments.Utilities.SignalCreator.Serialization.Converters
 {
     /// <summary>
     /// Converts a linear ratio value string from Volts to decibels.

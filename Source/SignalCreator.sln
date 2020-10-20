@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NrPlugin", "Plugins\NrPlugi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Components\Common\Common.csproj", "{EE8D4A5C-C291-4CBE-A8A1-E148CB3840E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfwsParser", "Components\RfwsParser\RfwsParser.csproj", "{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RfwsSerialization", "Components\RfwsSerialization\RfwsSerialization.csproj", "{5CE77AC6-ACC7-4001-88DA-B14B06365BB6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{F30B836E-4026-4930-9A0C-F5520F768041}"
 EndProject
