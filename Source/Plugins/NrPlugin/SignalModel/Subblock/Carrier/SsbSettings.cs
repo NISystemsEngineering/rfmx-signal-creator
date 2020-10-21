@@ -1,19 +1,16 @@
-﻿using System;
-using System.Xml.Linq;
-using NationalInstruments.RFmx.NRMX;
+﻿using NationalInstruments.RFmx.NRMX;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
 {
-    using RfwsParser.Converters;
-    using SignalCreator.RfwsParser;
+    using Serialization;
+    using Serialization.Converters;
 
-    public class SsbSettings
+    internal class SsbSettings
     {
-
         // Using this key as a proxy for SSB enabled. RFmx WC doesn't seem to have a specific property for
         // enabling SSB; instead, this, "SSS Channel Mode", "PBCH DMRS Channel Mode", and 
         // "PBCH Channel Mode" are all set to True when the SSB enabled checkbox is set in the WC UI.
-        [RfwsParseableKey("PSS Channel Mode", 4), RFmxNrMappableProperty(RFmxNRMXPropertyId.SsbEnabled)]
+        [RfwsDeserializableKey("PSS Channel Mode", 4), RFmxNrSerializableProperty(RFmxNRMXPropertyId.SsbEnabled)]
         public bool? SsbEnabled;
 
         class SsbPatternConverter : EnumConverter<RFmxNRMXSsbPattern>
@@ -25,29 +22,29 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
                 return base.Convert(textValue);
             }
         }
-        [RfwsParseableKey("Configuration Set", 4, ConverterType = typeof(SsbPatternConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.SsbPattern)]
+        [RfwsDeserializableKey("Configuration Set", 4, ConverterType = typeof(SsbPatternConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.SsbPattern)]
         public RFmxNRMXSsbPattern? SsbPattern;
-        [RfwsParseableKey("SSS Scaling Factor", 4, ConverterType = typeof(LinearTodBConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.SssPower)]
+        [RfwsDeserializableKey("SSS Scaling Factor", 4, ConverterType = typeof(LinearTodBConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.SssPower)]
         public double? SssPower;
-        [RfwsParseableKey("PSS Scaling Factor", 4, ConverterType = typeof(LinearTodBConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PssPower)]
+        [RfwsDeserializableKey("PSS Scaling Factor", 4, ConverterType = typeof(LinearTodBConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PssPower)]
         public double? PssPower;
-        [RfwsParseableKey("PBCH Scaling Factor", 4, ConverterType = typeof(LinearTodBConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PbchPower)]
+        [RfwsDeserializableKey("PBCH Scaling Factor", 4, ConverterType = typeof(LinearTodBConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PbchPower)]
         public double? PbchPower;
-        [RfwsParseableKey("PBCH DMRS Scaling Factor", 4, ConverterType = typeof(LinearTodBConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PbchDmrsPower)]
+        [RfwsDeserializableKey("PBCH DMRS Scaling Factor", 4, ConverterType = typeof(LinearTodBConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PbchDmrsPower)]
         public double? PbchDrmsPower;
-        [RfwsParseableKey("Subcarrier Spacing Common", 4), RFmxNrMappableProperty(RFmxNRMXPropertyId.SubcarrierSpacingCommon)]
+        [RfwsDeserializableKey("Subcarrier Spacing Common", 4), RFmxNrSerializableProperty(RFmxNRMXPropertyId.SubcarrierSpacingCommon)]
         public double? SubcarrierSpacingCommon;
-        [RfwsParseableKey("Subcarrier Offset", 4)]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.SsbSubcarrierOffset)]
+        [RfwsDeserializableKey("Subcarrier Offset", 4)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.SsbSubcarrierOffset)]
         public double? SubcarrierOffset;
-        [RfwsParseableKey("Periodicity", 4), RFmxNrMappableProperty(RFmxNRMXPropertyId.SsbPeriodicity)]
+        [RfwsDeserializableKey("Periodicity", 4), RFmxNrSerializableProperty(RFmxNRMXPropertyId.SsbPeriodicity)]
         public double? SsbPeriodicity;
-        [RfwsParseableKey("SSB Active Blocks", 4), RFmxNrMappableProperty(RFmxNRMXPropertyId.SsbActiveBlocks)]
+        [RfwsDeserializableKey("SSB Active Blocks", 4), RFmxNrSerializableProperty(RFmxNRMXPropertyId.SsbActiveBlocks)]
         public string SsbActiveBlocks;
     }
 }

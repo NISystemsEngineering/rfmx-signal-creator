@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
+﻿namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
 {
-    public static class SelectorStrings
+    internal static class SelectorStrings
     {
         public const string Subblock = "subblock";
         public const string Carrier = "carrier";

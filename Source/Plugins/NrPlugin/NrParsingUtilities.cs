@@ -5,8 +5,14 @@ using System.Text.RegularExpressions;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
 {
-    public static class NrParsingUtilities
+    internal static class NrParsingUtilities
     {
+        /// <summary>
+        /// Parses the resource block allocation string from the RFWS file in the form of "0:5,10:20,25:last" to a list of
+        /// offset and number of resource block pairs. Creates as few distinct pairs as possible from consecutive numbers.
+        /// </summary>
+        /// <param name="rbAllocation">Specifies the resource block allocation string from the RFWS file.</param>
+        /// <returns></returns>
         public static IReadOnlyList<(int offset, int numRbs)> ParseRbAllocationString(string rbAllocation)
         {
             rbAllocation = Regex.Replace(rbAllocation, @"\s", string.Empty);

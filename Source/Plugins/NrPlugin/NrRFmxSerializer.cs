@@ -7,52 +7,49 @@ using Serilog;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
 {
-    using NationalInstruments.Utilities.SignalCreator;
-    using SignalCreator.RfwsParser;
-    using SignalCreator.Seralization;
+    using Serialization;
 
     /// <summary>
     /// Represents a mapper to apply values to an RFmx NR session.
     /// </summary>
-    public class NrRFmxMapperV2 : RFmxSerializer<RFmxNRMX>
+    internal class NrRFmxSerializer : RFmxSerializer<RFmxNRMX>
     {
-
         #region Overrides
-        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, bool value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, bool value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
             LogKey(attribute, selectorString, value);
             signal.SetAttributeBool(overridenSelectorString, attribute.RFmxPropertyId, value);
         }
 
-        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, double value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, double value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
             LogKey(attribute, selectorString, value);
             signal.SetAttributeDouble(overridenSelectorString, attribute.RFmxPropertyId, value);
         }
 
-        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, int value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, int value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
             LogKey(attribute, selectorString, value);
             signal.SetAttributeInt(overridenSelectorString, attribute.RFmxPropertyId, value);
         }
-        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, Enum value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, Enum value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
             LogKey(attribute, selectorString, value);
             int convertedValue = Convert.ToInt32(value);
             signal.SetAttributeInt(overridenSelectorString, attribute.RFmxPropertyId, convertedValue);
         }
-        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, string value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, string value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
             LogKey(attribute, selectorString, value);
             signal.SetAttributeString(overridenSelectorString, attribute.RFmxPropertyId, value);
         }
         #endregion
-        static void LogKey(RFmxMappablePropertyAttribute attribute, string selectorString, object value)
+        static void LogKey(RFmxSerializablePropertyAttribute attribute, string selectorString, object value)
         {
             RFmxNRMXPropertyId id = (RFmxNRMXPropertyId)attribute.RFmxPropertyId;
             if (string.IsNullOrEmpty(selectorString)) selectorString = "<signal>";
@@ -67,9 +64,9 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
         /// This is used in a few corner cases where a property is defined in one 
         /// section of an RFWS file but must use a different selector string than the other properties.
         /// </summary>
-        protected static string OverrideSelectorString(RFmxMappablePropertyAttribute attribute, string selectorString)
+        protected static string OverrideSelectorString(RFmxSerializablePropertyAttribute attribute, string selectorString)
         {
-            var nrAttribute = (RFmxNrMappablePropertyAttribute)attribute;
+            var nrAttribute = (RFmxNrSerializablePropertyAttribute)attribute;
             switch (nrAttribute.SelectorStringType)
             {
                 case RfmxNrSelectorStringType.Subblock:
@@ -82,14 +79,20 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
             return selectorString;
         }
 
-
     }
-    public static class RFmxNRmxSerializerExtensions
+    internal static class RFmxNRmxSerializerExtensions
     {
+        /// <summary>
+        /// Creates an NR signal configuration by serializing the data in <paramref name="objectToSerialize"/>.
+        /// </summary>
+        /// <returns></returns>
         public static RFmxNRMX CreateNRSignalConfigurationFromObject(this RFmxInstrMX instr, object objectToSerialize, string baseSelectorString = "")
         {
             return instr.CreateNRSignalConfigurationFromObject(objectToSerialize, string.Empty, baseSelectorString);
         }
+        /// <summary>
+        /// Creates an NR signal configuration by serializing the data in <paramref name="objectToSerialize"/>.
+        /// </summary>
         public static RFmxNRMX CreateNRSignalConfigurationFromObject(this RFmxInstrMX instr, object objectToSerialize, string signalName, string baseSelectorString = "")
         {
             RFmxNRMX signal;
@@ -98,7 +101,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
                 signal = instr.GetNRSignalConfiguration();
             }
             else signal = instr.GetNRSignalConfiguration(signalName);
-            NrRFmxMapperV2 mapper = new NrRFmxMapperV2();
+            NrRFmxSerializer mapper = new NrRFmxSerializer();
             mapper.Serialize(signal, baseSelectorString, objectToSerialize);
             return signal;
         }

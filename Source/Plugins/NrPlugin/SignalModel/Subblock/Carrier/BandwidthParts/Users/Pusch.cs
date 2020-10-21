@@ -1,88 +1,86 @@
-﻿using System;
-using System.Xml.Linq;
-using NationalInstruments.RFmx.NRMX;
+﻿using NationalInstruments.RFmx.NRMX;
 using System.Collections.Generic;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
 {
-    using RfwsParser.Converters;
-    using SignalCreator.RfwsParser;
+    using Serialization;
+    using Serialization.Converters;
 
-    public class PuschSettings
+    internal class PuschSettings
     {
-        [RfwsParseableKey("Count", 1), RFmxNrMappableProperty(RFmxNRMXPropertyId.NumberOfPuschConfigurations)]
+        [RfwsDeserializableKey("Count", 1), RFmxNrSerializableProperty(RFmxNRMXPropertyId.NumberOfPuschConfigurations)]
         public int? NumPusch;
 
-        [RfwsSection(@"PUSCH Slot Settings \d+", version = "6", regExMatch = true)]
-        [RFmxMappableSection(SelectorStrings.Pusch)]
+        [RfwsDeserializableSection(@"PUSCH Slot Settings \d+", version = "6", regExMatch = true)]
+        [RFmxSerializableSection(SelectorStrings.Pusch)]
         public List<Pusch> PuschConfigurations;
     }
 
-    public class Pusch 
+    internal class Pusch 
     {
 
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschNumberOfResourceBlockClusters)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschNumberOfResourceBlockClusters)]
         public int? NumberOfRbClusters => PuschRbClusters?.Count;
 
         #region Section Version 3 (Pre 20.0 release and above)
-        [RfwsParseableKey("RB Allocation", 3, ConverterType = typeof(RbClusterConverter<PuschRbCluster>))]
-        [RFmxMappableSection(SelectorStrings.PuschCluster)]
+        [RfwsDeserializableKey("RB Allocation", 3, ConverterType = typeof(RbClusterConverter<PuschRbCluster>))]
+        [RFmxSerializableSection(SelectorStrings.PuschCluster)]
         public List<PuschRbCluster> PuschRbClusters;
-        [RfwsParseableKey("Slot Allocation", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschSlotAllocation)]
+        [RfwsDeserializableKey("Slot Allocation", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschSlotAllocation)]
         public string RbAllocation;
-        [RfwsParseableKey("Symbol Allocation", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschSymbolAllocation)]
+        [RfwsDeserializableKey("Symbol Allocation", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschSymbolAllocation)]
         public string SymbolAllocation;
-        [RfwsParseableKey("Modulation Type", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschModulationType)]
+        [RfwsDeserializableKey("Modulation Type", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschModulationType)]
         public RFmxNRMXPuschModulationType? ModulationType;
-        [RfwsParseableKey("PUSCH Mapping Type", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschMappingType)]
+        [RfwsDeserializableKey("PUSCH Mapping Type", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschMappingType)]
         public RFmxNRMXPuschMappingType? MappingType;
-        [RfwsParseableKey("DMRS Duration", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsDuration)]
+        [RfwsDeserializableKey("DMRS Duration", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsDuration)]
         public RFmxNRMXPuschDmrsDuration? DmrsDuration;
-        [RfwsParseableKey("DMRS Configuration Type", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsConfigurationType)]
+        [RfwsDeserializableKey("DMRS Configuration Type", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsConfigurationType)]
         public RFmxNRMXPuschDmrsConfigurationType? DmrsConfiguration;
-        [RfwsParseableKey("DMRS Power Mode", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsPowerMode)]
+        [RfwsDeserializableKey("DMRS Power Mode", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsPowerMode)]
         public RFmxNRMXPuschDmrsPowerMode? DmrsPowerMode;
-        [RfwsParseableKey("DMRS Scaling Factor", 3, ConverterType = typeof(LinearTodBConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsPower)]
+        [RfwsDeserializableKey("DMRS Scaling Factor", 3, ConverterType = typeof(LinearTodBConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsPower)]
         public double? DmrsPower;
-        [RfwsParseableKey("DMRS Additional Positions", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsAdditionalPositions)]
+        [RfwsDeserializableKey("DMRS Additional Positions", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsAdditionalPositions)]
         public int? AdditionalPositions;
-        [RfwsParseableKey("DMRS Type A Position", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsTypeAPosition)]
+        [RfwsDeserializableKey("DMRS Type A Position", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsTypeAPosition)]
         public int? TypeAPosition;
-        [RfwsParseableKey("Transform Precoding Enabled", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschTransformPrecodingEnabled)]
+        [RfwsDeserializableKey("Transform Precoding Enabled", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschTransformPrecodingEnabled)]
         public bool? TransformPreCodingEnabled;
-        [RfwsParseableKey("PTRS Time Density", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschPtrsTimeDensity)]
+        [RfwsDeserializableKey("PTRS Time Density", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschPtrsTimeDensity)]
         public int? PtrsTimeDensity;
-        [RfwsParseableKey("PTRS Frequency Density", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschPtrsFrequencyDensity)]
+        [RfwsDeserializableKey("PTRS Frequency Density", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschPtrsFrequencyDensity)]
         public int? PtrsFrequencyDensity;
-        [RfwsParseableKey("UL PTRS RE Offset", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschPtrsREOffset)]
+        [RfwsDeserializableKey("UL PTRS RE Offset", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschPtrsREOffset)]
         public int? PtrsReOffset;
-        [RfwsParseableKey("PTRS Enabled", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschPtrsEnabled)]
+        [RfwsDeserializableKey("PTRS Enabled", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschPtrsEnabled)]
         public bool? PtrsEnabled;
-        [RfwsParseableKey("DMRS Scrambling ID", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsScramblingID)]
+        [RfwsDeserializableKey("DMRS Scrambling ID", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsScramblingID)]
         public int? ScramblingId;
-        [RfwsParseableKey("DMRS Scrambling ID Mode", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsScramblingIDMode)]
+        [RfwsDeserializableKey("DMRS Scrambling ID Mode", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsScramblingIDMode)]
         public RFmxNRMXPuschDmrsScramblingIDMode? ScramblingMode;
         // PUSCH DMRS Release Version
-        [RfwsParseableKey("PTRS Power Mode", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschPtrsPowerMode)]
+        [RfwsDeserializableKey("PTRS Power Mode", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschPtrsPowerMode)]
         public RFmxNRMXPuschPtrsPowerMode? PtrsPowerMode;
-        [RfwsParseableKey("PTRS Scaling Factor", 3, ConverterType = typeof(LinearTodBConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschPtrsPower)]
+        [RfwsDeserializableKey("PTRS Scaling Factor", 3, ConverterType = typeof(LinearTodBConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschPtrsPower)]
         public double? PtrsPower;
-        [RfwsParseableKey("PUSCH ID", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsPuschID)]
+        [RfwsDeserializableKey("PUSCH ID", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsPuschID)]
         public int? DrmsPuschId;
-        [RfwsParseableKey("PUSCH ID Mode", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsPuschIDMode)]
+        [RfwsDeserializableKey("PUSCH ID Mode", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsPuschIDMode)]
         public RFmxNRMXPuschDmrsPuschIDMode? DrmsPuschIdMode;
-        [RfwsParseableKey("Number of CDM Groups", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsNumberOfCdmGroups)]
+        [RfwsDeserializableKey("Number of CDM Groups", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsNumberOfCdmGroups)]
         public int? CdmGroups;
-        [RfwsParseableKey("DMRS Ports", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsAntennaPorts)]
+        [RfwsDeserializableKey("DMRS Ports", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsAntennaPorts)]
         public string DmrsPorts;
-        [RfwsParseableKey("PTRS Ports", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschPtrsAntennaPorts)]
+        [RfwsDeserializableKey("PTRS Ports", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschPtrsAntennaPorts)]
         public string PtrsPorts;
         #endregion
 
         #region Section Version 6 (20.0 release)
-        public class PuschDrmsReleaseVersionConverter : EnumConverter<RFmxNRMXPuschDmrsReleaseVersion>
+        internal class PuschDrmsReleaseVersionConverter : EnumConverter<RFmxNRMXPuschDmrsReleaseVersion>
         {
             protected override RFmxNRMXPuschDmrsReleaseVersion Convert(object value)
             {
@@ -92,8 +90,8 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
             }
         }
 
-        [RfwsParseableKey("Dmrs Release Version", 6, ConverterType = typeof(PuschDrmsReleaseVersionConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PuschDmrsReleaseVersion)]
+        [RfwsDeserializableKey("Dmrs Release Version", 6, ConverterType = typeof(PuschDrmsReleaseVersionConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PuschDmrsReleaseVersion)]
         public RFmxNRMXPuschDmrsReleaseVersion? ReleaseVersion;
         #endregion
     }

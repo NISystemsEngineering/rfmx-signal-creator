@@ -1,20 +1,18 @@
-﻿using System;
-using System.Xml.Linq;
-using NationalInstruments.RFmx.NRMX;
+﻿using NationalInstruments.RFmx.NRMX;
 
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
 {
-    using NationalInstruments.Utilities.SignalCreator;
-    using SignalCreator.RfwsParser;
+    using Serialization;
+    using Serialization.Converters;
 
-    public class OutputSettings
+    internal class OutputSettings
     {
-        [RfwsParseableKey("Link Direction", 3)]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.LinkDirection, RfmxNrSelectorStringType.None)]
+        [RfwsDeserializableKey("Link Direction", 3)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.LinkDirection, RfmxNrSelectorStringType.None)]
         public RFmxNRMXLinkDirection? LinkDirection;
-        [RfwsParseableKey("DL Ch Configuration Mode", 3)]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.DownlinkChannelConfigurationMode, RfmxNrSelectorStringType.None)]
+        [RfwsDeserializableKey("DL Ch Configuration Mode", 3)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.DownlinkChannelConfigurationMode, RfmxNrSelectorStringType.None)]
         public RFmxNRMXDownlinkChannelConfigurationMode? DlChannelConfigMode;
 
         class TestModelConverter : EnumConverter<RFmxNRMXDownlinkTestModel>
@@ -27,11 +25,11 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
                 return base.Convert(textValue);
             }
         }
-        [RfwsParseableKey("DL Test Model", 3, ConverterType = typeof(TestModelConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.DownlinkTestModel, RfmxNrSelectorStringType.None)]
+        [RfwsDeserializableKey("DL Test Model", 3, ConverterType = typeof(TestModelConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.DownlinkTestModel, RfmxNrSelectorStringType.None)]
         public RFmxNRMXDownlinkTestModel? DlTestModel;
-        [RfwsParseableKey("DL Test Model Duplex Scheme", 3)]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.DownlinkTestModelDuplexScheme, SelectorStringType = RfmxNrSelectorStringType.None)]
+        [RfwsDeserializableKey("DL Test Model Duplex Scheme", 3)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.DownlinkTestModelDuplexScheme, SelectorStringType = RfmxNrSelectorStringType.None)]
         public RFmxNRMXDownlinkTestModelDuplexScheme? DlTestModelDuplexScheme;
     }
 }

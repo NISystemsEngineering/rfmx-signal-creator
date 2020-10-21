@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NationalInstruments.RFmx.NRMX;
+﻿using NationalInstruments.RFmx.NRMX;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
 {
-    using SignalCreator.RfwsParser;
+    using Serialization;
 
-    public class Pdcch
+    internal class Pdcch
     {
-        #region RFmx Properties
-        [RfwsParseableKey("Cce Aggregation Level", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdcchCceAggregationLevel)]
+        [RfwsDeserializableKey("Cce Aggregation Level", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdcchCceAggregationLevel)]
         public int? CceAggregationLevel;
-        [RfwsParseableKey("CCE Offset", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdcchCceOffset)]
+        [RfwsDeserializableKey("CCE Offset", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdcchCceOffset)]
         public int? CceOffset;
-        [RfwsParseableKey("Slot Allocation", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdcchSlotAllocation)]
+        [RfwsDeserializableKey("Slot Allocation", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdcchSlotAllocation)]
         public string SlotAllocation;
-        #endregion
     }
 }

@@ -3,17 +3,19 @@ using System.Collections.Generic;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
 {
-    public class Subblock 
+    using Serialization;
+
+    internal class Subblock 
     {
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.SubblockFrequencyDefinition)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.SubblockFrequencyDefinition)]
         public RFmxNRMXSubblockFrequencyDefinition SubblockFrequencyDefinition { get; } = RFmxNRMXSubblockFrequencyDefinition.Absolute;
 
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.NumberOfComponentCarriers)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.NumberOfComponentCarriers)]
         public int NumberOfComponentCarriers;
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.CenterFrequency)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.CenterFrequency)]
         public double? CarrierSubblockOffset;
 
-        [RFmxMappableSection(SelectorStrings.Carrier)]
+        [RFmxSerializableSection(SelectorStrings.Carrier)]
         public List<Carrier> ComponentCarriers;
     }
 }

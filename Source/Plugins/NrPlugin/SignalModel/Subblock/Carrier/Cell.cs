@@ -1,31 +1,29 @@
-﻿using System;
-using System.Xml.Linq;
-using NationalInstruments.RFmx.NRMX;
+﻿using NationalInstruments.RFmx.NRMX;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
 {
-    using SignalCreator.RfwsParser;
+    using Serialization;
 
-    public class Cell
+    internal class Cell
     {
-        [RfwsParseableKey("Cell ID", 3)]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.CellID)]
+        [RfwsDeserializableKey("Cell ID", 3)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.CellID)]
         public int? CellId;
-        [RfwsParseableKey("Bandwidth (Hz)", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.ComponentCarrierBandwidth)]
+        [RfwsDeserializableKey("Bandwidth (Hz)", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.ComponentCarrierBandwidth)]
         public double? Bandwidth;
-        [RfwsParseableKey("Frequency Range", 3)]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.FrequencyRange, RfmxNrSelectorStringType.Subblock)]
+        [RfwsDeserializableKey("Frequency Range", 3)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.FrequencyRange, RfmxNrSelectorStringType.Subblock)]
         public RFmxNRMXFrequencyRange? FrequencyRange;
-        [RfwsParseableKey("Reference Grid Alignment Mode", 3)]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.ReferenceGridAlignmentMode, RfmxNrSelectorStringType.None)]
+        [RfwsDeserializableKey("Reference Grid Alignment Mode", 3)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.ReferenceGridAlignmentMode, RfmxNrSelectorStringType.None)]
         public RFmxNRMXReferenceGridAlignmentMode? RefGridAlignmentMode;
-        [RfwsParseableKey("Reference Grid Subcarrier Spacing", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.ReferenceGridSubcarrierSpacing)]
+        [RfwsDeserializableKey("Reference Grid Subcarrier Spacing", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.ReferenceGridSubcarrierSpacing)]
         public double? ReferenceGridSubcarrierSpacing;
-        [RfwsParseableKey("Reference Grid Start", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.ReferenceGridStart)]
+        [RfwsDeserializableKey("Reference Grid Start", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.ReferenceGridStart)]
         public int? ReferenceGridStart;
         // This key is only located here in RFmx 19.1; it is moved to the CarrierSet section in 20.0
-        [RfwsParseableKey("Auto Increment Cell ID Enabled", 3, RfwsVersionMode.SpecificVersions)]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.AutoIncrementCellIDEnabled, RfmxNrSelectorStringType.None)]
+        [RfwsDeserializableKey("Auto Increment Cell ID Enabled", 3, RfwsVersionMode.SpecificVersions)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.AutoIncrementCellIDEnabled, RfmxNrSelectorStringType.None)]
         public bool? AutoIncrementCellId_19_1;
 
     }

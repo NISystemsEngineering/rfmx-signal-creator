@@ -3,37 +3,35 @@ using System.Collections.Generic;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
 {
-    using SignalCreator.RfwsParser;
+    using Serialization;
 
-    // Bandwidth Part Section has number in title
-    [RfwsSection(@"Bandwidth Part Settings \d+", version = "3", regExMatch = true)]
-    public class BandwidthPartSettings
+    internal class BandwidthPartSettings
     {
-        [RfwsParseableKey("Bandwidth Part Index", 3)]
+        [RfwsDeserializableKey("Bandwidth Part Index", 3)]
         public int? BandwidthPartIndex;
 
         #region RFmx Properties
-        [RfwsParseableKey("Subcarrier Spacing (Hz)", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.BandwidthPartSubcarrierSpacing)]
+        [RfwsDeserializableKey("Subcarrier Spacing (Hz)", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.BandwidthPartSubcarrierSpacing)]
         public double? SubcarrierSpacing;
-        [RfwsParseableKey("Cyclic Prefix Mode", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.BandwidthPartCyclicPrefixMode)]
+        [RfwsDeserializableKey("Cyclic Prefix Mode", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.BandwidthPartCyclicPrefixMode)]
         public RFmxNRMXBandwidthPartCyclicPrefixMode? CyclicPrefixMode;
-        [RfwsParseableKey("Grid Start", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.GridStart)]
+        [RfwsDeserializableKey("Grid Start", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.GridStart)]
         public int? GridStart;
-        [RfwsParseableKey("RB Offset", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.BandwidthPartResourceBlockOffset)]
+        [RfwsDeserializableKey("RB Offset", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.BandwidthPartResourceBlockOffset)]
         public int? RbOffset;
-        [RfwsParseableKey("Number of RBs", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.BandwidthPartNumberOfResourceBlocks)]
+        [RfwsDeserializableKey("Number of RBs", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.BandwidthPartNumberOfResourceBlocks)]
         public int? NumberOfRbs;
-        [RfwsParseableKey("UE Count", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.NumberOfUsers)]
+        [RfwsDeserializableKey("UE Count", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.NumberOfUsers)]
         public int? NumberOfUsers;
-        [RfwsParseableKey("Coreset Count", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.NumberOfCoresets)]
+        [RfwsDeserializableKey("Coreset Count", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.NumberOfCoresets)]
         public int? NumberOfCoresets;
         #endregion
 
-        [RfwsSection(@"UE Settings \d+", version = "1", regExMatch = true)]
-        [RFmxMappableSection(SelectorStrings.User)]
+        [RfwsDeserializableSection(@"UE Settings \d+", version = "1", regExMatch = true)]
+        [RFmxSerializableSection(SelectorStrings.User)]
         public List<User> Users;
-        [RfwsSection(@"CORESET Settings \d+", version = "1", regExMatch = true)]
-        [RFmxMappableSection(SelectorStrings.Coreset)]
+        [RfwsDeserializableSection(@"CORESET Settings \d+", version = "1", regExMatch = true)]
+        [RFmxSerializableSection(SelectorStrings.Coreset)]
         public List<CoresetSettings> Coresets;
 
     }

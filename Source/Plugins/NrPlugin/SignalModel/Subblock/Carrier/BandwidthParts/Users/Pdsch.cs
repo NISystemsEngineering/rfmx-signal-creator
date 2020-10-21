@@ -1,86 +1,85 @@
-﻿using System;
-using System.Xml.Linq;
-using NationalInstruments.RFmx.NRMX;
+﻿using NationalInstruments.RFmx.NRMX;
+using System.Collections.Generic;
 
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalModel
 {
-    using NationalInstruments.Utilities.SignalCreator.RfwsParser.Converters;
-    using SignalCreator.RfwsParser;
-    using System.Collections.Generic;
-    public class PdschSettings
+    using Serialization;
+    using Serialization.Converters;
+
+    internal class PdschSettings
     {
-        [RfwsParseableKey("Count", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.NumberOfPdschConfigurations)]
+        [RfwsDeserializableKey("Count", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.NumberOfPdschConfigurations)]
         public int? NumberOfPdsch;
 
-        [RfwsSection(@"PDSCH Slot Settings \d+", version = "4", regExMatch = true)]
-        [RFmxMappableSection(SelectorStrings.Pdsch)]
+        [RfwsDeserializableSection(@"PDSCH Slot Settings \d+", version = "4", regExMatch = true)]
+        [RFmxSerializableSection(SelectorStrings.Pdsch)]
         public List<Pdsch> PdschConfigurations;
     }
 
-    public class Pdsch
+    internal class Pdsch
     {
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschNumberOfResourceBlockClusters)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschNumberOfResourceBlockClusters)]
         public int? NumberOfRbClusters => PdschRbClusters?.Count;
 
         #region Section Version 3 (pre-20.0 release)
-        [RfwsParseableKey("RB Allocation", 3, ConverterType = typeof(RbClusterConverter<PdschRbCluster>))]
-        [RFmxMappableSection(SelectorStrings.PdschCluster)]
+        [RfwsDeserializableKey("RB Allocation", 3, ConverterType = typeof(RbClusterConverter<PdschRbCluster>))]
+        [RFmxSerializableSection(SelectorStrings.PdschCluster)]
         public List<PdschRbCluster> PdschRbClusters;
 
-        [RfwsParseableKey("PDSCH Present in SSB RB", 3)]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschPresentInSsbResourceBlock)]
+        [RfwsDeserializableKey("PDSCH Present in SSB RB", 3)]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschPresentInSsbResourceBlock)]
         public bool? PdschPressentInSsbRb;
-        [RfwsParseableKey("Slot Allocation", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschSlotAllocation)]
+        [RfwsDeserializableKey("Slot Allocation", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschSlotAllocation)]
         public string SlotAllocation;
-        [RfwsParseableKey("Symbol Allocation", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschSymbolAllocation)]
+        [RfwsDeserializableKey("Symbol Allocation", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschSymbolAllocation)]
         public string SymbolAllocation;
-        [RfwsParseableKey("Modulation Type", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschModulationType)]
+        [RfwsDeserializableKey("Modulation Type", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschModulationType)]
         public RFmxNRMXPdschModulationType? ModulationType;
-        [RfwsParseableKey("PDSCH Mapping Type", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschMappingType)]
+        [RfwsDeserializableKey("PDSCH Mapping Type", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschMappingType)]
         public RFmxNRMXPdschMappingType? MappingType;
-        [RfwsParseableKey("DMRS Duration", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsDuration)]
+        [RfwsDeserializableKey("DMRS Duration", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsDuration)]
         public RFmxNRMXPdschDmrsDuration? DmrsDuration;
-        [RfwsParseableKey("DMRS Configuration", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsConfigurationType)]
+        [RfwsDeserializableKey("DMRS Configuration", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsConfigurationType)]
         public RFmxNRMXPdschDmrsConfigurationType? DmrsConfiguration;
-        [RfwsParseableKey("DMRS Power Mode", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsPowerMode)]
+        [RfwsDeserializableKey("DMRS Power Mode", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsPowerMode)]
         public RFmxNRMXPdschDmrsPowerMode? DmrsPowerMode;
-        [RfwsParseableKey("DMRS Scaling Factor", 3, ConverterType = typeof(LinearTodBConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsPower)]
+        [RfwsDeserializableKey("DMRS Scaling Factor", 3, ConverterType = typeof(LinearTodBConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsPower)]
         public double? DmrsPower;
-        [RfwsParseableKey("DMRS Additional Positions", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsAdditionalPositions)]
+        [RfwsDeserializableKey("DMRS Additional Positions", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsAdditionalPositions)]
         public int? AdditionalPositions;
-        [RfwsParseableKey("DMRS Type A Position", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsTypeAPosition)]
+        [RfwsDeserializableKey("DMRS Type A Position", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsTypeAPosition)]
         public int? TypeAPosition;
-        [RfwsParseableKey("DMRS Scrambling ID", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsScramblingID)]
+        [RfwsDeserializableKey("DMRS Scrambling ID", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsScramblingID)]
         public int? ScramblingId;
-        [RfwsParseableKey("DMRS Scrambling ID Mode", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsScramblingIDMode)]
+        [RfwsDeserializableKey("DMRS Scrambling ID Mode", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsScramblingIDMode)]
         public RFmxNRMXPdschDmrsScramblingIDMode? ScramblingMode;
-        [RfwsParseableKey("Number of CDM Groups", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsNumberOfCdmGroups)]
+        [RfwsDeserializableKey("Number of CDM Groups", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsNumberOfCdmGroups)]
         public int? CdmGroups;
-        [RfwsParseableKey("nSCID", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsnScid)]
+        [RfwsDeserializableKey("nSCID", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsnScid)]
         public int? Nscid;
 
-        [RfwsParseableKey("PTRS Ports", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschPtrsAntennaPorts)]
+        [RfwsDeserializableKey("PTRS Ports", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschPtrsAntennaPorts)]
         public string PtrsPorts;
-        [RfwsParseableKey("PTRS Time Density", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschPtrsTimeDensity)]
+        [RfwsDeserializableKey("PTRS Time Density", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschPtrsTimeDensity)]
         public int? PtrsTimeDensity;
-        [RfwsParseableKey("PTRS Frequency Density", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschPtrsFrequencyDensity)]
+        [RfwsDeserializableKey("PTRS Frequency Density", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschPtrsFrequencyDensity)]
         public int? PtrsFrequencyDensity;
-        [RfwsParseableKey("DL PTRS RE Offset", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschPtrsREOffset)]
+        [RfwsDeserializableKey("DL PTRS RE Offset", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschPtrsREOffset)]
         public int? PtrsReOffset;
-        [RfwsParseableKey("PTRS Enabled", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschPtrsEnabled)]
+        [RfwsDeserializableKey("PTRS Enabled", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschPtrsEnabled)]
         public bool? PtrsEnabled;
-        [RfwsParseableKey("PTRS Power Mode", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschPtrsPowerMode)]
+        [RfwsDeserializableKey("PTRS Power Mode", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschPtrsPowerMode)]
         public RFmxNRMXPdschPtrsPowerMode? PtrsPowerMode;
-        [RfwsParseableKey("PTRS Scaling Factor", 3, ConverterType = typeof(LinearTodBConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschPtrsPower)]
+        [RfwsDeserializableKey("PTRS Scaling Factor", 3, ConverterType = typeof(LinearTodBConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschPtrsPower)]
         public double? PtrsPower;
-        [RfwsParseableKey("DMRS Ports", 3), RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsAntennaPorts)]
+        [RfwsDeserializableKey("DMRS Ports", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsAntennaPorts)]
         public string DmrsPorts;
         #endregion
 
         #region Section Version 4 (20.0 Release and Above)
-        public class PdschDrmsReleaseVersionConverter : EnumConverter<RFmxNRMXPdschDmrsReleaseVersion>
+        internal class PdschDrmsReleaseVersionConverter : EnumConverter<RFmxNRMXPdschDmrsReleaseVersion>
         {
             protected override RFmxNRMXPdschDmrsReleaseVersion Convert(object value)
             {
@@ -90,8 +89,8 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
             }
         }
 
-        [RfwsParseableKey("Dmrs Release Version", 4, ConverterType = typeof(PdschDrmsReleaseVersionConverter))]
-        [RFmxNrMappableProperty(RFmxNRMXPropertyId.PdschDmrsReleaseVersion)]
+        [RfwsDeserializableKey("Dmrs Release Version", 4, ConverterType = typeof(PdschDrmsReleaseVersionConverter))]
+        [RFmxNrSerializableProperty(RFmxNRMXPropertyId.PdschDmrsReleaseVersion)]
         public RFmxNRMXPdschDmrsReleaseVersion? ReleaseVersion;
         #endregion
     }
