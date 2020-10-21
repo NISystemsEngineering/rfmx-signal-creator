@@ -2,6 +2,9 @@
 using NationalInstruments.RFmx.WlanMX;
 using NationalInstruments.RFToolkits.Interop;
 
+// Disable warning about uninitialized fields below
+#pragma warning disable CS0649
+
 namespace NationalInstruments.Utilities.SignalCreator.Plugins.WlanPlugin
 {
     using Serialization.Converters;
@@ -32,3 +35,5 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.WlanPlugin
 
     }
 }
+
+#pragma warning restore
