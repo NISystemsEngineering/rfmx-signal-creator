@@ -1,6 +1,6 @@
 ﻿using System;
 using NationalInstruments.RFmx.InstrMX;
-using NationalInstruments.RFmx.WlanMX;
+using System.IO;
 using NationalInstruments.RFToolkits.Interop;
 using Serilog;
 using Serilog.Context;
@@ -48,7 +48,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.WlanPlugin
                 }
 
                 WlanSignalGroup signal = wlan.Deserialize<WlanSignalGroup>();
-                instr.CreateWlanSignalConfigurationFromObject(signal, signalName: file.FileName);
+                instr.CreateWlanSignalConfigurationFromObject(signal);
             }
         }
     }
