@@ -45,7 +45,7 @@
     <Compile Include="RfwsAttributes.cs" />
     <Compile Include="RfwsParserUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RfwsParserV2.cs" />
+    <Compile Include="RfwsDeserializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog">

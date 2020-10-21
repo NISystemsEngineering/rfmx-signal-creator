@@ -1,16 +1,15 @@
-﻿
-using System;
+﻿using System;
 using System.Linq;
 
-namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
+namespace NationalInstruments.Utilities.SignalCreator.Serialization
 {
-    using Converters;
+    using Serialization;
 
     /// <summary>
-    /// Maps a <see cref="RfwsSection"/> class to a specific section and version contained within an RFWS file. 
+    /// Indicates that a field or property within a class is representative of an XML section within the RFWS file.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
-    public class RfwsSectionAttribute : ParseableAttribute
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+    public sealed class RfwsDeserializableSectionAttribute : DeserializableAttribute
     {
         /// <summary>
         /// Specifies the value of the "name" attribute of the section element.
@@ -25,41 +24,13 @@ namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
         /// </summary>
         public bool regExMatch = false;
 
-        public RfwsSectionAttribute(string sectionName) => this.sectionName = sectionName;
+        public RfwsDeserializableSectionAttribute(string sectionName) => this.sectionName = sectionName;
 
         public void Deconstruct(out string sectionName, out string version, out bool regexMatch)
         {
             sectionName = this.sectionName;
             version = this.version;
             regexMatch = this.regExMatch;
-        }
-    }
-
-    /// <summary>
-    /// Maps a <see cref="RfwsSectionList{T}"/> class to a specific section and version contained within an RFWS file. 
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
-    public sealed class RfwsSectionListAttribute : RfwsSectionAttribute
-    {
-        /// <summary>
-        /// Specifies the hierarchy of this section list. When the <see cref="RfwsSectionList{T}"/> is parsed, if this is true
-        /// then the object will be initialized with the same section as its parent. Otherwise, the specific section will be searched for
-        /// and used as the parent section.
-        /// <para></para>
-        /// This is necessary because some section lists in the RFWS file are contained with a higher-level subsection (i.e. CarrierManager).
-        /// Howevever, some of the section lists begin without any subsection at all.
-        /// </summary>
-        public bool SameSectionAsParent { get; } = true;
-
-        public RfwsSectionListAttribute(string sectionName)
-            : base(sectionName) 
-        {
-            SameSectionAsParent = false;
-        }
-        public RfwsSectionListAttribute()
-            : base("")
-        {
-            SameSectionAsParent = true;
         }
     }
 
@@ -77,11 +48,10 @@ namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
     }
 
     /// <summary>
-    /// Maps a class to a specific key and version contained within an RFWS file.
-    /// Only valid on <see cref="PropertyMap{T}"/> classes and derived classes.
+    /// Indicates that a field or property within a class is representative of an XML key within the RFWS file.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    public sealed class RfwsParseableKeyAttribute : ParseableAttribute
+    public sealed class RfwsDeserializableKeyAttribute : DeserializableAttribute
     {
 
         /// <summary>
@@ -100,7 +70,7 @@ namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
         public RfwsVersionMode VersionMode { get; } = RfwsVersionMode.SpecificVersions;
 
         /// <param name="keyName">Specifies the value of the "name" attribute of the key element.</param>
-        public RfwsParseableKeyAttribute(string keyName)
+        public RfwsDeserializableKeyAttribute(string keyName)
         {
             Key = keyName;
             // No version is specfied, so ensure that all versions are supported
@@ -112,7 +82,7 @@ namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
         /// <param name="versionMode">Optional; with a single version set, it is assumed that this version and later should be supported.<para></para>;
         /// Specifies how the version numbers specified in <see cref="Versions"/> should be interpreted when attempting to match
         /// a class with an RFWS key.</param>
-        public RfwsParseableKeyAttribute(string keyName, float minimumVersion, RfwsVersionMode versionMode = RfwsVersionMode.SupportedVersionsAndLater)
+        public RfwsDeserializableKeyAttribute(string keyName, float minimumVersion, RfwsVersionMode versionMode = RfwsVersionMode.SupportedVersionsAndLater)
         {
             Key = keyName;
             Versions = new float[1] { minimumVersion };
@@ -123,7 +93,7 @@ namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
         /// <param name="versionMode">Specifies how the version numbers specified in <paramref name="versions"/> should 
         /// be interpreted when attempting to match a class with an RFWS key.</param>
         /// <param name="versions">Specifies one or more valid versions for this key as defined by the parent section.</param>
-        public RfwsParseableKeyAttribute(string keyName, RfwsVersionMode versionMode, params float[] versions)
+        public RfwsDeserializableKeyAttribute(string keyName, RfwsVersionMode versionMode, params float[] versions)
         {
             Key = keyName;
             Versions = versions;
@@ -152,11 +122,5 @@ namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
                     return false;
             }
         }
-    }
-
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
-    public sealed class RfwsParseableSectionAttribute : ParseableAttribute
-    {
-        public override Type ConverterType { get => base.ConverterType; set => base.ConverterType = value; }
     }
 }

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NationalInstruments.Utilities.SignalCreator
 {
@@ -14,6 +12,12 @@ namespace NationalInstruments.Utilities.SignalCreator
         {
             return typeof(T).GetPropertiesAndFields();
         }
+        /// <summary>
+        /// Extension method to return all properties and fields from an object.
+        /// </summary>
+        /// <param name="t">Specifies the type of object to examine.</param>
+        /// <param name="accessiblity">Specifies which properties and fields to return.</param>
+        /// <returns></returns>
         public static IEnumerable<MemberInfo> GetPropertiesAndFields(this Type t, MemberAccessibility accessiblity = MemberAccessibility.All)
         {
             BindingFlags searchFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy;
@@ -31,6 +35,11 @@ namespace NationalInstruments.Utilities.SignalCreator
             }
             return properties.Concat(fields);
         }
+        /// <summary>
+        /// An extension method to provide a single method for getting the value of either a <see cref="FieldInfo"/> or
+        /// <see cref="PropertyInfo"/> object.
+        /// </summary>
+        /// <returns></returns>
         public static object GetValue(this MemberInfo member, object containingObject)
         {
             switch (member)
@@ -43,6 +52,10 @@ namespace NationalInstruments.Utilities.SignalCreator
                     throw new ArgumentException($"Paramter must be a {typeof(FieldInfo)} or a {typeof(MemberInfo)}.", nameof(member));
             }
         }
+        /// <summary>
+        /// An extension method to provide a single method for setting the value of either a <see cref="FieldInfo"/> or
+        /// <see cref="PropertyInfo"/> object.
+        /// </summary>
         public static void SetValue(this MemberInfo member, object containingObject, object value)
         {
             switch (member)
@@ -57,6 +70,10 @@ namespace NationalInstruments.Utilities.SignalCreator
                     throw new ArgumentException($"Paramter must be a {typeof(FieldInfo)} or a {typeof(MemberInfo)}.", nameof(member));
             }
         }
+        /// <summary>
+        /// An extension method to provide a single method for getting the member type of either a <see cref="FieldInfo"/> or
+        /// <see cref="PropertyInfo"/> object.
+        /// </summary>
         public static Type GetMemberType(this MemberInfo member)
         {
             switch (member)
@@ -69,8 +86,6 @@ namespace NationalInstruments.Utilities.SignalCreator
                     throw new ArgumentException($"Paramter must be a {typeof(FieldInfo)} or a {typeof(MemberInfo)}.", nameof(member));
             }
         }
-
-
 
         // From https://www.extensionmethod.net/csharp/type/issubclassofrawgeneric
         /// <summary>

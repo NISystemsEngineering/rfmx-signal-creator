@@ -4,10 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
-using Serilog;
-using Serilog.Context;
 
-namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
+namespace NationalInstruments.Utilities.SignalCreator.Serialization
 {
 
     /// <summary>
@@ -47,14 +45,14 @@ namespace NationalInstruments.Utilities.SignalCreator.RfwsParser
             }
         }
         /// <summary>
-        /// Finds descendant nodes named <i>section</i> where the <i>name</i> attribute matches the <see cref="RfwsSectionAttribute.sectionName"/>
+        /// Finds descendant nodes named <i>section</i> where the <i>name</i> attribute matches the <see cref="RfwsDeserializableSectionAttribute.sectionName"/>
         /// value for the <see cref="RfwsSection"/> type defined by <paramref name="sectionType"/>.
         /// </summary>
         /// <param name="root">Specifies the node whose descendants should be searched.</param>
         /// <param name="sectionType">Specifies the type of <see cref="RfwsSection"/> to find in the XML data.</param>
         public static IEnumerable<XElement> FindSections(this XElement root, Type sectionType)
         {
-            (string sectionName, string version, bool regexMatch) = sectionType.GetCustomAttribute<RfwsSectionAttribute>();
+            (string sectionName, _, bool regexMatch) = sectionType.GetCustomAttribute<RfwsDeserializableSectionAttribute>();
 
             return root.FindSections(sectionName, regexMatch);
         }

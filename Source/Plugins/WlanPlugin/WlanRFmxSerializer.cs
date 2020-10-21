@@ -1,64 +1,66 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NationalInstruments.RFmx.InstrMX;
 using NationalInstruments.RFmx.WlanMX;
 using Serilog;
 
-namespace NationalInstruments.Utilities.SignalCreator.Plugins
+namespace NationalInstruments.Utilities.SignalCreator.Plugins.WlanPlugin
 {
-    using NationalInstruments.Utilities.SignalCreator.Seralization;
-    using NationalInstruments.Utilities.SignalCreator;
+    using Serialization;
 
-    public class WlanRFmxMapper : RFmxSerializer<RFmxWlanMX>
+    internal class WlanRFmxSerializer : RFmxSerializer<RFmxWlanMX>
     {
-        static void LogKey(RFmxMappablePropertyAttribute attribute, string selectorString, object value)
+        static void LogKey(RFmxSerializablePropertyAttribute attribute, string selectorString, object value)
         {
-            RFmxWlanMappableAttribute wlanAttr = (RFmxWlanMappableAttribute)attribute;
+            RFmxWlanSerializablePropertyAttribute wlanAttr = (RFmxWlanSerializablePropertyAttribute)attribute;
             if (string.IsNullOrEmpty(selectorString)) selectorString = "<signal>";
             Log.Verbose("Set property {RfmxPropertyID} for {SelectorString} with value {Value}",
                 wlanAttr.WlanPropertyId, selectorString, value);
         }
 
-        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, bool value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, bool value, RFmxSerializablePropertyAttribute attribute)
         {
             LogKey(attribute, selectorString, value);
             signal.SetAttributeBool(selectorString, attribute.RFmxPropertyId, value);
         }
 
-        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, double value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, double value, RFmxSerializablePropertyAttribute attribute)
         {
             LogKey(attribute, selectorString, value);
             signal.SetAttributeDouble(selectorString, attribute.RFmxPropertyId, value);
         }
 
-        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, int value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, int value, RFmxSerializablePropertyAttribute attribute)
         {
             LogKey(attribute, selectorString, value);
             signal.SetAttributeInt(selectorString, attribute.RFmxPropertyId, value);
         }
 
-        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, Enum value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, Enum value, RFmxSerializablePropertyAttribute attribute)
         {
             LogKey(attribute, selectorString, value);
             int convertedValue = Convert.ToInt32(value);
             signal.SetAttributeInt(selectorString, attribute.RFmxPropertyId, convertedValue);
         }
 
-        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, string value, RFmxMappablePropertyAttribute attribute)
+        protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, string value, RFmxSerializablePropertyAttribute attribute)
         {
             LogKey(attribute, selectorString, value);
             signal.SetAttributeString(selectorString, attribute.RFmxPropertyId, value);
         }
     }
-    public static class RFmxWlanMXSerializerExtensions
+    internal static class RFmxWlanMXSerializerExtensions
     {
+        /// <summary>
+        /// Creates a WLAN signal configuration by serializing the data in <paramref name="objectToSerialize"/>.
+        /// </summary>
+        /// <returns></returns>
         public static RFmxWlanMX CreateWlanSignalConfigurationFromObject(this RFmxInstrMX instr, object objectToSerialize, string baseSelectorString = "")
         {
             return instr.CreateWlanSignalConfigurationFromObject(objectToSerialize, string.Empty, baseSelectorString);
         }
+        /// <summary>
+        /// Creates an WLAN signal configuration by serializing the data in <paramref name="objectToSerialize"/>.
+        /// </summary>
         public static RFmxWlanMX CreateWlanSignalConfigurationFromObject(this RFmxInstrMX instr, object objectToSerialize, string signalName, string baseSelectorString = "")
         {
             RFmxWlanMX signal;
@@ -67,7 +69,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
                 signal = instr.GetWlanSignalConfiguration();
             }
             else signal = instr.GetWlanSignalConfiguration(signalName);
-            WlanRFmxMapper mapper = new WlanRFmxMapper();
+            WlanRFmxSerializer mapper = new WlanRFmxSerializer();
             mapper.Serialize(signal, baseSelectorString, objectToSerialize);
             return signal;
         }

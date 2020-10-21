@@ -4,19 +4,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using Serilog;
 
-namespace NationalInstruments.Utilities.SignalCreator
+namespace NationalInstruments.Utilities.SignalCreator.Serialization
 {
+    using Converters;
+
     // Modeled on https://github.com/zanders3/json
-    public abstract class ParserCorev2
+    /// <summary>
+    /// Represents a generic solution for deserializing objects of type <typeparamref name="TDataContainer"/>.
+    /// </summary>
+    /// <typeparam name="TDataContainer">Specifies the type of data sources from which objects can be deserialized.</typeparam>
+    public abstract class Deserializer<TDataContainer>
     {
-        /*public T Parse<T>()
+        /// <summary>
+        /// Deserialzes <paramref name="dataContainer"/> and returns an object of type <paramref name="t"/>.
+        /// </summary>
+        /// <param name="t">Specifies the type of object to deserialize from <paramref name="dataContainer"/>.</param>
+        /// <param name="dataContainer">Specifies the object containing the data to be deserialized.</param>
+        /// <returns></returns>
+        public object Deserialize(Type t, TDataContainer dataContainer)
         {
-            return (T)ParseValue(typeof(T));
-        }*/
+            return ParseValue(t, dataContainer);
+        }
+        /// <summary>
+        /// Deserialzes <paramref name="dataContainer"/> and returns an object of type <paramref name="t"/>.
+        /// </summary>
+        /// <typeparam name="T">Specifies the type of object to deserialize from <paramref name="dataContainer"/>.</typeparam>
+        /// <param name="dataContainer">Specifies the object containing the data to be deserialized.</param>
+        /// <returns></returns>
+        public T Deserialize<T>(TDataContainer dataContainer)
+        {
+            return (T)Deserialize(typeof(T), dataContainer);
+        }
+
+
         protected object ParseValue(Type t, object valueToParse, Type converterType = null)
         {
             t = Nullable.GetUnderlyingType(t) ?? t;
@@ -41,7 +63,6 @@ namespace NationalInstruments.Utilities.SignalCreator
                 {
                     Type listType = t.GetGenericArguments()[0];
                     var list = (IList)t.GetConstructor(Type.EmptyTypes).Invoke(null);
-                    //list.Add()
 
                     if (valueToParse is IEnumerable enumerable)
                     {
@@ -59,22 +80,22 @@ namespace NationalInstruments.Utilities.SignalCreator
                 }
                 if (t.IsClass)
                 {
-                    return ParseObject(t, valueToParse);
+                    return ParseObject(t, (TDataContainer)valueToParse);
                 }
                 return null;
             }
         }
-        protected object ParseObject(Type t, object valueToParse)
+        protected object ParseObject(Type t, TDataContainer dataContainer)
         {
             object instance = FormatterServices.GetUninitializedObject(t);
 
-            var members = t.GetPropertiesAndFields(MemberAccessibility.Writeable).Where(m => m.IsDefined(typeof(ParseableAttribute)));
+            var members = t.GetPropertiesAndFields(MemberAccessibility.Writeable).Where(m => m.IsDefined(typeof(DeserializableAttribute)));
 
             foreach (MemberInfo m in members)
             {
-                var attrs = m.GetCustomAttributes<ParseableAttribute>();
+                var attrs = m.GetCustomAttributes<DeserializableAttribute>();
 
-                if (SelectValidAttribute(attrs, valueToParse, out ParseableAttribute attr))
+                if (SelectValidAttribute(attrs, dataContainer, out DeserializableAttribute attr))
                 {
                     Type memberType = m.GetMemberType();
                     memberType = Nullable.GetUnderlyingType(memberType) ?? memberType;
@@ -82,7 +103,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                     object rawValue = default;
                     try
                     {
-                        rawValue = ReadValue(memberType, valueToParse, attr);
+                        rawValue = ReadValue(memberType, dataContainer, attr);
                     }
                     catch (Exception ex)
                     {
@@ -108,14 +129,29 @@ namespace NationalInstruments.Utilities.SignalCreator
                             "However, the member type of {MemberType} is not assignable from the type of {ParsedType}.",
                             rawValue, parsedValue, memberType, parsedValue.GetType());
                     }
-                    //Log.Verbose("Set member {MemberName} with parsed value {ParsedValue}", m.Name, parsedValue);
                 }
             }
             return instance;
         }
 
-        public abstract object ReadValue(Type t, object valueToParse, ParseableAttribute attr);
-        public virtual bool SelectValidAttribute(IEnumerable<ParseableAttribute> attributes, object valueToParse, out ParseableAttribute validAttr)
+        /// <summary>
+        /// In a child class, reads a value of type <paramref name="t"/> from <paramref name="dataContainer"/> using deserialization information in 
+        /// <paramref name="attr"/>.
+        /// </summary>
+        /// <param name="t">Specifies the type of object to be read from <paramref name="dataContainer"/>.</param>
+        /// <param name="dataContainer">Specifies the object containing the data.</param>
+        /// <param name="attr">Specifies the deserialization atttribute descrbing how data should be read.</param>
+        /// <returns></returns>
+        protected abstract object ReadValue(Type t, TDataContainer dataContainer, DeserializableAttribute attr);
+        /// <summary>
+        /// Allows a child class to implement selection of a valid deserialization attribute in the case where more than one is specified. The default
+        /// implementation for this method is to select the first attribute.
+        /// </summary>
+        /// <param name="attributes">Specifies a collection of deserialization attributes specified by the member.</param>
+        /// <param name="dataContainer">Specifies the data container from which data is read.</param>
+        /// <param name="validAttr">Returns the attribute that has been selected.</param>
+        /// <returns></returns>
+        protected virtual bool SelectValidAttribute(IEnumerable<DeserializableAttribute> attributes, TDataContainer dataContainer, out DeserializableAttribute validAttr)
         {
             validAttr = attributes.First();
             return true;

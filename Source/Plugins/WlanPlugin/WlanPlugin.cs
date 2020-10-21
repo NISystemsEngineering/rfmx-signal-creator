@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using NationalInstruments.RFmx.InstrMX;
 using NationalInstruments.RFmx.WlanMX;
+using NationalInstruments.RFToolkits.Interop;
 using Serilog;
 using Serilog.Context;
-using System.IO;
-using NationalInstruments.RFToolkits.Interop;
 
-namespace NationalInstruments.Utilities.SignalCreator.Plugins
+namespace NationalInstruments.Utilities.SignalCreator.Plugins.WlanPlugin
 {
     [WaveformFilePlugIn("Parses TDMS waveform files containing configurations from the RFmx Waveform Creator for WLAN", "20.0")]
     public class WlanPlugin : IWaveformFilePlugin
@@ -50,11 +47,8 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
                     if (!result) throw new InvalidOperationException($"{file.FileName} is not a valid file for this plugin.");
                 }
 
-                WlanSignalGroup signal = wlan.Parse<WlanSignalGroup>();
-
-                RFmxWlanMX rfmxWlanSignal = instr.GetWlanSignalConfiguration();
-
-                instr.CreateWlanSignalConfigurationFromObject(signal);
+                WlanSignalGroup signal = wlan.Deserialize<WlanSignalGroup>();
+                instr.CreateWlanSignalConfigurationFromObject(signal, signalName: file.FileName);
             }
         }
     }

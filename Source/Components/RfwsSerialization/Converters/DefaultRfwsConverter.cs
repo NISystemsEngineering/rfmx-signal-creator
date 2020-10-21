@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NationalInstruments.Utilities.SignalCreator.RfwsParser.Converters
+namespace NationalInstruments.Utilities.SignalCreator.Serialization.Converters
 {
     public class DefaultRfwsConverter : ValueConverter
     {
