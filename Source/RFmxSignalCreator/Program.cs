@@ -1,52 +1,21 @@
 ﻿using System;
-using NationalInstruments.RFmx.InstrMX;
 using System.IO;
-using CommandLine;
-using CommandLine.Text;
 using System.Linq;
 using System.Collections.Generic;
+using NationalInstruments.RFmx.InstrMX;
 using Serilog;
 using Serilog.Events;
+using CommandLine;
 
 namespace NationalInstruments.Utilities.SignalCreator
 {
+    using Plugins;
     class Program
     {
-        #region Command Line Options Configuraiton
-        public class Options
-        {
-            [Value(0, MetaName = "<Paths>", HelpText = "Specifies one or more paths to load; paths can be a single waveform configuration " +
-                "file or a directory of configuration files", Required = true)]
-            public IEnumerable<string> Path { get; set; }
-            [Option('o', "outputdir", HelpText = "Alternate directory to output configuration files to; default is in the same directory.")]
-            public string OutputDirectory { get; set; }
-            [Option('v', "verbose", HelpText = "Enable verbose logging in the log file and optionally the console if -c is set.")]
-            public bool Verbose { get; set; }
-            [Option('c', "console", HelpText = "Sends full file log to console in addition to the log file.")]
-            public bool LogToConsole { get; set; }
-
-            [Usage(ApplicationAlias = "RFmxSignalCreator")]
-            public static IEnumerable<Example> Examples =>
-                new List<Example>()
-                {
-                    new Example("Process a single waveform configuration", new Options { Path = new string[] { @"C:\waveform.rfws" } }),
-                    new Example("Process a directory containing multiple waveform configurations",
-                        new UnParserSettings {PreferShortName = true },
-                        new Options { Path = new string[] { @"C:\Waveform Configurations" }, OutputDirectory = @"C:\RFmx Configurations" }),
-                    new Example("Process multiple files and diretories containing multiple waveform configurations",
-                        new UnParserSettings {PreferShortName = true },
-                        new Options { Path = new string[] { "waveform1.rfws", "waveform2.rfws", @"Waveforms\MoreFiles" },
-                            OutputDirectory = @"C:\RFmx Configurations" }),
-                    new Example("Process a directory with verbose logging to the console",
-                        new UnParserSettings {PreferShortName = true },
-                        new Options { Path = new string[] { @"C:\Waveform Configurations" }, LogToConsole = true, Verbose = true })
-                };
-        }
-        #endregion
         static void Main(string[] args)
         {
             // Parse command line arguments and hand them over to Execute
-            var result = Parser.Default.ParseArguments<Options>(args);
+            var result = Parser.Default.ParseArguments<CommandLineOptions>(args);
             result.WithParsed(o => Execute(o));
             result.WithNotParsed(o =>
             {
@@ -54,9 +23,50 @@ namespace NationalInstruments.Utilities.SignalCreator
                 Console.ReadKey();
             });
         }
-        public static void Execute(Options o)
+        public static void Execute(CommandLineOptions o)
         {
-            #region Logger Configuration
+            ConfigureLogger(o);
+            Log.Debug("--------------------------------------------------------");
+            Log.Information("Initializing...");
+
+            // Load plugins first before loading any files
+            try
+            {
+                WaveformPluginFactory.LoadPlugins();
+            }
+            catch (DllNotFoundException)
+            {
+                Log.Fatal("No assemblies (.dll) were found in the local plugins directory. Ensure that one or more valid plugin assemblies are " +
+                    "located in the plugins directory ({FullPluginDirectory})", WaveformPluginFactory.FullPluginDirectoryPath);
+                return;
+            }
+            catch (MissingMemberException)
+            {
+                Log.Fatal("No supported plugins were found in the local plugin directory among the assemblies, or none could be loaded successfully. " +
+                    "Ensure that one or more valid plugin are located in the plugins directory ({FullPluginDirectory})",
+                    WaveformPluginFactory.FullPluginDirectoryPath);
+                return;
+            }
+            catch (Exception ex)
+            {
+                // Any other exception is still likely a fatal exception
+                Log.Fatal(ex, "Unhandled exception occured during plugin load; see log for more details. Exiting...");
+                return;
+            }
+
+            IEnumerable<string> filesToParse = EnumerateWaveformFiles(o);
+            ParseFiles(filesToParse, o);
+
+            Log.Information("Execution complete");
+            Log.Debug("--------------------------------------------------------");
+            Log.CloseAndFlush();
+        }
+        /// <summary>
+        /// Configures the logger that will be used throughout the program to log information, warnings, and errors.
+        /// </summary>
+        /// <param name="o">Specifies the command line options when the application is invoked.</param>
+        private static void ConfigureLogger(CommandLineOptions o)
+        {
             string logOutputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}" +
                                        "                    {Properties:j}{NewLine}{Exception}";
             string consoleOutputTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}";
@@ -82,40 +92,17 @@ namespace NationalInstruments.Utilities.SignalCreator
                 .WriteTo.Logger(lc => lc
                     .WriteTo.Console(consoleLogLevel, outputTemplate: consoleOutputTemplate))
                 .CreateLogger();
-
-            Log.Debug("--------------------------------------------------------");
-            #endregion
-
-            Log.Information("Initializing...");
-
-            #region Plugin Loading
-            // Load plugins first before loading any files
-            try
-            {
-                WaveformPluginFactory.LoadPlugins();
-            }
-            catch (DllNotFoundException)
-            {
-                Log.Fatal("No assemblies were found in the local plugins directory. Ensure that one or more valid plugin are " +
-                    "located in the plugins directory ({FullPluginDirectory})", WaveformPluginFactory.FullPluginDirectoryPath);
-                return;
-            }
-            catch (MissingMemberException)
-            {
-                Log.Fatal("No supported plugins were found in the local plugin directory, or none could be loaded successfully. " +
-                    "Ensure that one or more valid plugin are located in the plugins directory ({FullPluginDirectory})",
-                    WaveformPluginFactory.FullPluginDirectoryPath);
-                return;
-            }
-            catch (Exception ex)
-            {
-                // Any other exception is still likely a fatal exception
-                Log.Fatal(ex, "Unhandled exception occured during plugin load; see log for more details. Exiting...");
-                return;
-            }
-            #endregion
-
-            #region File Parsing
+        }
+        /// <summary>
+        /// Enumerates all supported waveform files based on the configuration in <paramref name="o"/>.<para></para>
+        /// 
+        /// If one or more waveform files is specified, they will be added directly to enumeration. Any directories specified
+        /// will be searched for valid waveform files and added to the enumeration.
+        /// </summary>
+        /// <param name="o">Specifies the command line options when the application is invoked.</param>
+        /// <returns></returns>
+        private static IEnumerable<string> EnumerateWaveformFiles(CommandLineOptions o)
+        {
             IEnumerable<string> filesToParse = Enumerable.Empty<string>();
             List<string> individualFiles = new List<string>();
 
@@ -138,7 +125,17 @@ namespace NationalInstruments.Utilities.SignalCreator
                 }
             }
             filesToParse = individualFiles.Concat(filesToParse);
-
+            return filesToParse;
+        }
+        /// <summary>
+        /// Checks each waveform file in <paramref name="filesToParse"/> to see if any loaded plugin is compatible with the file.
+        /// If a compatible plugin is found, then the file will be parsed with the identified plugin. If parsing is successful,
+        /// the RFmx configuration file will be saved according to the settings in <paramref name="o"/>.
+        /// </summary>
+        /// <param name="filesToParse">Specifies the files to be parsed if a valid plugin is present.</param>
+        /// <param name="o">Specifies the command line options when the application is invoked.</param>
+        private static void ParseFiles(IEnumerable<string> filesToParse, CommandLineOptions o)
+        {
             foreach (string file in filesToParse)
             {
                 var waveform = WaveformConfigFileType.Load(file);
@@ -172,7 +169,6 @@ namespace NationalInstruments.Utilities.SignalCreator
                             Log.Error(ex, "Unhandled parsing exception plugin in {Plugin}", matchedPlugin.GetType().Name);
                             continue;
                         }
-
                         try
                         {
                             if (string.IsNullOrEmpty(o.OutputDirectory))
@@ -192,10 +188,6 @@ namespace NationalInstruments.Utilities.SignalCreator
                     Log.Warning("Skipping {File}; no installed plugin is compatible with this file.", fileName);
                 }
             }
-            Log.Information("Execution complete");
-            Log.Debug("--------------------------------------------------------");
-            Log.CloseAndFlush();
         }
-        #endregion
     }
 }
