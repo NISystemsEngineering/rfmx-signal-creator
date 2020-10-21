@@ -62,7 +62,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization.Converters
         }
     }
     /// <summary>
-    /// A typed instance of <see cref="EnumConverter"/> for easier type handling.
+    /// A typed instance of <see cref="EnumConverter"/> for easier type handling. Converts strings or numerics to the enum of type <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class EnumConverter<T> : EnumConverter where T : struct, Enum
@@ -79,7 +79,5 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization.Converters
         {
             return (T)base.Convert(value, typeof(T));
         }
-
-
     }
 }
