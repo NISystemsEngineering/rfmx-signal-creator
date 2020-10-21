@@ -29,9 +29,13 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
         }
         protected override bool SelectValidAttribute(IEnumerable<DeserializableAttribute> attributes, XElement section, out DeserializableAttribute validAttr)
         {
-            float sectionVersion = section.GetSectionVersion();
-            validAttr = attributes.Cast<RfwsDeserializableKeyAttribute>().Where(attr => attr.IsSupported(sectionVersion)).FirstOrDefault();
-            return validAttr != null;
+            if (attributes.First() is RfwsDeserializableKeyAttribute)
+            {
+                float sectionVersion = section.GetSectionVersion();
+                validAttr = attributes.Cast<RfwsDeserializableKeyAttribute>().Where(attr => attr.IsSupported(sectionVersion)).FirstOrDefault();
+                return validAttr != null;
+            }
+            else return base.SelectValidAttribute(attributes, section, out validAttr);
         }
     }
     public static class RfwsParserExtensions

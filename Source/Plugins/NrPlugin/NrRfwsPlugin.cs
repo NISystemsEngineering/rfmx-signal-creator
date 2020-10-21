@@ -81,13 +81,13 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
 
                 int carrierSetIndex = 0;
                 List<RfwsCarrierSet> carrierSets = new List<RfwsCarrierSet>();
-                foreach (XElement carrierSetSection in rootData.FindSections(typeof(RfwsCarrierSet)))
+                foreach (XElement carrierSetSection in rootData.FindSections<RfwsCarrierSet>())
                 {
                     RfwsCarrierSet set = carrierSetSection.Deserialize<RfwsCarrierSet>();
                     carrierSets.Add(set);
                 }
                 List<Carrier> carriers = new List<Carrier>();
-                foreach (XElement carrierDefinitionSetion in rootData.FindSections(typeof(Carrier)))
+                foreach (XElement carrierDefinitionSetion in rootData.FindSections<Carrier>())
                 {
                     Carrier carrier = carrierDefinitionSetion.Deserialize<Carrier>();
                     carriers.Add(carrier);

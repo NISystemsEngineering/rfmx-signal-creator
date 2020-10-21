@@ -5,6 +5,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
 {
     using Serialization;
 
+    [RfwsDeserializableSection("CarrierDefinition", version = "1")]
     internal class Carrier 
     {
         [RFmxNrSerializableProperty(RFmxNRMXPropertyId.ComponentCarrierFrequency)]
