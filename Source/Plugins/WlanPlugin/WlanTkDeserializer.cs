@@ -1,26 +1,15 @@
 ﻿using System;
-
-using System.Reflection;
-
 using NationalInstruments.RFToolkits.Interop;
 
-namespace NationalInstruments.Utilities.SignalCreator.Plugins
+namespace NationalInstruments.Utilities.SignalCreator.Plugins.WlanPlugin
 {
-    class WlanParser : ParserCorev2
-    {
-        public object Parse(Type type, niWLANG wlan)
-        {
-            return ParseValue(type, wlan);
-        }
-        public T Parse<T>(niWLANG wlan)
-        {
-            return (T)Parse(typeof(T), wlan);
-        }
+    using Serialization;
 
-        public override object ReadValue(Type t, object valueToParse, ParseableAttribute attr)
+    internal class WlanTkDeserializer : Deserializer<niWLANG>
+    {
+        protected override object ReadValue(Type t, niWLANG wlan, DeserializableAttribute attr)
         {
             WlanTkParseableAttribute wlanAttr = (WlanTkParseableAttribute)attr;
-            niWLANG wlan = (niWLANG)valueToParse;
             if (t == typeof(double))
             {
                 wlan.GetScalarAttributeF64("", wlanAttr.WlanGPropertyId, out double doubleValue);
@@ -33,12 +22,12 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
             }
         }
     }
-    public static class WlansParserExtensions
+    internal static class WlanParserExtensions
     {
-        public static T Parse<T>(this niWLANG wlan)
+        public static T Deserialize<T>(this niWLANG wlan)
         {
-            WlanParser parser = new WlanParser();
-            return parser.Parse<T>(wlan);
+            WlanTkDeserializer wlanTkDeserializer = new WlanTkDeserializer();
+            return wlanTkDeserializer.Deserialize<T>(wlan);
         }
     }
 }

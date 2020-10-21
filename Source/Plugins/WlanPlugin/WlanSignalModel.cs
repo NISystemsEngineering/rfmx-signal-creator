@@ -2,13 +2,13 @@
 using NationalInstruments.RFmx.WlanMX;
 using NationalInstruments.RFToolkits.Interop;
 
-namespace NationalInstruments.Utilities.SignalCreator.Plugins
+namespace NationalInstruments.Utilities.SignalCreator.Plugins.WlanPlugin
 {
-
-    class WlanSignalGroup
+    using Serialization.Converters;
+    internal class WlanSignalGroup
     {
         [WlanTkParseable(niWLANGProperties.ChannelBandwidth)]
-        [RFmxWlanMappable(RFmxWlanMXPropertyId.ChannelBandwidth)]
+        [RFmxWlanSerializableProperty(RFmxWlanMXPropertyId.ChannelBandwidth)]
         public double? ChannelBandwidth;
 
         private class WlanStandardConverter : LookupTableConverter<int, RFmxWlanMXStandard>
@@ -27,7 +27,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
         }
 
         [WlanTkParseable(niWLANGProperties.Standard, ConverterType = typeof(WlanStandardConverter))]
-        [RFmxWlanMappable(RFmxWlanMXPropertyId.Standard)]
+        [RFmxWlanSerializableProperty(RFmxWlanMXPropertyId.Standard)]
         public RFmxWlanMXStandard? Standard;
 
     }
