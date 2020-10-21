@@ -11,7 +11,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
     /// <summary>
     /// Contains various utility functions for parsing data from the RFWS file
     /// </summary>
-    internal static class RfwsParserUtilities
+    public static class RfwsParserUtilities
     {
 
         public const string KeyVersion = "version";
