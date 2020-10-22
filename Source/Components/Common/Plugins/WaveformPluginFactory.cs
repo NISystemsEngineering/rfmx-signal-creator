@@ -89,7 +89,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
 
             // Filter the loaded assemblies by those implementing the plugin interface and attribute
             var filteredTypes = from type in availableTypes
-                                where type.GetInterface(nameof(IWaveformFilePlugin)) != null
+                                where type.IsTypeOf<IWaveformFilePlugin>()
                                 where type.IsDefined(typeof(WaveformFilePlugInAttribute))
                                 select type;
 
