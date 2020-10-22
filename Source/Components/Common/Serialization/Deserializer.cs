@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Serilog;
+using Serilog.Context;
 
 namespace NationalInstruments.Utilities.SignalCreator.Serialization
 {
@@ -87,51 +88,65 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
         }
         protected object ParseObject(Type t, TDataContainer dataContainer)
         {
-            object instance = FormatterServices.GetUninitializedObject(t);
-
-            var members = t.GetPropertiesAndFields(MemberAccessibility.Writeable).Where(m => m.IsDefined(typeof(DeserializableAttribute)));
-
-            foreach (MemberInfo m in members)
+            using (LogContext.PushProperty("Object", t.Name))
             {
-                var attrs = m.GetCustomAttributes<DeserializableAttribute>();
+                object instance = FormatterServices.GetUninitializedObject(t);
 
-                if (SelectValidAttribute(attrs, dataContainer, out DeserializableAttribute attr))
+                var members = t.GetPropertiesAndFields(MemberAccessibility.Writeable).Where(m => m.IsDefined(typeof(DeserializableAttribute)));
+
+                foreach (MemberInfo m in members)
                 {
-                    Type memberType = m.GetMemberType();
-                    memberType = Nullable.GetUnderlyingType(memberType) ?? memberType;
-                    //Log.Verbose("Read {MemberName} with raw value {RawValue}", m.Name, rawValue);
-                    object rawValue = default;
-                    try
+                    using (LogContext.PushProperty("Member", m.Name))
                     {
-                        rawValue = ReadValue(memberType, dataContainer, attr);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex, "Error reading raw member {MemberName} value from file", m.Name);
-                        continue;
-                    }
-                    object parsedValue = default;
-                    try
-                    {
-                        parsedValue = ParseValue(memberType, rawValue, attr.ConverterType);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex, "Error parsing member {MemberName}", m.Name);
-                    }
-                    if (memberType.IsAssignableFrom(parsedValue.GetType()))
-                    {
-                        m.SetValue(instance, parsedValue);
-                    }
-                    else
-                    {
-                        Log.Error("A value of {RawValue} was read from the input and parsed to the value of {ParsedValue} succesfully. " +
-                            "However, the member type of {MemberType} is not assignable from the type of {ParsedType}.",
-                            rawValue, parsedValue, memberType, parsedValue.GetType());
+                        var attrs = m.GetCustomAttributes<DeserializableAttribute>();
+                        if (SelectValidAttribute(attrs, dataContainer, out DeserializableAttribute attr))
+                        {
+                            Type memberType = m.GetMemberType();
+                            memberType = Nullable.GetUnderlyingType(memberType) ?? memberType;
+                            object rawValue = default;
+                            
+                            // We don't want to dump to the log objects and other things who we will parse element-by-element
+                            // in a moment; hence, just limit it to simple value types.
+                            bool log = memberType.IsPrimitive || memberType.IsEnum || memberType == typeof(string);
+
+                            try
+                            {
+                                rawValue = ReadValue(memberType, dataContainer, attr);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error(ex, "Error reading raw member value from file");
+                                continue;
+                            }
+                            object parsedValue = default;
+                            try
+                            {
+                                parsedValue = ParseValue(memberType, rawValue, attr.ConverterType);
+                                if (log) Log.Verbose("Parsed raw value of {RawValue} to {ParsedValue} for member", rawValue, parsedValue);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error(ex, "Error parsing member");
+                            }
+                            if (memberType.IsAssignableFrom(parsedValue.GetType()))
+                            {
+                                m.SetValue(instance, parsedValue);
+                            }
+                            else
+                            {
+                                Log.Error("A value of {RawValue} was read from the input and parsed to the value of {ParsedValue} succesfully. " +
+                                    "However, the member type of {MemberType} is not assignable from the type of {ParsedType}.",
+                                    rawValue, parsedValue, memberType, parsedValue.GetType());
+                            }
+                        }
+                        else
+                        {
+                            Log.Verbose("Member skipped because it did not pass the validation check.");
+                        }
                     }
                 }
+                return instance;
             }
-            return instance;
         }
 
         /// <summary>
