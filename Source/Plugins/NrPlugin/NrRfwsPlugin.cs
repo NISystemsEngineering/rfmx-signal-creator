@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using NationalInstruments.RFmx.InstrMX;
+using NationalInstruments.RFmx.NRMX;
 using Serilog;
 using Serilog.Context;
 
@@ -21,7 +22,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
         string filePath;
         XElement rootData;
 
-        public NrRfwsPlugin(){ }
+        public NrRfwsPlugin() { }
         public NrRfwsPlugin(ILogger logger)
         {
             Log.Logger = logger;
@@ -97,7 +98,11 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
                 foreach (RfwsCarrierSet set in carrierSets)
                 {
                     NrSignalModel signal = new NrSignalModel(set, carriers);
-                    instr.CreateNRSignalConfigurationFromObject(signal, signalName: $"CarrierSet{carrierSetIndex}");
+                    RFmxNRMX nrSignal = instr.CreateNRSignalConfigurationFromObject(signal, signalName: $"CarrierSet{carrierSetIndex}");
+                    // Select initial measurements so RFmx doesn't complain on launch that nothing is selected
+                    nrSignal.SelectMeasurements("", RFmxNRMXMeasurementTypes.Acp | RFmxNRMXMeasurementTypes.ModAcc, true);
+                    // RFmx will complain in some configurations if this enabled; since the plugin identifes the RBs this uneeded
+                    nrSignal.SetAutoResourceBlockDetectionEnabled("", RFmxNRMXAutoResourceBlockDetectionEnabled.False);
                     carrierSetIndex++;
                 }
             }
