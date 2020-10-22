@@ -18,43 +18,42 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
         protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, bool value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             signal.SetAttributeBool(overridenSelectorString, attribute.RFmxPropertyId, value);
         }
 
         protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, double value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             signal.SetAttributeDouble(overridenSelectorString, attribute.RFmxPropertyId, value);
         }
 
         protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, int value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             signal.SetAttributeInt(overridenSelectorString, attribute.RFmxPropertyId, value);
         }
         protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, Enum value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             int convertedValue = Convert.ToInt32(value);
             signal.SetAttributeInt(overridenSelectorString, attribute.RFmxPropertyId, convertedValue);
         }
         protected override void ApplyConfiguration(RFmxNRMX signal, string selectorString, string value, RFmxSerializablePropertyAttribute attribute)
         {
             string overridenSelectorString = OverrideSelectorString(attribute, selectorString);
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             signal.SetAttributeString(overridenSelectorString, attribute.RFmxPropertyId, value);
         }
         #endregion
-        static void LogKey(RFmxSerializablePropertyAttribute attribute, string selectorString, object value)
+        static void LogKey(RFmxSerializablePropertyAttribute attribute, object value)
         {
             RFmxNRMXPropertyId id = (RFmxNRMXPropertyId)attribute.RFmxPropertyId;
-            if (string.IsNullOrEmpty(selectorString)) selectorString = "<signal>";
-            Log.Verbose("Set property {RfmxPropertyID} for {SelectorString} with value {Value}",
-                id, selectorString, value);
+            Log.Verbose("Set property {RfmxPropertyID} with value {Value}",
+                id, value);
         }
 
         /// <summary>

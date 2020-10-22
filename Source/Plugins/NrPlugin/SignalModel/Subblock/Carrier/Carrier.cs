@@ -5,6 +5,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
 {
     using Serialization;
 
+    [RfwsDeserializableSection("CarrierDefinition", version = "1")]
     internal class Carrier 
     {
         [RFmxNrSerializableProperty(RFmxNRMXPropertyId.ComponentCarrierFrequency)]
@@ -15,12 +16,13 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
         public int? BandwidthPartCount;
         // Current version (20.0) is 5, but properties below also work with 19.1 (version 3)
 
-        [RfwsDeserializableSection("Cell Settings", version = "5")]
+        [RfwsDeserializableSection("Cell Settings", version = "5"), RFmxSerializableSection]
         public Cell Cell;
-        [RfwsDeserializableSection("Output Settings", version = "3")]
+        [RfwsDeserializableSection("Output Settings", version = "3"), RFmxSerializableSection]
         public OutputSettings Output;
-        [RfwsDeserializableSection(@"Ssb Settings", version = "4")]
+        [RfwsDeserializableSection(@"Ssb Settings", version = "4"), RFmxSerializableSection]
         public SsbSettings Ssb;
+
         [RfwsDeserializableSection(@"Bandwidth Part Settings \d+", version = "3", regExMatch = true)]
         [RFmxSerializableSection(SelectorStrings.BandwidthPart)]
         public List<BandwidthPartSettings> BandwidthParts;

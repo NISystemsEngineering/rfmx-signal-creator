@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NationalInstruments.RFmx.InstrMX;
 using Serilog;
+using Serilog.Context;
 
 namespace NationalInstruments.Utilities.SignalCreator.Serialization
 {
@@ -66,6 +68,12 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
         }
         private void SerializeClass(T signal, string selectorString, object obj)
         {
+            // Convenience function for setting multiple contexts at once
+            var contexts = new List<IDisposable>
+            {
+                LogContext.PushProperty("SelectorString", selectorString),
+                LogContext.PushProperty("Object", obj.GetType().Name)
+            };
             Type t = obj.GetType();
 
             var members = t.GetPropertiesAndFields(MemberAccessibility.Readable)
@@ -73,17 +81,22 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
 
             foreach (MemberInfo member in members)
             {
-                object value = member.GetValue(obj);
-                RFmxSerializableAttribute attr = member.GetCustomAttribute<RFmxSerializableAttribute>();
-                try
+                using (LogContext.PushProperty("MemberName", member.Name))
                 {
-                    SerializeValue(signal, selectorString, value, attr);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Error applying member {MemberName} for {SelectorString}", member.Name, selectorString);
+                    object value = member.GetValue(obj);
+                    RFmxSerializableAttribute attr = member.GetCustomAttribute<RFmxSerializableAttribute>();
+                    try
+                    {
+                        SerializeValue(signal, selectorString, value, attr);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Error applying member");
+                    }
                 }
             }
+            // Dispose both set contexts
+            foreach (IDisposable context in contexts) context.Dispose();
         }
 
         private static string BuildSelectorString(string selectorString, string segment, int index)
@@ -150,5 +163,5 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
         #endregion
     }
 
-    
+
 }

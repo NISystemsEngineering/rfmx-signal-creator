@@ -145,7 +145,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                 IWaveformFilePlugin matchedPlugin;
                 try
                 {
-                    Log.Verbose("Checking for compatible plugins for {File}", fileName);
+                    Log.Information("Checking for compatible plugins for {File}", fileName);
                     matchedPlugin = WaveformPluginFactory.LoadedPlugins.Where(p => p.CanParse(waveform)).FirstOrDefault();
                 }
                 catch (Exception ex)
@@ -156,10 +156,9 @@ namespace NationalInstruments.Utilities.SignalCreator
 
                 if (matchedPlugin != null)
                 {
-                    Log.Information("Processing file {File} using {Plugin}", fileName, matchedPlugin.GetType().Name);
-
                     using (RFmxInstrMX instr = new RFmxInstrMX(fileName, "AnalysisOnly=1"))
                     {
+                        Log.Information("Processing file {File} using {Plugin}", fileName, matchedPlugin.GetType().Name);
                         try
                         {
                             matchedPlugin.Parse(waveform, instr);
@@ -185,7 +184,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                 }
                 else
                 {
-                    Log.Warning("Skipping {File}; no installed plugin is compatible with this file.", fileName);
+                    Log.Warning("Skipping {File}; no installed plugin is compatible with this file", fileName);
                 }
             }
         }

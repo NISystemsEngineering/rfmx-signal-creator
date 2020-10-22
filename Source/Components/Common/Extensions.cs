@@ -109,6 +109,16 @@ namespace NationalInstruments.Utilities.SignalCreator
 
             return false;
         }
+        // From https://stackoverflow.com/a/8142597/12842047
+        /// <summary>
+        /// Alternative to <see cref="Type.IsAssignableFrom(Type)"/> that reverses the logic to be 
+        /// much more intuitive.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsTypeOf<T>(this Type type)
+        {
+            return typeof(T).IsAssignableFrom(type);
+        }
         public static bool IsDefined<T>(this MemberInfo member)
         {
             return member.IsDefined(typeof(T));

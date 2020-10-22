@@ -9,42 +9,41 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.WlanPlugin
 
     internal class WlanRFmxSerializer : RFmxSerializer<RFmxWlanMX>
     {
-        static void LogKey(RFmxSerializablePropertyAttribute attribute, string selectorString, object value)
+        static void LogKey(RFmxSerializablePropertyAttribute attribute, object value)
         {
             RFmxWlanSerializablePropertyAttribute wlanAttr = (RFmxWlanSerializablePropertyAttribute)attribute;
-            if (string.IsNullOrEmpty(selectorString)) selectorString = "<signal>";
-            Log.Verbose("Set property {RfmxPropertyID} for {SelectorString} with value {Value}",
-                wlanAttr.WlanPropertyId, selectorString, value);
+            Log.Verbose("Set property {RfmxPropertyID} with value {Value}",
+                wlanAttr.WlanPropertyId, value);
         }
 
         protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, bool value, RFmxSerializablePropertyAttribute attribute)
         {
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             signal.SetAttributeBool(selectorString, attribute.RFmxPropertyId, value);
         }
 
         protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, double value, RFmxSerializablePropertyAttribute attribute)
         {
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             signal.SetAttributeDouble(selectorString, attribute.RFmxPropertyId, value);
         }
 
         protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, int value, RFmxSerializablePropertyAttribute attribute)
         {
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             signal.SetAttributeInt(selectorString, attribute.RFmxPropertyId, value);
         }
 
         protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, Enum value, RFmxSerializablePropertyAttribute attribute)
         {
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             int convertedValue = Convert.ToInt32(value);
             signal.SetAttributeInt(selectorString, attribute.RFmxPropertyId, convertedValue);
         }
 
         protected override void ApplyConfiguration(RFmxWlanMX signal, string selectorString, string value, RFmxSerializablePropertyAttribute attribute)
         {
-            LogKey(attribute, selectorString, value);
+            LogKey(attribute, value);
             signal.SetAttributeString(selectorString, attribute.RFmxPropertyId, value);
         }
     }

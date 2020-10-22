@@ -8,7 +8,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
     /// <summary>
     /// Indicates that a field or property within a class is representative of an XML section within the RFWS file.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public sealed class RfwsDeserializableSectionAttribute : DeserializableAttribute
     {
         /// <summary>

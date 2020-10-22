@@ -50,9 +50,9 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
         /// </summary>
         /// <param name="root">Specifies the node whose descendants should be searched.</param>
         /// <param name="sectionType">Specifies the type of <see cref="RfwsSection"/> to find in the XML data.</param>
-        public static IEnumerable<XElement> FindSections(this XElement root, Type sectionType)
+        public static IEnumerable<XElement> FindSections<T>(this XElement root)
         {
-            (string sectionName, _, bool regexMatch) = sectionType.GetCustomAttribute<RfwsDeserializableSectionAttribute>();
+            (string sectionName, _, bool regexMatch) = typeof(T).GetCustomAttribute<RfwsDeserializableSectionAttribute>();
 
             return root.FindSections(sectionName, regexMatch);
         }

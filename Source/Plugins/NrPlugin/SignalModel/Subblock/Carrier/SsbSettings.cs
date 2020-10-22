@@ -41,7 +41,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
         public double? SubcarrierSpacingCommon;
         [RfwsDeserializableKey("Subcarrier Offset", 4)]
         [RFmxNrSerializableProperty(RFmxNRMXPropertyId.SsbSubcarrierOffset)]
-        public double? SubcarrierOffset;
+        public int? SubcarrierOffset;
         [RfwsDeserializableKey("Periodicity", 4), RFmxNrSerializableProperty(RFmxNRMXPropertyId.SsbPeriodicity)]
         public double? SsbPeriodicity;
         [RfwsDeserializableKey("SSB Active Blocks", 4), RFmxNrSerializableProperty(RFmxNRMXPropertyId.SsbActiveBlocks)]
