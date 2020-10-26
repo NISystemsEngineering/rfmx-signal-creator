@@ -78,7 +78,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
 
         #endregion
 
-        [RfwsDeserializableSection(@"PDCCH Slot Settings \d+", version = "3", regExMatch = true)]
+        [RfwsDeserializableSection(@"PDCCH Slot Settings \d+", 3, regExMatch = true)]
         [RFmxSerializableSection(SelectorStrings.Pddch)]
         public List<Pdcch> PdcchConfigs;
     }

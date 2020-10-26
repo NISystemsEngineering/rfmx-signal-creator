@@ -18,18 +18,22 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
         /// <summary>
         /// Specifies valid versions in the "version" attribute of the section element.
         /// </summary>
-        public string version;
+        public float minimumSupportedVersion;
         /// <summary>
         /// Indicates whether <see cref="sectionName"/> is a regular expression and to be matched as such.
         /// </summary>
         public bool regExMatch = false;
 
-        public RfwsDeserializableSectionAttribute(string sectionName) => this.sectionName = sectionName;
+        public RfwsDeserializableSectionAttribute(string sectionName, float minVersion)
+        {
+            this.sectionName = sectionName;
+            minimumSupportedVersion = minVersion;
+        }
 
-        public void Deconstruct(out string sectionName, out string version, out bool regexMatch)
+        public void Deconstruct(out string sectionName, out float version, out bool regexMatch)
         {
             sectionName = this.sectionName;
-            version = this.version;
+            version = this.minimumSupportedVersion;
             regexMatch = this.regExMatch;
         }
     }
@@ -57,7 +61,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
         /// <summary>
         /// Specifies the value of the "name" attribute of the key element.
         /// </summary>
-        public string Key { get; } 
+        public string Key { get; }
         /// <summary>
         /// Specifies one or more valid versions for this key as defined by the parent section. This list will be 
         /// interpreted based upon the value of <see cref="VersionMode"/>.
@@ -115,9 +119,10 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
                 case RfwsVersionMode.SpecificVersions:
                     return Versions.Contains(versionToCheck);
                 case RfwsVersionMode.SupportedVersionsAndLater:
-                    return (from supportedVersion in Versions
-                            select versionToCheck >= supportedVersion)
-                            .Aggregate((current, next) => current |= next);
+                    var supportedVersions = from supportedVersion in Versions
+                                            where versionToCheck >= supportedVersion
+                                            select supportedVersion;
+                    return supportedVersions.Any();
                 default:
                     return false;
             }

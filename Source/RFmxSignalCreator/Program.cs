@@ -143,9 +143,9 @@ namespace NationalInstruments.Utilities.SignalCreator
 
                 // Check all loaded plugins to see if any can parse this file
                 IWaveformFilePlugin matchedPlugin;
+                Log.Information("Checking for compatible plugins for {File}", fileName);
                 try
                 {
-                    Log.Information("Checking for compatible plugins for {File}", fileName);
                     matchedPlugin = WaveformPluginFactory.LoadedPlugins.Where(p => p.CanParse(waveform)).FirstOrDefault();
                 }
                 catch (Exception ex)

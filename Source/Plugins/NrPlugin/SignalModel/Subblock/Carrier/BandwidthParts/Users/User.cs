@@ -11,9 +11,9 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
         [RfwsDeserializableKey("nRNTI", 1), RFmxNrSerializableProperty(RFmxNRMXPropertyId.Rnti)]
         public int? Rnti;
 
-        [RfwsDeserializableSection("PDSCH Settings", version = "3"), RFmxSerializableSection]
+        [RfwsDeserializableSection("PDSCH Settings", 3), RFmxSerializableSection]
         public PdschSettings PdschConfiguration;
-        [RfwsDeserializableSection("PUSCH Settings", version = "1"), RFmxSerializableSection]
+        [RfwsDeserializableSection("PUSCH Settings", 1), RFmxSerializableSection]
         public PuschSettings PuschConfiguration;
     }
 }

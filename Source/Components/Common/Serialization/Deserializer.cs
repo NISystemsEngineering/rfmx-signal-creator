@@ -118,30 +118,34 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
                                 Log.Error(ex, "Error reading raw member value from file");
                                 continue;
                             }
-                            object parsedValue = default;
-                            try
+                            if (rawValue != null)
                             {
-                                parsedValue = ParseValue(memberType, rawValue, attr.ConverterType);
-                                if (log) Log.Verbose("Parsed raw value of {RawValue} to {ParsedValue} for member", rawValue, parsedValue);
+                                object parsedValue = default;
+                                try
+                                {
+                                    parsedValue = ParseValue(memberType, rawValue, attr.ConverterType);
+                                    if (log) Log.Verbose("Parsed raw value of {RawValue} to {ParsedValue} for member", rawValue, parsedValue);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Error(ex, "Error parsing member");
+                                }
+                                if (memberType.IsAssignableFrom(parsedValue.GetType()))
+                                {
+                                    m.SetValue(instance, parsedValue);
+                                }
+                                else
+                                {
+                                    Log.Error("A value of {RawValue} was read from the input and parsed to the value of {ParsedValue} succesfully. " +
+                                        "However, the member type of {MemberType} is not assignable from the type of {ParsedType}.",
+                                        rawValue, parsedValue, memberType, parsedValue.GetType());
+                                }
                             }
-                            catch (Exception ex)
-                            {
-                                Log.Error(ex, "Error parsing member");
-                            }
-                            if (memberType.IsAssignableFrom(parsedValue.GetType()))
-                            {
-                                m.SetValue(instance, parsedValue);
-                            }
-                            else
-                            {
-                                Log.Error("A value of {RawValue} was read from the input and parsed to the value of {ParsedValue} succesfully. " +
-                                    "However, the member type of {MemberType} is not assignable from the type of {ParsedType}.",
-                                    rawValue, parsedValue, memberType, parsedValue.GetType());
-                            }
+                            
                         }
                         else
                         {
-                            Log.Verbose("Member skipped because it did not pass the validation check.");
+                            Log.Debug("Member skipped because it did not pass the validation check.");
                         }
                     }
                 }
