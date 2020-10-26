@@ -11,7 +11,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
         [RfwsDeserializableKey("Count", 1), RFmxNrSerializableProperty(RFmxNRMXPropertyId.NumberOfPuschConfigurations)]
         public int? NumPusch;
 
-        [RfwsDeserializableSection(@"PUSCH Slot Settings \d+", version = "6", regExMatch = true)]
+        [RfwsDeserializableSection(@"PUSCH Slot Settings \d+", 6, regExMatch = true)]
         [RFmxSerializableSection(SelectorStrings.Pusch)]
         public List<Pusch> PuschConfigurations;
     }

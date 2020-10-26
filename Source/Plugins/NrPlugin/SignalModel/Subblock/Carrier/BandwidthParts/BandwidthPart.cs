@@ -27,10 +27,10 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
         public int? NumberOfCoresets;
         #endregion
 
-        [RfwsDeserializableSection(@"UE Settings \d+", version = "1", regExMatch = true)]
+        [RfwsDeserializableSection(@"UE Settings \d+", 1, regExMatch = true)]
         [RFmxSerializableSection(SelectorStrings.User)]
         public List<User> Users;
-        [RfwsDeserializableSection(@"CORESET Settings \d+", version = "1", regExMatch = true)]
+        [RfwsDeserializableSection(@"CORESET Settings \d+", 1, regExMatch = true)]
         [RFmxSerializableSection(SelectorStrings.Coreset)]
         public List<CoresetSettings> Coresets;
 

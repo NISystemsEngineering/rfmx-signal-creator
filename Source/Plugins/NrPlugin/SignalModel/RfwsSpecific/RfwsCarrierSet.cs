@@ -9,7 +9,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
     /// so this is imported as part of the construction of the <see cref="NrSignalModel"/> to translate it to the 
     /// appropriate structure.
     /// </summary>
-    [RfwsDeserializableSection("CarrierSet", version = "3")]
+    [RfwsDeserializableSection("CarrierSet", 3)]
     internal class RfwsCarrierSet
     {
         #region RFmx Properties
@@ -18,7 +18,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
         #endregion
 
         #region Sub Sections
-        [RfwsDeserializableSection("Carrier", version = "3")]
+        [RfwsDeserializableSection("Carrier", 3)]
         public List<RfwsSubblockCarrierSettings> SubblockCarrierSettings;
         #endregion
 

@@ -11,7 +11,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin.SignalMod
         [RfwsDeserializableKey("Count", 3), RFmxNrSerializableProperty(RFmxNRMXPropertyId.NumberOfPdschConfigurations)]
         public int? NumberOfPdsch;
 
-        [RfwsDeserializableSection(@"PDSCH Slot Settings \d+", version = "4", regExMatch = true)]
+        [RfwsDeserializableSection(@"PDSCH Slot Settings \d+", 4, regExMatch = true)]
         [RFmxSerializableSection(SelectorStrings.Pdsch)]
         public List<Pdsch> PdschConfigurations;
     }
