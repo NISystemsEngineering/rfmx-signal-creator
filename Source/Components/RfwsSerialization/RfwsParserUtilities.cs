@@ -27,13 +27,16 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
         /// <param name="sectionName">Specifies the value of the name attribute of the section.</param>
         /// <param name="regexMatch">Specifies whether <paramref name="sectionName"/> should be used a regular expression matching string.</param>
         /// <returns></returns>
-        public static IEnumerable<XElement> FindSections(this XElement root, string sectionName, bool regexMatch = false)
+        public static IEnumerable<XElement> FindSections(this XElement root, RfwsDeserializableSectionAttribute attr)
         {
+            (string sectionName, float minimumVersion, bool regexMatch) = attr;
+
             if (regexMatch)
             {
                 return from element in root.Descendants("section")
                        let name = (string)element.Attribute("name")
                        where Regex.IsMatch(name, sectionName)
+                       where element.GetSectionVersion() >= minimumVersion
                        select element;
             }
             else
@@ -41,6 +44,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
                 return from element in root.Descendants("section")
                        let name = (string)element.Attribute("name")
                        where name == sectionName
+                       where element.GetSectionVersion() >= minimumVersion
                        select element;
             }
         }
@@ -52,9 +56,9 @@ namespace NationalInstruments.Utilities.SignalCreator.Serialization
         /// <param name="sectionType">Specifies the type of <see cref="RfwsSection"/> to find in the XML data.</param>
         public static IEnumerable<XElement> FindSections<T>(this XElement root)
         {
-            (string sectionName, _, bool regexMatch) = typeof(T).GetCustomAttribute<RfwsDeserializableSectionAttribute>();
+            RfwsDeserializableSectionAttribute attr = typeof(T).GetCustomAttribute<RfwsDeserializableSectionAttribute>();
 
-            return root.FindSections(sectionName, regexMatch);
+            return root.FindSections(attr);
         }
         /// <summary>
         /// Reads a value from the first descendant node named <i>key</i> whose <i>name</i> attribute matches <paramref name="keyName"/>.
