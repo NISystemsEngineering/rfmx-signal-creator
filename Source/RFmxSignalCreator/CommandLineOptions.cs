@@ -19,7 +19,7 @@ namespace NationalInstruments.Utilities.SignalCreator
         [Option('c', "console", HelpText = "Sends full file log to console in addition to the log file.")]
         public bool LogToConsole { get; set; }
 
-        [Usage(ApplicationAlias = "RFmxSignalCreator")]
+        [Usage(ApplicationAlias = "SignalCreator")]
         public static IEnumerable<Example> Examples =>
             new List<Example>()
             {
