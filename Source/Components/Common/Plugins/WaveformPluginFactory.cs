@@ -6,7 +6,7 @@ using System.Reflection;
 using Serilog;
 using System.Collections.ObjectModel;
 
-namespace NationalInstruments.Utilities.SignalCreator
+namespace NationalInstruments.Utilities.SignalCreator.Plugins
 {
     // Adapted from https://www.c-sharpcorner.com/article/introduction-to-building-a-plug-in-architecture-using-C-Sharp/
     /// <summary>
@@ -59,7 +59,7 @@ namespace NationalInstruments.Utilities.SignalCreator
                         continue;
                     }
                     plugInAssemblyList.Add(assembly);
-                    Log.Debug("Loaded assembly {file}", file);
+                    Log.Debug("Loaded assembly {File}", file);
                 }
             }
             else
@@ -89,7 +89,7 @@ namespace NationalInstruments.Utilities.SignalCreator
 
             // Filter the loaded assemblies by those implementing the plugin interface and attribute
             var filteredTypes = from type in availableTypes
-                                where type.GetInterface(nameof(IWaveformFilePlugin)) != null
+                                where type.IsTypeOf<IWaveformFilePlugin>()
                                 where type.IsDefined(typeof(WaveformFilePlugInAttribute))
                                 select type;
 

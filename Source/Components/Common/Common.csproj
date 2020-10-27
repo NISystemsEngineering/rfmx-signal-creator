@@ -40,11 +40,16 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parsing\MapperCore.cs" />
-    <Compile Include="Parsing\ParserCore.cs" />
-    <Compile Include="Parsing\PropertyGroup.cs" />
-    <Compile Include="Parsing\PropertyMap.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Serialization\Converters\LookupTableConverter.cs" />
+    <Compile Include="Serialization\Converters\ValueConverter.cs" />
+    <Compile Include="Serialization\Converters\ValueConverterOfT.cs" />
+    <Compile Include="Serialization\Converters\EnumConverter.cs" />
+    <Compile Include="Serialization\Deserializer.cs" />
+    <Compile Include="Serialization\DeserializationAttributes.cs" />
+    <Compile Include="Serialization\RFmxSerializer.cs" />
     <Compile Include="Plugins\WaveformPluginFactory.cs" />
+    <Compile Include="Serialization\SerializationAttributes.cs" />
     <Compile Include="WaveformConfigFileType.cs" />
     <Compile Include="Plugins\IWaveformFilePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

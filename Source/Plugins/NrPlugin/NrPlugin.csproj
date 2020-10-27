@@ -7,7 +7,7 @@
     <ProjectGuid>{43E80067-E805-4DD7-AC69-25D2501A1D2B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NrPlugin</RootNamespace>
+    <RootNamespace>NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin</RootNamespace>
     <AssemblyName>NrPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>CS0649</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,11 +50,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NrParsingUtilities.cs" />
-    <Compile Include="NrRFmxMapper.cs" />
-    <Compile Include="NrRfmxPropertyMap.cs" />
+    <Compile Include="NrRFmxSerializer.cs" />
+    <Compile Include="NrRfmxAttributes.cs" />
     <Compile Include="NrRfwsPlugin.cs" />
-    <Compile Include="NrSignalModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SignalModel\NrSignalModel.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\BandwidthParts\Coresets\Pdcch.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\BandwidthParts\Coresets\Coreset.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\BandwidthParts\Users\Pusch.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\BandwidthParts\Users\Pdsch.cs" />
+    <Compile Include="SignalModel\Subblock\Subblock.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\Carrier.cs" />
+    <Compile Include="SignalModel\RfwsSpecific\RfwsCarrierSet.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\Cell.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\BandwidthParts\BandwidthPart.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\BandwidthParts\RbCluster.cs" />
+    <Compile Include="SignalModel\SelectorStrings.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\BandwidthParts\Users\User.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\SsbSettings.cs" />
+    <Compile Include="SignalModel\Subblock\Carrier\OutputSettings.cs" />
+    <Compile Include="SignalModel\RfwsSpecific\RfwsSubblockCarrierSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog">
@@ -80,11 +96,12 @@
       <Name>Common</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Components\RfwsParser\RfwsParser.csproj">
+    <ProjectReference Include="..\..\Components\RfwsSerialization\RfwsSerialization.csproj">
       <Project>{5ce77ac6-acc7-4001-88da-b14b06365bb6}</Project>
-      <Name>RfwsParser</Name>
+      <Name>RfwsSerialization</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

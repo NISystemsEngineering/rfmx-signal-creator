@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using System.Xml.Linq;
 using NationalInstruments.RFmx.InstrMX;
 using NationalInstruments.RFmx.NRMX;
-using System.Xml.Linq;
 using Serilog;
 using Serilog.Context;
 
 
-namespace NationalInstruments.Utilities.SignalCreator.Plugins
+namespace NationalInstruments.Utilities.SignalCreator.Plugins.NrPlugin
 {
-    using static RfwsParserUtilities;
+    using Serialization;
+    using SignalModel;
 
     [WaveformFilePlugIn("Plugin for parsing 5G NR .rfws files.", "19.1", "20")]
     public class NrRfwsPlugin : IWaveformFilePlugin
@@ -21,10 +22,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
         string filePath;
         XElement rootData;
 
-        public NrRfwsPlugin()
-        {
-
-        }
+        public NrRfwsPlugin() { }
         public NrRfwsPlugin(ILogger logger)
         {
             Log.Logger = logger;
@@ -48,7 +46,7 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
 
                         bool parseable = result.FirstOrDefault() != null;
                         Log.Verbose("CanParse returning {Result} indicating that tag {XmlIdentifer} was or was not found",
-                                        parseable, XmlIdentifer, XmlNrVersion);
+                                        parseable, XmlIdentifer);
                         return parseable;
                     }
                     catch (Exception ex)
@@ -75,48 +73,37 @@ namespace NationalInstruments.Utilities.SignalCreator.Plugins
             }
             using (LogContext.PushProperty("Plugin", nameof(NrRfwsPlugin)))
             {
+                // The RFWS file breaks up the NR configuration in two sections: a section representing carrier definitions (in which
+                // the NR specific configurations are set), and then a all of the carrier sets in the waveform. These carrier sets
+                // reference one of the carrier definitions and configure properties such as the frequency offset for the carrier.
+                //
+                // This doesn't neatly map to RFmx, so an extra step is performed after reading in these objects to then create
+                // a unified object matching the RFmx layout.
+
                 int carrierSetIndex = 0;
-                foreach (XElement carrierSetSection in rootData.FindSections(typeof(CarrierSet)))
+                List<RfwsCarrierSet> carrierSets = new List<RfwsCarrierSet>();
+                foreach (XElement carrierSetSection in rootData.FindSections<RfwsCarrierSet>())
                 {
-                    RFmxNRMX signal = instr.GetNRSignalConfiguration($"CarrierSet{carrierSetIndex}");
-
+                    RfwsCarrierSet set = carrierSetSection.Deserialize<RfwsCarrierSet>();
+                    carrierSets.Add(set);
+                }
+                List<Carrier> carriers = new List<Carrier>();
+                foreach (XElement carrierDefinitionSetion in rootData.FindSections<Carrier>())
+                {
+                    Carrier carrier = carrierDefinitionSetion.Deserialize<Carrier>();
+                    carriers.Add(carrier);
+                }
+                // Now that we have loaded all relevant information from the file, construct the final object
+                // and pass the data to the serialization engine to create the RFmx NR signal
+                foreach (RfwsCarrierSet set in carrierSets)
+                {
+                    NrSignalModel signal = new NrSignalModel(set, carriers);
+                    RFmxNRMX nrSignal = instr.CreateNRSignalConfigurationFromObject(signal, signalName: $"CarrierSet{carrierSetIndex}");
                     // Select initial measurements so RFmx doesn't complain on launch that nothing is selected
-                    signal.SelectMeasurements("", RFmxNRMXMeasurementTypes.Acp | RFmxNRMXMeasurementTypes.ModAcc, true);
+                    nrSignal.SelectMeasurements("", RFmxNRMXMeasurementTypes.Acp | RFmxNRMXMeasurementTypes.ModAcc, true);
                     // RFmx will complain in some configurations if this enabled; since the plugin identifes the RBs this uneeded
-                    signal.SetAutoResourceBlockDetectionEnabled("", RFmxNRMXAutoResourceBlockDetectionEnabled.False);
-
-                    using (LogContext.PushProperty("CarrierSet", carrierSetIndex))
-                    {
-                        RfwsParser parser = new RfwsParser();
-                        NrRFmxMapper nrMapper = new NrRFmxMapper(signal);
-
-                        CarrierSet carrierSet = new CarrierSet(carrierSetSection);
-                        parser.Parse(carrierSet);
-
-                        // The carrier sets identify which carrier definition is associated with that subblcok.
-                        // Hence, for each carrier definition that we find, we determine which subblock object
-                        // uses that carrier definition and we use that subblock as the parent object to create
-                        // the carrier.
-                        int i = 0;
-                        List<Carrier> carriers = new List<Carrier>();
-                        foreach (XElement carrierDefinitionSetion in rootData.FindSections(typeof(Carrier)))
-                        {
-                            var matchingSections = from Subblock s in carrierSet.Subblocks
-                                                   where s.CarrierDefinitionIndex == i
-                                                   select s;
-                            foreach(Subblock subblock in matchingSections)
-                            {
-                                Carrier c = new Carrier(carrierDefinitionSetion, subblock);
-                                parser.Parse(c);
-                                carriers.Add(c);
-                            }
-                            i++;
-                        }
-
-                        // Everything has been parsed; now, map the results
-                        nrMapper.Map(carrierSet);
-                        foreach (Carrier c in carriers) nrMapper.Map(c);
-                    }
+                    nrSignal.SetAutoResourceBlockDetectionEnabled("", RFmxNRMXAutoResourceBlockDetectionEnabled.False);
+                    carrierSetIndex++;
                 }
             }
         }
